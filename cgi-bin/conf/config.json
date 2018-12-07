@@ -1,6 +1,6 @@
 {
 	"server":"dev"
-	,"module":"bcoeditor"
+	,"module":"bco_editor"
 	,"title":"BioCompute Objects Portal (BCOP)"
 	,"desc":""
 	,"sections":[
@@ -28,12 +28,12 @@
             ,"sessionlife":3600
         }
         ,"rootinfo":{
-            "htmlroot":"http://localhost/frontendcode/bcoeditor/"
-            ,"cgiroot":"http://localhost/cgi-bin/frontendcode/bcoeditor/"
+            "htmlroot":"http://localhost/bco_editor/"
+            ,"cgiroot":"http://localhost/cgi-bin/bco_editor/"
         }
         ,"pathinfo":{
-            "htmlpath":"/Users/robelkahsay/work-projects/frontendcode/html/bcoeditor/"
-            ,"cgipath":"/Users/robelkahsay/work-projects/frontendcode/cgi-bin/bcoeditor/"
+            "htmlpath":"/Users/robelkahsay/work-projects/bco_editor/html/"
+            ,"cgipath":"/Users/robelkahsay/work-projects/bco_editor/cgi-bin/"
         }
 }
 
