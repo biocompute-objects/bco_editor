@@ -20,7 +20,8 @@ git clone https://github.com/biocompute-objects/bco_editor.git
 
 
 ### MongoDB Installation Example
-If you do not have MongoDB installed on your server, here is an example installation steps for CentOs server. 
+If you do not have MongoDB installed on your server, here is an [example installation](mongodb_installation.md) steps for CentOs server. 
+
 
 ```
 1) vim /etc/yum.repos.d/mongodb.repo and put the following in it
