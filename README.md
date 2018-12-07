@@ -8,7 +8,6 @@ Software requirement
 * Any linux operating system
 * MongoDB Community or Enterprise version
 
-
 ### MongoDB Installation Example
 If you do not have MongoDB installed on your server, here is an example of [MongoDB installation instruction steps](mongodb_installation.md) steps for CentOs server. 
 
