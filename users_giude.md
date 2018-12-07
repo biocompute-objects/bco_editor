@@ -10,18 +10,9 @@ Software requirement
 * MongoDB Community or Enterprise version
 
 
-<<<<<<< HEAD
-### MongoDB Installation
-Use git clone to clone the bco_editor repository
 
-```
-git clone https://github.com/biocompute-objects/bco_editor.git
-
-```
-=======
 ### MongoDB Installation Example
 If you do not have MongoDB installed on your server, here is an [example installation](mongodb_installation.md) steps for CentOs server. 
->>>>>>> a3a0c23899a306768c755eb659a178be2d151664
 
 
 ### Downloading BioCompute Editor
