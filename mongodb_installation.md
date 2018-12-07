@@ -1,7 +1,8 @@
 
 ### MongoDB Installation Example
 
-If you do not have MongoDB installed on your server, here is an example installation steps for CentOs server (taken from https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/)
+If you do not have MongoDB installed on your server, here is an example installation steps for CentOs server (taken from
+https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/)
 
 ```
 
@@ -32,8 +33,7 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.0.asc
         
 Then disconnect from the mongo shell (Ctrl+D).
 
-
-6) Disconnect from mongo shell and enable authentication in mongod configuration file and change "disabled" to "enabled"
+6. Disconnect from mongo shell and enable authentication in mongod configuration file and change "disabled" to "enabled"
         $ sudo vi /etc/mongod.conf
       
         #security:
@@ -41,9 +41,6 @@ Then disconnect from the mongo shell (Ctrl+D).
 
 7) Restart mongod
         $ sudo service mongod restart
-=======
-10) Restart mongod
-        $ sudo service mongodb restart
   
     From now on, all clients connecting to this server must authenticate themselves as a valid users, and they will be only able to perform actions as determined by their assigned roles.
 
