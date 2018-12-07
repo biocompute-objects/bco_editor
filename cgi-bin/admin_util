@@ -88,6 +88,7 @@ def main():
             if not (key):
                 parser.print_help()
                 sys.exit(0)
+        options.password = bcrypt.hashpw(options.password.encode('utf-8'), bcrypt.gensalt())
         query_obj = {'email': options.email}
         update_obj = {
             "fname":options.fname,
