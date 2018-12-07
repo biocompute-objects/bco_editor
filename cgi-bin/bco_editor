@@ -49,7 +49,7 @@ def save_object(in_json):
             result = mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': in_json}, upsert=False)
             out_json = {"taskstatus": 1, "bcoid":bco_id}
         else:
-            bco_id = util.get_next_sequence_value("bcoid")
+            bco_id = util.get_next_sequence_value(mongo_cl_counters, "bcoid")
             in_json["bco_id"] = bco_id
             in_json["provenance_domain"]["created"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
             in_json["provenance_domain"]["contributors"] = [
@@ -90,10 +90,10 @@ def search_objects(in_json):
             doc.pop("_id")
             created_by = doc["provenance_domain"]["contributors"][0]["email"]
             bco_id = str(doc["bco_id"])
-            linked_id = '<a id=view_'+bco_id+' class=viewlink href="#">' 
-            linked_id += bco_id + '</a>'
+            #linked_id = '<a id=view_'+bco_id+' class=viewlink href="#">' 
+            #linked_id += bco_id + '</a>'
             row = [
-                linked_id
+                bco_id
                 ,doc["provenance_domain"]["name"]
                 ,doc["provenance_domain"]["created"]
                 ,doc["provenance_domain"]["contributors"][0]["email"]
@@ -229,7 +229,7 @@ def main():
 
 
     global config_json
-    global mongo_db
+    global mongo_cl
     global mongo_cl_bco
     global mongo_cl_counters
     global log_dir
@@ -238,13 +238,19 @@ def main():
     try:
 
         config_json = json.loads(open("conf/config.json", "r").read())
-        client = MongoClient('mongodb://localhost:27017')
         log_dir = config_json["pathinfo"]["htmlpath"] + "/log/"
+        client = MongoClient('mongodb://localhost:27017', 
+            username=config_json["dbinfo"]["mongodbuser"],
+            password=config_json["dbinfo"]["mongodbpassword"],
+            authSource=config_json["dbinfo"]["mongodbname"],
+            authMechanism='SCRAM-SHA-1'
+        )
+        
+        mongo_dbh = client[config_json["dbinfo"]["mongodbname"]]
+        mongo_cl_bco = mongo_dbh[config_json["dbinfo"]["mongocl_bco"]]
+        mongo_cl_counters = mongo_dbh[config_json["dbinfo"]["mongocl_counters"]]
+        mongo_cl_users = mongo_dbh[config_json["dbinfo"]["mongocl_users"]]
 
-        mongo_db = client[config_json["dbinfo"]["mongodbname"]]
-        mongo_cl_bco = mongo_db[config_json["dbinfo"]["mongoclname_bco"]]
-        mongo_cl_counters = mongo_db[config_json["dbinfo"]["mongoclname_counters"]]
-        mongo_cl_users = mongo_db[config_json["dbinfo"]["mongoclname_users"]]
 
         svc = in_json["svc"] if "svc" in in_json else ""
         auth_json = auth.authenticate(log_dir)

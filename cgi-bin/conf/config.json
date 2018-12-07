@@ -1,40 +1,27 @@
 {
-	"server":"dev"
-	,"module":"bco_editor"
-	,"title":"BioCompute Objects Portal (BCOP)"
-	,"desc":""
-	,"sections":[
-	]
-	,"tableheaders":{
-		"searchresults":{
-			"labellist":["Object ID","Object Name","Created On",
-                            "Created By"
-                        ] 
-			,"typelist":["string","string","string","string"
-                        ]
-		}
-	}
-	,"queries":{
-	}
-        ,"dbinfo":{
-            "mysqldbhost":"localhost"
-            ,"mysqldbname":"mzlabdb1"
-            ,"mysqldbuserid":"mzlabdb1admin"
-            ,"mysqldbpassword":"pass2mzlab"
-            ,"mongodbname":"bcodb_1_tst"
-            ,"mongoclname_bco":"c_bco"
-            ,"mongoclname_counters":"c_counters"
-            ,"mongoclname_users":"c_users"
-            ,"sessionlife":3600
-        }
-        ,"rootinfo":{
-            "htmlroot":"http://localhost/bco_editor/"
-            ,"cgiroot":"http://localhost/cgi-bin/bco_editor/"
-        }
-        ,"pathinfo":{
-            "htmlpath":"/Users/robelkahsay/work-projects/bco_editor/html/"
-            ,"cgipath":"/Users/robelkahsay/work-projects/bco_editor/cgi-bin/"
-        }
+    "dbinfo":{
+        "mongodbname":"bcodb_1_tst"
+        ,"mongodbuser":"bcodbadmin"
+        ,"mongodbpassword":"pass123!"
+        ,"mongocl_bco":"c_bco"
+        ,"mongocl_counters":"c_counters"
+        ,"mongocl_users":"c_users"
+        ,"sessionlife":3600
+    }
+    ,"rootinfo":{
+        "htmlroot":"http://localhost/bco_editor/"
+        ,"cgiroot":"http://localhost/cgi-bin/bco_editor/"
+    }
+    ,"pathinfo":{
+        "htmlpath":"/Users/robelkahsay/work-projects/bco_editor/html/"
+        ,"cgipath":"/Users/robelkahsay/work-projects/bco_editor/cgi-bin/"
+    }
+    ,"tableheaders":{
+        "searchresults":{
+            "labellist":["Object ID","Object Name","Created On", "Created By"]
+            ,"typelist":["string","string","string","string"]
+        }   
+    }
 }
 
 

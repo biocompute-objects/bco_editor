@@ -114,7 +114,8 @@ function setHomePage(){
                     cn += '<div id=searchresultscn></div>';
                     $("#pagecn").html(cn);
                     if (resJson["searchresults"].length > 2){
-                        drawTable(resJson["searchresults"], "searchresultscn", {"pagesize":50});
+                        var argObj = {"containerid":"searchresultscn", "pagesize":50, "onselect":""};
+                        rndrGoogleTable(resJson["searchresults"], argObj);
                     }
                     else{
                         $("#searchresultscn").html(getMessagePanel("No objects found for your search!"));
@@ -391,5 +392,66 @@ function getMessagePanel(msg){
     cn +='<tr><td valign=middle align=center style="color:#777;background:#f1f1f1;">';
     cn +=  msg + '</td></tr></table>';
     return cn;
+}
+
+//////////////////////////////////////
+function rndrGoogleTable (resData, inObj) {
+
+    var formatHash = {
+        "id": {prefix:'', groupingSymbol: '', fractionDigits:0}
+        ,"money": {prefix: '$', negativeColor: 'red', negativeParens: true}
+    }
+
+    google.charts.load('current', {'packages':['table']});
+    google.charts.setOnLoadCallback(drawTable);
+    function drawTable(){
+        var data = new google.visualization.DataTable();
+        for (var j=0; j < resData[0].length; j++){
+            data.addColumn(resData[1][j], resData[0][j]);
+        }
+        for (var i=2; i < resData.length; i++){
+            data.addRows([resData[i]]);
+        }
+        for (var j=0; j < resData[0].length; j++){
+            if ("moneyfields" in inObj){
+                if (inObj["moneyfields"].indexOf(j) != -1){
+                    var frmtr = new google.visualization.NumberFormat(formatHash["money"]);
+                    frmtr.format(data, j);
+                }
+            }
+            if ("idfields" in inObj){
+                if (inObj["idfields"].indexOf(j) != -1){                                       
+                    var frmtr = new google.visualization.NumberFormat(formatHash["id"]);
+                    frmtr.format(data, j);
+                }
+            }
+        }
+        var em = document.getElementById(inObj["containerid"]);
+        var table = new google.visualization.Table(em);
+        var options = {showRowNumber: false, width: '100%',
+            page:'enable', pageSize:inObj["pagesize"], allowHtml:true,
+            cssClassNames:{
+                headerRow: 'googletableheader',
+                tableCell:'googletablecell'
+            }
+        };
+        table.draw(data, options);
+        google.visualization.events.addListener(table, 'select', function() {
+            var row = table.getSelection()[0].row;
+            handleRowSelection([data.getValue(row, 0), data.getValue(row, 1)]);
+        });
+    }
+    return getProgressIcon();
+
+}
+
+
+function handleRowSelection(row){
+
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
+    bcoId = parseInt(row[0]);
+    setViewPage();
+    return;
 }
 
