@@ -38,6 +38,17 @@ def reset_sequence_value(coll_obj, sequence_name):
     return
 
 
+def get_next_sequence_value(coll_obj, sequence_name):
+    seq_doc = coll_obj.find_and_modify(
+        query={'_id': sequence_name},
+        update={'$inc': {'sequence_value': 1}},
+        upsert=True,
+        new=True
+    )
+    return int(seq_doc["sequence_value"])
+
+
+
 
 
 def order_json_obj(json_obj, ordr_dict):

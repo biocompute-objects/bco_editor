@@ -26,13 +26,20 @@ __status__ = "Dev"
 #################################
 def main():
 
-
-    config_json = json.loads(open("conf/config.json", "r").read())
-    client = MongoClient('mongodb://localhost:27017')
-    mongo_db = client[config_json["dbinfo"]["mongodbname"]]
-    mongo_cl_bco = mongo_db[config_json["dbinfo"]["mongoclname_bco"]]
-    mongo_cl_counters = mongo_db[config_json["dbinfo"]["mongoclname_counters"]]
-    mongo_cl_users = mongo_db[config_json["dbinfo"]["mongoclname_users"]]
+    config_json = json.loads(open("./conf/config.json", "r").read())
+    log_dir = config_json["pathinfo"]["htmlpath"] + "/log/"
+        
+    client = MongoClient('mongodb://localhost:27017', 
+        username=config_json["dbinfo"]["mongodbuser"],
+        password=config_json["dbinfo"]["mongodbpassword"],
+        authSource=config_json["dbinfo"]["mongodbname"],
+        authMechanism='SCRAM-SHA-1'
+    )
+        
+    mongo_dbh = client[config_json["dbinfo"]["mongodbname"]]
+    mongo_cl_bco = mongo_dbh[config_json["dbinfo"]["mongocl_bco"]]
+    mongo_cl_counters = mongo_dbh[config_json["dbinfo"]["mongocl_counters"]]
+    mongo_cl_users = mongo_dbh[config_json["dbinfo"]["mongocl_users"]]
 
     query_obj = {}
     print "#status,fname,lname,email"

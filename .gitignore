@@ -1,3 +1,6 @@
 html/js/backup/*
 cgi-bin/*.pyc
 .DS_Store
+=======
+html/log/*
+cgi-bin/tmp/

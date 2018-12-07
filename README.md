@@ -5,6 +5,7 @@ The BioCompute Editor is a web application that can be used to create and edit B
 
 =======
 The BioCompute Editor is a web application that can be used to create and edit BioCompute objects based on BioCompute schema described in the BCO specification document.
+=======
 
 Software requirement
 ====================
