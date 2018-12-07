@@ -5,7 +5,7 @@ import cgi
 import commands
 from optparse import OptionParser
 import traceback
-from json_tricks import dump, dumps, load, loads, strip_comments
+#from json_tricks import dump, dumps, load, loads, strip_comments
 import json
 import re
 import time
@@ -170,7 +170,11 @@ def get_object_edit_json(in_json):
         ]
 
         mainschema_file = config_json["pathinfo"]["htmlpath"] + "/js/biocomputeobject.json"
-        out_json = loads(open(mainschema_file, "r").read(), preserve_order=True)
+        #out_json = loads(open(mainschema_file, "r").read(), preserve_order=True)
+        out_json = json.loads(open(mainschema_file, "r").read())
+        ordr_dict = json.loads(open("conf/field_order.json").read())
+        out_json = util.order_json_obj(out_json,ordr_dict)
+
 
         for domain in domain_list:
             ref_obj = {"$ref":config_json["rootinfo"]["htmlroot"] + "/js/" + domain + ".json"}

@@ -10,6 +10,13 @@ Software requirement
 * MongoDB Community or Enterprise version
 
 
+### MongoDB Installation
+Use git clone to clone the bco_editor repository
+
+```
+git clone https://github.com/biocompute-objects/bco_editor.git
+
+```
 
 ### Downloading
 Use git clone to clone the bco_editor repository
