@@ -91,7 +91,7 @@ function setHomePage(){
 
     
     $("#pagecn").append(getProgressIcon());
-    var url = cgiRoot + '/bcoeditor';
+    var url = cgiRoot + '/bco_editor';
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -136,7 +136,7 @@ function setHomePage(){
 function setEditPage(){
         
     $("#pagecn").html(getProgressIcon());
-    var url = cgiRoot + '/bcoeditor';
+    var url = cgiRoot + '/bco_editor';
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -186,7 +186,7 @@ function setEditPage(){
 function setViewPage(){
     
     $("#pagecn").html(getProgressIcon());
-    var url = cgiRoot + '/bcoeditor';
+    var url = cgiRoot + '/bco_editor';
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -278,7 +278,7 @@ function loginUser(){
     }
 
     //$("#pagecn").html(getProgressIcon());
-    var url = cgiRoot + '/bcoeditor';
+    var url = cgiRoot + '/bco_editor';
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -318,7 +318,7 @@ function registerUser(){
         inJson[f] = $("input[name="+paramList[i]+"]").val();
     }
 
-    var url = cgiRoot + '/bcoeditor';
+    var url = cgiRoot + '/bco_editor';
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -354,7 +354,7 @@ function saveObject(){
 
     var bcoJson = editorObj.getValue();
     $("#pagecn").append(getProgressIcon());
-    var url = cgiRoot + '/bcoeditor';
+    var url = cgiRoot + '/bco_editor';
     
     var inJson = {"svc":"save_object", "bco":bcoJson}
     var reqObj = new XMLHttpRequest();
