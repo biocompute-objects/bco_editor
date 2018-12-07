@@ -7,6 +7,7 @@ The BioCompute Editor is a web application that can be used to create and edit B
 The BioCompute Editor is a web application that can be used to create and edit BioCompute objects based on BioCompute schema described in the BCO specification document.
 =======
 
+<<<<<<< HEAD
 Software requirement
 ====================
 * Any linux operating system
@@ -110,4 +111,15 @@ BioCompute Partnership: http://biocomputeobject.org
 
 GitHub repository for BioCompute Objects:
 https://github.com/biocompute-objects/bco_editor
+=======
+BioCompute Partnership: http://biocomputeobject.org
+
+GitHub repository for BioCompute Objects:
+https://github.com/biocompute-objects/bco_editor
+
+
+The [BioCompute Editor user guide](/user_guide.md) provides instructions on how to deploy and set up the editor in a Linux server.
+
+
+>>>>>>> editing users_guide
 
