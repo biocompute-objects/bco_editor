@@ -84,19 +84,25 @@ def main():
         query_obj = {"email":options.email}
         res = mongo_cl_users.delete_one(query_obj)
     elif options.action == "upsert_user":
-        for key in ([options.fname,options.lname,options.email,options.password, options.status]):
+        for key in ([options.email]):
             if not (key):
                 parser.print_help()
                 sys.exit(0)
-        options.password = bcrypt.hashpw(options.password.encode('utf-8'), bcrypt.gensalt())
+        
         query_obj = {'email': options.email}
-        update_obj = {
-            "fname":options.fname,
-            "lname":options.lname,
-            "email":options.email,
-            "password":options.password,
-            "status":int(options.status)
-        }
+        update_obj = {}
+        if options.fname != None:
+            update_obj["fname"] = options.fname
+        if options.lname != None:
+            update_obj["lname"] = options.lname
+        if options.password != None:
+            update_obj["password"] = bcrypt.hashpw(options.password.encode('utf-8'), bcrypt.gensalt())
+        if options.status != None:
+            update_obj["status"] = int(options.status)
+        if len(update_obj.keys()) == 0:
+            print "Atleast one field must change"
+            sys.exit()
+
         res = mongo_cl_users.update_one(query_obj, {'$set': update_obj}, upsert=True)
     elif options.action == "reset_bcocounter":
         if mongo_cl_bco.find({}).count() == 0:
