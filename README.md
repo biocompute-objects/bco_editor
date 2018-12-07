@@ -3,10 +3,12 @@ BioCompute Editor
 
 The BioCompute Editor is a web application that can be used to create and edit BioCompute objects based on BioCompute schema described in the BCO specification document. This editor uses <a href="https://github.com/jdorn/json-editor">JSON Editor</a> developed by Jeremy Dorn.
 
+
 Software requirement
 ====================
 * Any linux operating system
 * MongoDB Community or Enterprise version
+
 
 ### MongoDB Installation Example
 If you do not have MongoDB installed on your server, here is an example of [MongoDB installation instruction steps](mongodb_installation.md) steps for CentOs server. 
@@ -105,6 +107,6 @@ BioCompute Partnership: http://biocomputeobject.org
 
 GitHub repository for BioCompute Objects:
 https://github.com/biocompute-objects/bco_editor
-=======
-=======
-The [BioCompute Editor user guide](/user_guide.md) provides instructions on how to deploy and set up the editor in a Linux server.
+
+
+
