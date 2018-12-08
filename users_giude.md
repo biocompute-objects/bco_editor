@@ -64,6 +64,7 @@ Or you can copy the folders physically.
   $ sudo cp -r /myrepositories/bco_editor/html /var/www/html/bco_editor
 ```
 
+You need also to make sure that apache has write access to /var/www/html/bco_editor/log/.
 
 Finally, you need to make sure the htmlRoot and cgiRoot javascript variables in bco_editor/html/index.html are assigned right values
 
