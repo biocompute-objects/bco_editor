@@ -237,47 +237,55 @@ def main():
     global mongo_cl_bco
     global mongo_cl_counters
     global log_dir
+    global client
 
-
+    
     try:
-
         config_json = json.loads(open("conf/config.json", "r").read())
         log_dir = config_json["pathinfo"]["htmlpath"] + "/log/"
-        client = MongoClient('mongodb://localhost:27017', 
+    except Exception, e:
+        out_json = {"taskstatus":0, "errormsg":"Loading config failed!"}
+
+    try:
+        client = MongoClient('mongodb://localhost:27017',
             username=config_json["dbinfo"]["mongodbuser"],
             password=config_json["dbinfo"]["mongodbpassword"],
             authSource=config_json["dbinfo"]["mongodbname"],
-            authMechanism='SCRAM-SHA-1'
+            authMechanism='SCRAM-SHA-1',
+            serverSelectionTimeoutMS=10000
         )
-        
+        client.server_info()
         mongo_dbh = client[config_json["dbinfo"]["mongodbname"]]
         mongo_cl_bco = mongo_dbh[config_json["dbinfo"]["collections"]["bco"]]
         mongo_cl_counters = mongo_dbh[config_json["dbinfo"]["collections"]["counters"]]
         mongo_cl_users = mongo_dbh[config_json["dbinfo"]["collections"]["users"]]
+    
+        try:
+            svc = in_json["svc"] if "svc" in in_json else ""
+            auth_json = auth.authenticate(log_dir)
+            if svc == "login_user":
+                out_json = {}
+                auth_json = auth.login(mongo_cl_users, in_json, config_json["dbinfo"]["sessionlife"],log_dir)
+            elif svc == "register_user":
+                out_json = register_user(mongo_cl_users, in_json)
+            elif svc == "search_objects":
+                out_json = search_objects(in_json)
+            elif svc == "get_object_view_json":
+                out_json = get_object_view_json(in_json)
+            elif svc == "get_object_edit_json":
+                out_json = get_object_edit_json(in_json)
+            elif svc == "save_object":
+                out_json = save_object(in_json["bco"])
+            else:
+                out_json = {"taskstatus":0, "errormsg":"Submitted service does not exist!"}
+            out_json["auth"] = auth_json
+        except Exception, e:
+            out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
 
-
-
-        svc = in_json["svc"] if "svc" in in_json else ""
-        auth_json = auth.authenticate(log_dir)
-        if svc == "login_user":
-            out_json = {}
-            auth_json = auth.login(mongo_cl_users, in_json, config_json["dbinfo"]["sessionlife"],log_dir)
-        elif svc == "register_user":
-            out_json = register_user(mongo_cl_users, in_json)
-        elif svc == "search_objects":
-            out_json = search_objects(in_json)
-        elif svc == "get_object_view_json":
-            out_json = get_object_view_json(in_json)
-        elif svc == "get_object_edit_json":
-            out_json = get_object_edit_json(in_json)
-        elif svc == "save_object":
-            out_json = save_object(in_json["bco"])
-        else:
-            out_json = {"taskstatus":0, "errormsg":"Submitted service does not exist!"}
-        out_json["auth"] = auth_json
-    except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
-
+    except pymongo.errors.ServerSelectionTimeoutError as err:
+        out_json = {"taskstatus":0, "errormsg":"Connection to mongodb failed!"}
+    except pymongo.errors.OperationFailure as err:
+        out_json = {"taskstatus":0, "errormsg":"MongoDB auth failed!"}
 
     print "Content-Type: application/json"
     print          
