@@ -11,8 +11,8 @@
         }
     }
     ,"rootinfo":{
-        "htmlroot":"http://localhost/bco_editor/"
-        ,"cgiroot":"http://localhost/cgi-bin/bco_editor/"
+        "htmlroot":"/bco_editor/"
+        ,"cgiroot":"/cgi-bin/bco_editor/"
     }
     ,"pathinfo":{
         "htmlpath":"/Users/robelkahsay/work-projects/bco_editor/html/"
