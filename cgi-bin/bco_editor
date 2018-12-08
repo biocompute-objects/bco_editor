@@ -32,8 +32,8 @@ def register_user(mongo_cl_users, user_obj):
             res = mongo_cl_users.insert_one(user_obj)
             out_json = {"taskstatus":1}
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
-        
+        out_json = util.log_error(traceback.format_exc(), log_dir)
+
     return out_json
 
 
@@ -64,7 +64,7 @@ def save_object(in_json):
             result = mongo_cl_bco.insert_one(in_json)
             out_json = {"bcoid":bco_id, "taskstatus":1}
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
+        out_json = util.log_error(traceback.format_exc(), log_dir)
 
     return out_json
 
@@ -105,7 +105,7 @@ def search_objects(in_json):
         out_json["searchresults"] = obj_list
         out_json["taskstatus"] = taskstatus
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
+        out_json = util.log_error(traceback.format_exc(), log_dir)
 
 
         
@@ -125,7 +125,7 @@ def get_object_view_json(in_json):
         ordr_dict = json.loads(open("conf/field_order.json").read())
         out_json = util.order_json_obj(out_json,ordr_dict)
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
+        out_json = util.log_error(traceback.format_exc(), log_dir)
 
     return out_json
 
@@ -177,15 +177,15 @@ def get_object_edit_json(in_json):
 
 
         for domain in domain_list:
-            ref_obj = {"$ref":config_json["rootinfo"]["htmlroot"] + "/js/" + domain + ".json"}
+            ref_obj = {"$ref":config_json["pathinfo"]["htmlroot"] + "/js/" + domain + ".json"}
             out_json["schema"]["properties"][domain] = ref_obj
 
         for subdomain in ["scm_extension"]:
-            ref_obj = {"$ref":config_json["rootinfo"]["htmlroot"] + "/js/" + subdomain + ".json"}
+            ref_obj = {"$ref":config_json["pathinfo"]["htmlroot"] + "/js/" + subdomain + ".json"}
             out_json["schema"]["properties"]["extension_domain"]["properties"][subdomain] = ref_obj
     
         for subdomain in ["fhir_extension"]:
-            ref_obj = {"$ref":config_json["rootinfo"]["htmlroot"] + "/js/" + subdomain + ".json"}
+            ref_obj = {"$ref":config_json["pathinfo"]["htmlroot"] + "/js/" + subdomain + ".json"}
             out_json["schema"]["properties"]["extension_domain"]["properties"][subdomain]["items"] = ref_obj                     
         out_json["startval"]= {
             "bco_id":bco_json["bco_id"],
@@ -200,7 +200,7 @@ def get_object_edit_json(in_json):
         out_json["readonly"] = 0
         out_json["taskstatus"] = 1
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
+        out_json = util.log_error(traceback.format_exc(), log_dir)
 
 
 
@@ -280,7 +280,7 @@ def main():
                 out_json = {"taskstatus":0, "errormsg":"Submitted service does not exist!"}
             out_json["auth"] = auth_json
         except Exception, e:
-            out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
+            out_json = util.log_error(traceback.format_exc(), log_dir)
 
     except pymongo.errors.ServerSelectionTimeoutError as err:
         out_json = {"taskstatus":0, "errormsg":"Connection to mongodb failed!"}
