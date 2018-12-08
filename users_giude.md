@@ -12,7 +12,7 @@ Software requirement
 
 
 ### MongoDB Installation Example
-If you do not have MongoDB installed on your server, here is an [example installation](mongodb_installation.md) steps for CentOs server. 
+If you do not have MongoDB installed on your server, here is an example of [MongoDB installation instruction steps](mongodb_installation.md) steps for CentOs server. 
 
 
 ### Downloading BioCompute Editor
@@ -24,7 +24,7 @@ git clone https://github.com/biocompute-objects/bco_editor.git
 ```
 
 ### BioCompute Editor Setup
-Assuming you have followed [MongoDB installation instructions](mongodb_installation.md), edit the bco_editor/cgi-bin/conf/config.json file to change some values that are specific to your server. In the example given below, there is a mongodb named "bcodb_1_tst", a mongodb user "bcodbadmin" (with password "pass123!") who has a "readWrite" role in "bcodb_1_tst".
+Assuming you have followed [MongoDB installation instructions steps](mongodb_installation.md), edit the config.json file under cgi-bin/conf/ subdirectory to customize it to your server. In the example given below, the name of the mongodb database is "bcodb_1_tst", and requires an authenticated mongodb user who has a "readWrite" role to write to it. In the example config file given below, the mongodb username and password are "bcodbadmin" and "pass123!" respectively.
 
 
 ```
@@ -32,12 +32,14 @@ Assuming you have followed [MongoDB installation instructions](mongodb_installat
         "mongodbname":"bcodb_1_tst"
         ,"mongodbuser":"bcodbadmin"
         ,"mongodbpassword":"pass123!"
-        ,"mongocl_bco":"c_bco"
-        ,"mongocl_counters":"c_counters"
-        ,"mongocl_users":"c_users"
         ,"sessionlife":3600
-    }
-    ,"rootinfo":{
+        ,"collections":{
+            "bco":"c_bco"
+            ,"counters":"c_counters"
+            ,"users":"c_users"
+        }
+   }    
+  ,"rootinfo":{
         "htmlroot":"http://example.com/bco_editor/"
         ,"cgiroot":"http://exacmple.com/cgi-bin/bco_editor/"
     }
@@ -71,6 +73,34 @@ Finally, you need to make sure the htmlRoot and cgiRoot javascript variables in 
     var cgiRoot = '/cgi-bin/bco_editor/';
   </script>
 ```
+
+### Admin Utility
+The script admin_util under cgi-bin/ subdirectory is used to manage the BioCompute Editor portal. Given below are commands (issued from the cgi-bin subdirectory) that can be used to perform various tasks.
+ 
+```
+Listing registered users 
+  $ python admin_util -a list_users
+
+Registration is public but users cannot login before they are activated using this admin_util tool (read below on how to activate pending registerations).
+
+Adding new user
+  $ python admin_util -a upsert_user -e jim.jones@gmail.com -f James -l Jones -p pass123 -s 1
+
+Activating or updating user
+ $ python admin_util -a upsert_user -e jim.jones@gmail.com -s 1
+
+Removing user
+  $ python admin_util -a delete_user -e jim.jones@gmail.com
+
+Listing BioCompute objects
+  $ python admin_util -a list_bco
+
+Deleting BioCompute object
+  $ python admin_util -a delete_bco -o 2
+
+```
+
+
 
 
 
