@@ -10,13 +10,9 @@
             ,"users":"c_users"
         }
     }
-    ,"rootinfo":{
-        "htmlroot":"/bco_editor/"
-        ,"cgiroot":"/cgi-bin/bco_editor/"
-    }
     ,"pathinfo":{
+        "htmlroot":"/bco_editor/",
         "htmlpath":"/Users/robelkahsay/work-projects/bco_editor/html/"
-        ,"cgipath":"/Users/robelkahsay/work-projects/bco_editor/cgi-bin/"
     }
     ,"tableheaders":{
         "searchresults":{
