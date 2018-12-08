@@ -74,6 +74,34 @@ Finally, you need to make sure the htmlRoot and cgiRoot javascript variables in 
   </script>
 ```
 
+### Admin Utility
+The script admin_util under cgi-bin/ subdirectory is used to manage the BioCompute Editor portal. Given below are commands (issued from the cgi-bin subdirectory) that can be used to perform various tasks.
+ 
+```
+Listing registered users 
+  $ python admin_util -a list_users
+
+Registration is public but users cannot login before they are activated using this admin_util tool (read below on how to activate pending registerations).
+
+Adding new user
+  $ python admin_util -a upsert_user -e jim.jones@gmail.com -f James -l Jones -p pass123 -s 1
+
+Activating or updating user
+ $ python admin_util -a upsert_user -e jim.jones@gmail.com -s 1
+
+Removing user
+  $ python admin_util -a delete_user -e jim.jones@gmail.com
+
+Listing BioCompute objects
+  $ python admin_util -a list_bco
+
+Deleting BioCompute object
+  $ python admin_util -a delete_bco -o 2
+
+```
+
+
+
 
 
 
