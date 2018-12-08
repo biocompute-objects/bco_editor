@@ -26,8 +26,8 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.0.asc
 5) Create the user administrator
         > use admin
         > db.createUser({ 
-                user: "mongodbadmin", 
-                pwd: "pass123", 
+                user: "superadmin", 
+                pwd: "superpass", 
                 roles: ["userAdminAnyDatabase", "dbAdminAnyDatabase","readWriteAnyDatabase"]
         })
         
@@ -49,9 +49,9 @@ Then disconnect from the mongo shell (Ctrl+D).
 
         $ mongo 
         > use admin
-        > db.auth("mongodbadmin", "pass123")
+        > db.auth("superadmin", "superpass")
         1
         > use bcodb_1_tst
-        > db.createUser({user: "bcodbadmin", pwd: "pass123!", roles: [ { role: "readWrite", db: "bcodb_1_tst" } ]})
+        > db.createUser({user: "bcodbadmin", pwd: "bcodbpass", roles: [ { role: "readWrite", db: "bcodb_1_tst" } ]})
         
 ```
