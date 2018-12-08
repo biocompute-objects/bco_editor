@@ -31,21 +31,17 @@ Assuming you have followed [MongoDB installation instructions steps](mongodb_ins
   "dbinfo":{
         "mongodbname":"bcodb_1_tst"
         ,"mongodbuser":"bcodbadmin"
-        ,"mongodbpassword":"pass123!"
+        ,"mongodbpassword":"bcodbpass"
         ,"sessionlife":3600
         ,"collections":{
             "bco":"c_bco"
             ,"counters":"c_counters"
             ,"users":"c_users"
         }
-   }    
-  ,"rootinfo":{
-        "htmlroot":"http://example.com/bco_editor/"
-        ,"cgiroot":"http://exacmple.com/cgi-bin/bco_editor/"
-    }
+    }    
     ,"pathinfo":{
-        "htmlpath":"/myrepositories/bco_editor/html/"
-        ,"cgipath":"/myrepositories/bco_editor/cgi-bin/"
+        "htmlroot":"http://example.com/bco_editor/"
+        ,"htmlpath":"/myrepositories/bco_editor/html/"
     }
 
 ```
