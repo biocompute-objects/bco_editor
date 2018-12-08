@@ -4,7 +4,7 @@ import string
 import cgi
 import commands
 
-from optparse import OptionParser
+from optparse import OptionParser, OptionGroup
 import json
 import time
 import datetime
@@ -31,13 +31,20 @@ def main():
     parser = OptionParser(usage,version="%prog " + __version__)
     msg = "list_users|upsert_user|delete_user|reset_bcocounter|delete_bco|list_bco"
     parser.add_option("-a","--action",action="store",dest="action",help=msg)
-    msg =""
-    parser.add_option("-f","--fname",action="store",dest="fname",help=msg)
-    parser.add_option("-l","--lname",action="store",dest="lname",help=msg)
-    parser.add_option("-e","--email",action="store",dest="email",help=msg)
-    parser.add_option("-p","--password",action="store",dest="password",help=msg)
-    parser.add_option("-s","--status",action="store",dest="status",help=msg)
-    parser.add_option("-o","--bcoid",action="store",dest="bcoid",help="Id object")
+
+    group_1 = OptionGroup(parser, "Additional options for upsert_user and delete_user actions")
+    group_1.add_option("-e","--email",action="store",dest="email",help="")
+    group_1.add_option("-f","--fname",action="store",dest="fname",help="")
+    group_1.add_option("-l","--lname",action="store",dest="lname",help="")
+    group_1.add_option("-p","--password",action="store",dest="password",help="")
+    group_1.add_option("-s","--status",action="store",dest="status",help="")
+    parser.add_option_group(group_1)
+
+
+    group_2 = OptionGroup(parser, "Additional options for delete_bco action")
+    group_2.add_option("-o","--bcoid",action="store",dest="bcoid",help="")
+    parser.add_option_group(group_2)
+
 
     (options,args) = parser.parse_args()
     for key in ([options.action]):
@@ -90,9 +97,8 @@ def main():
             if not (key):
                 parser.print_help()
                 sys.exit(0)
-        
         query_obj = {'email': options.email}
-        update_obj = {}
+        update_obj = {"fname":"", "lname":"", "password":"", "status":0}
         if options.fname != None:
             update_obj["fname"] = options.fname
         if options.lname != None:
@@ -104,14 +110,12 @@ def main():
         if len(update_obj.keys()) == 0:
             print "Atleast one field must change"
             sys.exit()
-
         res = mongo_cl_users.update_one(query_obj, {'$set': update_obj}, upsert=True)
     elif options.action == "reset_bcocounter":
         if mongo_cl_bco.find({}).count() == 0:
             util.reset_sequence_value(mongo_cl_counters, "bcoid")
         else:
             print "collection c_bco is not empty"
-
     elif options.action == "delete_bco":
         if not (options.bcoid):
             parser.print_help()
