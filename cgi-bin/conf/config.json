@@ -3,10 +3,12 @@
         "mongodbname":"bcodb_1_tst"
         ,"mongodbuser":"bcodbadmin"
         ,"mongodbpassword":"pass123!"
-        ,"mongocl_bco":"c_bco"
-        ,"mongocl_counters":"c_counters"
-        ,"mongocl_users":"c_users"
         ,"sessionlife":3600
+        ,"collections":{
+            "bco":"c_bco"
+            ,"counters":"c_counters"
+            ,"users":"c_users"
+        }
     }
     ,"rootinfo":{
         "htmlroot":"http://localhost/bco_editor/"
