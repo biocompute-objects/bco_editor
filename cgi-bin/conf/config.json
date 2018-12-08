@@ -2,7 +2,7 @@
     "dbinfo":{
         "mongodbname":"bcodb_1_tst"
         ,"mongodbuser":"bcodbadmin"
-        ,"mongodbpassword":"pass123!"
+        ,"mongodbpassword":"bcodbpass"
         ,"sessionlife":3600
         ,"collections":{
             "bco":"c_bco"
