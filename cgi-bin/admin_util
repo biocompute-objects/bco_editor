@@ -57,9 +57,11 @@ def main():
     )
         
     mongo_dbh = client[config_json["dbinfo"]["mongodbname"]]
-    mongo_cl_bco = mongo_dbh[config_json["dbinfo"]["mongocl_bco"]]
-    mongo_cl_counters = mongo_dbh[config_json["dbinfo"]["mongocl_counters"]]
-    mongo_cl_users = mongo_dbh[config_json["dbinfo"]["mongocl_users"]]
+    mongo_cl_bco = mongo_dbh[config_json["dbinfo"]["collections"]["bco"]]
+    mongo_cl_counters = mongo_dbh[config_json["dbinfo"]["collections"]["counters"]]
+    mongo_cl_users = mongo_dbh[config_json["dbinfo"]["collections"]["users"]]
+
+
 
 
 
