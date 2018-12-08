@@ -24,7 +24,7 @@ git clone https://github.com/biocompute-objects/bco_editor.git
 ```
 
 ### BioCompute Editor Setup
-Assuming you have followed [MongoDB installation instructions steps](mongodb_installation.md), edit the bco_editor/cgi-bin/conf/config.json file to change some values that are specific to your server. In the example given below, there is a mongodb named "bcodb_1_tst", a mongodb user "bcodbadmin" (with password "pass123!") who has a "readWrite" role in "bcodb_1_tst".
+Assuming you have followed [MongoDB installation instructions steps](mongodb_installation.md), edit the config.json file under cgi-bin/conf/ subdirectory to customize it to your server. In the example given below, the name of the mongodb database is "bcodb_1_tst", and requires an authenticated mongodb user who has a "readWrite" role to write to it. In the example config file given below, the mongodb username and password are "bcodbadmin" and "pass123!" respectively.
 
 
 ```
