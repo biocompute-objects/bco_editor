@@ -98,7 +98,7 @@ def main():
                 parser.print_help()
                 sys.exit(0)
         query_obj = {'email': options.email}
-        update_obj = {"fname":"", "lname":"", "password":"", "status":0}
+        update_obj = {}
         if options.fname != None:
             update_obj["fname"] = options.fname
         if options.lname != None:
