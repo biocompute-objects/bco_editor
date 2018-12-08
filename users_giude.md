@@ -12,7 +12,7 @@ Software requirement
 
 
 ### MongoDB Installation Example
-If you do not have MongoDB installed on your server, here is an [example installation](mongodb_installation.md) steps for CentOs server. 
+If you do not have MongoDB installed on your server, here is an example of [MongoDB installation instruction steps](mongodb_installation.md) steps for CentOs server. 
 
 
 ### Downloading BioCompute Editor
@@ -24,7 +24,7 @@ git clone https://github.com/biocompute-objects/bco_editor.git
 ```
 
 ### BioCompute Editor Setup
-Assuming you have followed [MongoDB installation instructions](mongodb_installation.md), edit the bco_editor/cgi-bin/conf/config.json file to change some values that are specific to your server. In the example given below, there is a mongodb named "bcodb_1_tst", a mongodb user "bcodbadmin" (with password "pass123!") who has a "readWrite" role in "bcodb_1_tst".
+Assuming you have followed [MongoDB installation instructions steps](mongodb_installation.md), edit the bco_editor/cgi-bin/conf/config.json file to change some values that are specific to your server. In the example given below, there is a mongodb named "bcodb_1_tst", a mongodb user "bcodbadmin" (with password "pass123!") who has a "readWrite" role in "bcodb_1_tst".
 
 
 ```
@@ -32,12 +32,14 @@ Assuming you have followed [MongoDB installation instructions](mongodb_installat
         "mongodbname":"bcodb_1_tst"
         ,"mongodbuser":"bcodbadmin"
         ,"mongodbpassword":"pass123!"
-        ,"mongocl_bco":"c_bco"
-        ,"mongocl_counters":"c_counters"
-        ,"mongocl_users":"c_users"
         ,"sessionlife":3600
-    }
-    ,"rootinfo":{
+        ,"collections":{
+            "bco":"c_bco"
+            ,"counters":"c_counters"
+            ,"users":"c_users"
+        }
+   }    
+  ,"rootinfo":{
         "htmlroot":"http://example.com/bco_editor/"
         ,"cgiroot":"http://exacmple.com/cgi-bin/bco_editor/"
     }
