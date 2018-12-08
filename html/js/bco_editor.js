@@ -99,27 +99,28 @@ function setHomePage(){
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
                 resJson = JSON.parse(reqObj.responseText);
+                if(resJson["taskstatus"] == 0){
+                    var msg = resJson["errormsg"] + '. Please ';
+                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.';
+                    $("#pagecn").html(getMessagePanel(msg));
+                    return;
+                }
                 if (resJson["auth"]["status"] != 1){
                     logoutUser();
                     return;
                 }
                 $("#loginmsg").html('Signed as ' + resJson["auth"]["email"]);
-                if(resJson["taskstatus"] == 0){
-                    $("#searchresultscn").html(getMessagePanel(resJson["errormsg"]));
+                var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
+                s += 'margin-bottom:20px;';
+                var cn = '<div style="'+s+'"><a id=create class="createlink">Create Object</a></div>';
+                cn += '<div id=searchresultscn></div>';
+                $("#pagecn").html(cn);
+                if (resJson["searchresults"].length > 2){
+                    var argObj = {"containerid":"searchresultscn", "pagesize":50, "onselect":""};
+                    rndrGoogleTable(resJson["searchresults"], argObj);
                 }
                 else{
-                    var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
-                    s += 'margin-bottom:20px;';
-                    var cn = '<div style="'+s+'"><a id=create class="createlink">Create Object</a></div>';
-                    cn += '<div id=searchresultscn></div>';
-                    $("#pagecn").html(cn);
-                    if (resJson["searchresults"].length > 2){
-                        var argObj = {"containerid":"searchresultscn", "pagesize":50, "onselect":""};
-                        rndrGoogleTable(resJson["searchresults"], argObj);
-                    }
-                    else{
-                        $("#searchresultscn").html(getMessagePanel("No objects found for your search!"));
-                    }
+                    $("#searchresultscn").html(getMessagePanel("No objects found for your search!"));
                 }
             }
             catch(e) {
@@ -147,7 +148,10 @@ function setEditPage(){
             try {
                 var resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
-                    $("#pagecn").html(getMessagePanel(resJson["errormsg"]));
+                    var msg = resJson["errormsg"] + '. Please ';
+                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.';
+                    $("#pagecn").html(getMessagePanel(msg));
+                    return;
                 }
                 else{
                     readOnly = (resJson["readOnly"] == 1 ? 1 : 0);
@@ -287,6 +291,12 @@ function loginUser(){
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
                 resJson = JSON.parse(reqObj.responseText);
+                if(resJson["taskstatus"] == 0){
+                    var msg = resJson["errormsg"] + '. Please ';
+                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.';
+                    $("#pagecn").html(getMessagePanel(msg));
+                    return;
+                }
                 if (resJson["auth"]["status"] == 1){
                     $("#loginmsg").html(resJson["auth"]["msg"]);
                     setCookie("sessionid", resJson["auth"]["sessionid"], 7);
@@ -329,8 +339,9 @@ function registerUser(){
                 resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
                     var msg = resJson["errormsg"] + '. Please ';
-                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.'
+                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.';
                     $("#pagecn").html(getMessagePanel(msg));
+                    return;
                 }
                 else{
                     var msg = 'You have registered successfully! Please contact admin for activation, or ';
@@ -364,10 +375,12 @@ function saveObject(){
     reqObj.onreadystatechange = function() {
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
-                console.log('response='+reqObj.responseText);
                 resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
-                    $("#pagecn").html(getMessagePanel(resJson["errormsg"]));
+                    var msg = resJson["errormsg"] + '. Please ';
+                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.';
+                    $("#pagecn").html(getMessagePanel(msg));
+                    return;
                 }
                 else{
                     bcoId = resJson["bcoid"];
