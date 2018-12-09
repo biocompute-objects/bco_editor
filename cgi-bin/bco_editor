@@ -42,15 +42,16 @@ def save_object(in_json):
     email = "xx"
     out_json = {}
     try:
-        bco_id = int(in_json["bco_id"])
-        if bco_id != -1:
+        bco_id = in_json["bco_id"]
+        if bco_id != "-1":
             in_json.pop("bco_id")
             in_json["provenance_domain"]["modified"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
             result = mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': in_json}, upsert=False)
             out_json = {"taskstatus": 1, "bcoid":bco_id}
         else:
             bco_id = util.get_next_sequence_value(mongo_cl_counters, "bcoid")
-            in_json["bco_id"] = bco_id
+            bco_url = config_json["pathinfo"]["bcoprefix"] % (str(bco_id))
+            in_json["bco_id"] = bco_url
             in_json["provenance_domain"]["created"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
             in_json["provenance_domain"]["contributors"] = [
                 {
@@ -62,7 +63,7 @@ def save_object(in_json):
                 }
             ]
             result = mongo_cl_bco.insert_one(in_json)
-            out_json = {"bcoid":bco_id, "taskstatus":1}
+            out_json = {"bcoid":bco_url, "taskstatus":1}
     except Exception, e:
         out_json = util.log_error(traceback.format_exc(), log_dir)
 
@@ -136,7 +137,7 @@ def get_object_edit_json(in_json):
 
     try:
         bco_json = {}
-        if in_json["bcoid"] != -1:
+        if in_json["bcoid"] != "-1":
             bco_json = mongo_cl_bco.find_one({"bco_id":in_json["bcoid"]})
             if bco_json == None:
                 out_json = {"taskstatus":0, "errormsg":"Object does not exist!"}
@@ -145,9 +146,9 @@ def get_object_edit_json(in_json):
                     bco_json.pop("_id")
         else:
             bco_json = {
-                "bco_id":-1,
+                "bco_id":"-1",
                 "bco_spec_version":"",
-                "digital_signature":"",
+                "checksum":"",
                 "created":"",
                 "modified":"",
                 "provenance_domain":{},
@@ -155,9 +156,9 @@ def get_object_edit_json(in_json):
                 "error_domain":{}
             }
             
-        created_by = "xxx"
-        if in_json["bcoid"] != -1:
-            created_by = bco_json["provenance_domain"]["contributors"][0]["email"]
+        #created_by = "xxx"
+        #if in_json["bcoid"] != "-1":
+        #    created_by = bco_json["provenance_domain"]["contributors"][0]["email"]
         
         domain_list  = [
             "provenance_domain", 
@@ -169,9 +170,9 @@ def get_object_edit_json(in_json):
             "error_domain"
         ]
 
+        out_json = {"schema":{}}
         mainschema_file = config_json["pathinfo"]["htmlpath"] + "/js/biocomputeobject.json"
-        #out_json = loads(open(mainschema_file, "r").read(), preserve_order=True)
-        out_json = json.loads(open(mainschema_file, "r").read())
+        out_json["schema"] = json.loads(open(mainschema_file, "r").read())
         ordr_dict = json.loads(open("conf/field_order.json").read())
         out_json = util.order_json_obj(out_json,ordr_dict)
 
@@ -183,14 +184,15 @@ def get_object_edit_json(in_json):
         for subdomain in ["scm_extension"]:
             ref_obj = {"$ref":config_json["pathinfo"]["htmlroot"] + "/js/" + subdomain + ".json"}
             out_json["schema"]["properties"]["extension_domain"]["properties"][subdomain] = ref_obj
-    
+
         for subdomain in ["fhir_extension"]:
             ref_obj = {"$ref":config_json["pathinfo"]["htmlroot"] + "/js/" + subdomain + ".json"}
-            out_json["schema"]["properties"]["extension_domain"]["properties"][subdomain]["items"] = ref_obj                     
+            out_json["schema"]["properties"]["extension_domain"]["properties"][subdomain]["items"] = ref_obj
+
         out_json["startval"]= {
             "bco_id":bco_json["bco_id"],
             "bco_spec_version":bco_json["bco_spec_version"],
-            "digital_signature": bco_json["digital_signature"],
+            "checksum": bco_json["checksum"],
         }
         for domain in domain_list:
             out_json["startval"][domain] = bco_json[domain] if domain in bco_json else {}
