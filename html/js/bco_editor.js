@@ -16,21 +16,40 @@ var bcoId = "";
 $(document ).ready(function() {
 
 
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
+    handleBackBtn();
+
+
     $("#loginformcn").css("display", "none");
     $("#pagelinkcn").css("display", "block");
     $("#pagelinkcn").append('<div id=logout class=pagelink>Logout</div>');
     $("#pagelinkcn").append('<div class=divider>|</div>');
     $("#pagelinkcn").append('<div id=loginmsg class=loginmsg></div>');
+    $("#pagelinkcn").append('<div class=divider>|</div>');
+    $("#pagelinkcn").append('<div id=tutorial class=pagelink>Tutorial</div>');
+    $("#pagelinkcn").append('<div class=divider>|</div>');
+    $("#pagelinkcn").append('<div id=home class=pagelink>Home</div>');
+
+
     $("#searchboxcn").html(getSearchForm());
     $("#pagecn").html(setHomePage());
+
+
 
 });
 
 
 
+
+
 $(document).on('click', '.pagelink, .createlink, .editlink, .viewlink', function (event) {
     event.preventDefault();
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
+
     pageId = this.id.split("|")[0];
+
 
     if(pageId == 'home'){
         setHomePage();
@@ -46,41 +65,62 @@ $(document).on('click', '.pagelink, .createlink, .editlink, .viewlink', function
         bcoId = "-1";
         setEditPage();
     }
+    else if(pageId == 'tutorial'){
+        fillStaticHtmlCn("tutorial.html", "#pagecn")
+    }
+
 });
 
-$(document).on('click', '#savebco', function (event) {
+$(document).on('click', '.savebco', function (event) {
     event.preventDefault();
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
     saveObject();
 });
 
 $(document).on('click', '#logout', function (event) {
     event.preventDefault();
     setCookie("sessionid","",-1);
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
     logoutUser();
 });
 
 $(document).on('click', '#searchbtn', function (event) {
     event.preventDefault();
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
     $("#pagecn").html(setHomePage());
 });
 
 $(document).on('click', '#login', function (event) {
     event.preventDefault();
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
     loginUser();
 });
 
 
 $(document).on('click', '#register', function (event) {
     event.preventDefault();
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
     registerUser();
 });
 
 
 function logoutUser(){
-    $("#loginformcn").css("display", "block");
-    $("#pagelinkcn").css("display", "none");
+    $("#pagelinkcn").html("");
+    $("#pagelinkcn").append('<div id=tutorial class=pagelink>Tutorial</div>');
+    $("#pagelinkcn").append('<div class=divider>|</div>');
+    $("#pagelinkcn").append('<div id=home class=pagelink>Home</div>');
+        
+    
     $("#searchboxcn").css("display", "none");
-    fillStaticHtmlCn("home.html", "#pagecn")
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
+    fillStaticHtmlCn("home.html", "#pagecn");
+
 }
 
 
@@ -170,6 +210,10 @@ function setEditPage(){
                         var cn = '<div style="'+s+'">'+links+'</div>';
                         var style = 'background:#fff;margin-top:20px;font-size:13px;';
                         cn += '<div id="editor_div" style="'+style+'"></div>';
+                        var style = 'background:#f1f1f1;margin:0px 0px 100px 20px;padding:10px;';
+                        style += 'text-align:right;width:90%;';
+                        var saveBtn = '<input class=savebco type=submit value="Save Changes">';
+                        cn += '<div style="'+style+'">'+saveBtn+'</div>';
                         $("#pagecn").html(cn);
                         var schemaObj = JSON.parse(reqObj.responseText);
                         schemaObj["ajax"] = true;
@@ -477,3 +521,22 @@ function handleRowSelection(row){
     return;
 }
 
+
+function handleBackBtn(){
+
+    if (window.history && window.history.pushState) {
+        $(window).on('popstate', function() {
+            var hashLocation = location.hash;
+            var hashSplit = hashLocation.split("#!/");
+            var hashName = hashSplit[1];
+            if (hashName !== '') {
+                var hash = window.location.hash;
+                if (hash === '') {
+                    setHomePage();
+                    //alert('Back button was pressed.');
+                }
+            }
+        });
+        window.history.pushState('forward', null, './#forward');
+    }
+}
