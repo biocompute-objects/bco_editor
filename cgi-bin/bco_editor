@@ -194,9 +194,9 @@ def get_object_edit_json(in_json):
             "bco_spec_version":bco_json["bco_spec_version"],
             "checksum": bco_json["checksum"],
         }
-        for domain in domain_list:
+        for domain in domain_list + ["extension_domain"]:
             out_json["startval"][domain] = bco_json[domain] if domain in bco_json else {}
-
+        
         ordr_dict = json.loads(open("conf/field_order.json").read())
         out_json["startval"] = util.order_json_obj(out_json["startval"],ordr_dict) 
         out_json["readonly"] = 0

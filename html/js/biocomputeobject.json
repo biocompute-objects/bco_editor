@@ -144,16 +144,24 @@
             "$ref": "usability_domain.json"
         },
         "extension_domain": {
-            "additionalProperties": true,
+            "type": "object",
+            "title": "Extension Domain",
+            "description": "",
+            "required": [
+                "fhir_extension",
+                "scm_extension"
+            ],
             "properties": {
                 "fhir_extension": {
-                    "type": "array",
+                    "type":"array",
+                    "title":"fhir_extension",
+                    "description": "",
                     "items": {
-                        "$ref": "extension_domain/fhir_extension.json"
+                        "$ref":""
                     }
-                },
-                "scm_extension": {
-                    "$ref": "extension_domain/scm_extension.json"
+                }
+                ,"scm_extension":{
+                    "$ref":""
                 }
             }
         },
