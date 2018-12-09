@@ -30,13 +30,13 @@ $(document ).ready(function() {
 
 $(document).on('click', '.pagelink, .createlink, .editlink, .viewlink', function (event) {
     event.preventDefault();
-    pageId = this.id.split("_")[0];
+    pageId = this.id.split("|")[0];
 
     if(pageId == 'home'){
         setHomePage();
     }
     else if(pageId == 'view'){
-        bcoId = parseInt(this.id.split("_")[1]);
+        bcoId = this.id.split("|")[1];
         setViewPage();
     }
     else if(pageId == 'edit'){
@@ -166,7 +166,7 @@ function setEditPage(){
                     else{
                         var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                         s += 'margin-bottom:20px;';
-                        var links = '<a id=view_'+bcoId+' class="viewlink">View Object</a>';
+                        var links = '<a id=view|'+bcoId+' class="viewlink">View Object</a>';
                         var cn = '<div style="'+s+'">'+links+'</div>';
                         var style = 'background:#fff;margin-top:20px;font-size:13px;';
                         cn += '<div id="editor_div" style="'+style+'"></div>';
@@ -192,7 +192,8 @@ function setEditPage(){
 
 
 function setViewPage(){
-    
+   
+
     $("#pagecn").html(getProgressIcon());
     var url = cgiRoot + '/bco_editor';
     var reqObj = new XMLHttpRequest();
