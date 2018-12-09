@@ -12,7 +12,8 @@
     }
     ,"pathinfo":{
         "htmlroot":"/bco_editor/",
-        "htmlpath":"/Users/robelkahsay/work-projects/bco_editor/html/"
+        "htmlpath":"/Users/robelkahsay/work-projects/bco_editor/html/",
+        "bcoprefix":"https://w3id.org/biocompute/examples/bco_%s.json"
     }
     ,"tableheaders":{
         "searchresults":{

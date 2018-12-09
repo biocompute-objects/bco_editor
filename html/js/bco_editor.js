@@ -15,6 +15,7 @@ var bcoId = "";
 ////////////////////////////////
 $(document ).ready(function() {
 
+
     $("#loginformcn").css("display", "none");
     $("#pagelinkcn").css("display", "block");
     $("#pagelinkcn").append('<div id=logout class=pagelink>Logout</div>');
@@ -22,7 +23,9 @@ $(document ).ready(function() {
     $("#pagelinkcn").append('<div id=loginmsg class=loginmsg></div>');
     $("#searchboxcn").html(getSearchForm());
     $("#pagecn").html(setHomePage());
+
 });
+
 
 
 $(document).on('click', '.pagelink, .createlink, .editlink, .viewlink', function (event) {
@@ -40,7 +43,7 @@ $(document).on('click', '.pagelink, .createlink, .editlink, .viewlink', function
         setEditPage();
     }
     else if(pageId == 'create'){
-        bcoId = -1;
+        bcoId = "-1";
         setEditPage();
     }
 });
@@ -368,13 +371,19 @@ function saveObject(){
     $("#pagecn").append(getProgressIcon());
     var url = cgiRoot + '/bco_editor';
     
+
     var inJson = {"svc":"save_object", "bco":bcoJson}
+    var form = document.getElementById('bco_form');
+    var formData = new FormData(form);
+    formData.append("injson", JSON.stringify(inJson));
+
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
-    reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    //reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     reqObj.onreadystatechange = function() {
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
+                console.log(reqObj.responseText);
                 resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
                     var msg = resJson["errormsg"] + '. Please ';
@@ -393,9 +402,8 @@ function saveObject(){
             }
         }
     };
-    var postData = 'injson=' + JSON.stringify(inJson);
-    reqObj.send(postData);
-    console.log('request='+postData);
+    reqObj.send(formData);
+    //console.log('request='+postData);
     return;
 }
 
@@ -463,7 +471,7 @@ function handleRowSelection(row){
 
     $('html').animate({scrollTop:0}, 'fast');
     $('body').animate({scrollTop:0}, 'fast');
-    bcoId = parseInt(row[0]);
+    bcoId = row[0];
     setViewPage();
     return;
 }

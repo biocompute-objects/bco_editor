@@ -120,7 +120,7 @@ def main():
         if not (options.bcoid):
             parser.print_help()
             sys.exit(0)
-        query_obj = {"bco_id":int(options.bcoid)}
+        query_obj = {"bco_id":options.bcoid}
         res = mongo_cl_bco.delete_one(query_obj)
 
 
