@@ -537,6 +537,6 @@ function handleBackBtn(){
                 }
             }
         });
-        window.history.pushState('forward', null, './#forward');
+        //window.history.pushState('forward', null, './#forward');
     }
 }
