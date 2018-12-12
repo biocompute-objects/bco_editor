@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "bco_editor", line 277, in main
+    out_json["editflag"] = logged_email in creator_list
+NameError: global name 'creator_list' is not defined

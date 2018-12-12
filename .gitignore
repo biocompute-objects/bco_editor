@@ -1,5 +1,8 @@
 html/js/backup/*
+<<<<<<< HEAD
 cgi-bin/*.pyc
+=======
+>>>>>>> sychronized schemas
 .DS_Store
 html/log/*
 cgi-bin/tmp/

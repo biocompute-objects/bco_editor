@@ -37,17 +37,27 @@ def register_user(mongo_cl_users, user_obj):
     return out_json
 
 
-def save_object(in_json):
+def save_object(in_json, logged_email):
 
-    email = "xx"
     out_json = {}
     try:
         bco_id = in_json["bco_id"]
         if bco_id != "-1":
-            in_json.pop("bco_id")
-            in_json["provenance_domain"]["modified"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
-            result = mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': in_json}, upsert=False)
-            out_json = {"taskstatus": 1, "bcoid":bco_id}
+            doc = mongo_cl_bco.find_one({"bco_id":bco_id})
+            if doc == None:
+                return {"taskstatus":0, "errormsg":"Object does not exist!"}
+            else:
+                creator_list = []
+                for o in doc["provenance_domain"]["contributors"]:
+                    if "createdBy" in o["contribution"]:
+                        creator_list.append(o["email"])
+                if logged_email not in creator_list:
+                    return {"taskstatus":0, "errormsg":"You do not have privilege to change this object!"}
+                else:
+                    in_json.pop("bco_id")
+                    in_json["provenance_domain"]["modified"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
+                    result = mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': in_json}, upsert=False)
+                    return {"taskstatus": 1, "bcoid":bco_id}
         else:
             bco_id = util.get_next_sequence_value(mongo_cl_counters, "bcoid")
             bco_url = config_json["pathinfo"]["bcoprefix"] % (str(bco_id))
@@ -57,7 +67,7 @@ def save_object(in_json):
                 {
                     "name": "", 
                     "affiliation": "", 
-                    "email": email,
+                    "email": logged_email,
                     "orcid": "", 
                     "contribution": ["createdBy"]
                 }
@@ -115,21 +125,24 @@ def search_objects(in_json):
 
 def get_object_view_json(in_json):
  
+    out_json = {}
     try:
-        out_json = mongo_cl_bco.find_one({"bco_id":in_json["bcoid"]})
-        if out_json == None:
+        doc = mongo_cl_bco.find_one({"bco_id":in_json["bcoid"]})
+        if doc == None:
             out_json = {"taskstatus":0, "errormsg":"Object does not exist!"}
         else:
-            out_json.pop("_id")
-            if "none" in out_json:
-                out_json.pop("none")
+            doc.pop("_id")
+            out_json = {"bco":doc, "creators":[]}
+            for o in doc["provenance_domain"]["contributors"]:
+                if "createdBy" in o["contribution"]:
+                    out_json["creators"].append(o["email"])
+            out_json["creators"] = sorted(set(out_json["creators"]))
         ordr_dict = json.loads(open("conf/field_order.json").read())
-        out_json = util.order_json_obj(out_json,ordr_dict)
+        out_json["bco"] = util.order_json_obj(out_json["bco"],ordr_dict)
     except Exception, e:
         out_json = util.log_error(traceback.format_exc(), log_dir)
 
     return out_json
-
 
 
 def get_object_edit_json(in_json):
@@ -199,7 +212,6 @@ def get_object_edit_json(in_json):
         
         ordr_dict = json.loads(open("conf/field_order.json").read())
         out_json["startval"] = util.order_json_obj(out_json["startval"],ordr_dict) 
-        out_json["readonly"] = 0
         out_json["taskstatus"] = 1
     except Exception, e:
         out_json = util.log_error(traceback.format_exc(), log_dir)
@@ -222,11 +234,12 @@ def main():
     form_dict = cgi.FieldStorage()
     (options,args) = parser.parse_args()
 
-    
+    local_flag = False
     in_json = {}
     if len(form_dict.keys()) > 0:
         in_json = json.loads(form_dict["injson"].value) if "injson" in form_dict else {}
     else:
+        local_flag = True
         for key in ([options.injson]):
             if not (key):
                 parser.print_help()
@@ -264,23 +277,26 @@ def main():
     
         try:
             svc = in_json["svc"] if "svc" in in_json else ""
-            auth_json = auth.authenticate(log_dir)
+            auth_obj = auth.authenticate(log_dir)
+            logged_email = auth_obj["email"] if auth_obj["status"] == 1 else ""
             if svc == "login_user":
                 out_json = {}
-                auth_json = auth.login(mongo_cl_users, in_json, config_json["dbinfo"]["sessionlife"],log_dir)
+                auth_obj = auth.login(mongo_cl_users, in_json, config_json["dbinfo"]["sessionlife"],log_dir)
+                logged_email = auth_obj["email"] if auth_obj["status"] == 1 else ""
             elif svc == "register_user":
                 out_json = register_user(mongo_cl_users, in_json)
-            elif svc == "search_objects":
+            elif svc == "search_objects" and (auth_obj["status"] == 1 or local_flag):
                 out_json = search_objects(in_json)
-            elif svc == "get_object_view_json":
+            elif svc == "get_object_view_json" and (auth_obj["status"] == 1 or local_flag):
                 out_json = get_object_view_json(in_json)
-            elif svc == "get_object_edit_json":
+                out_json["editflag"] = logged_email in out_json["creators"]
+            elif svc == "get_object_edit_json" and (auth_obj["status"] == 1 or local_flag):
                 out_json = get_object_edit_json(in_json)
-            elif svc == "save_object":
-                out_json = save_object(in_json["bco"])
+            elif svc == "save_object" and (auth_obj["status"] == 1 or local_flag):
+                out_json = save_object(in_json["bco"], logged_email)
             else:
                 out_json = {"taskstatus":0, "errormsg":"Submitted service does not exist!"}
-            out_json["auth"] = auth_json
+            out_json["auth"] = auth_obj
         except Exception, e:
             out_json = util.log_error(traceback.format_exc(), log_dir)
 
