@@ -12,7 +12,9 @@
     }
     ,"pathinfo":{
         "htmlroot":"/bco_editor/",
+        "schemaroot":"/bco_editor/schema/",
         "htmlpath":"/Users/robelkahsay/work-projects/bco_editor/html/",
+        "schemapath":"/Users/robelkahsay/work-projects/bco_editor/html/schema/",
         "bcoprefix":"https://w3id.org/biocompute/examples/bco_%s.json"
     }
     ,"tableheaders":{

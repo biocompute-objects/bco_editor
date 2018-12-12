@@ -169,9 +169,6 @@ def get_object_edit_json(in_json):
                 "error_domain":{}
             }
             
-        #created_by = "xxx"
-        #if in_json["bcoid"] != "-1":
-        #    created_by = bco_json["provenance_domain"]["contributors"][0]["email"]
         
         domain_list  = [
             "provenance_domain", 
@@ -184,22 +181,22 @@ def get_object_edit_json(in_json):
         ]
 
         out_json = {"schema":{}}
-        mainschema_file = config_json["pathinfo"]["htmlpath"] + "/js/biocomputeobject.json"
+        mainschema_file = config_json["pathinfo"]["schemapath"] + "biocomputeobject.json"
         out_json["schema"] = json.loads(open(mainschema_file, "r").read())
         ordr_dict = json.loads(open("conf/field_order.json").read())
         out_json = util.order_json_obj(out_json,ordr_dict)
 
 
         for domain in domain_list:
-            ref_obj = {"$ref":config_json["pathinfo"]["htmlroot"] + "/js/" + domain + ".json"}
+            ref_obj = {"$ref":config_json["pathinfo"]["schemaroot"] + domain + ".json"}
             out_json["schema"]["properties"][domain] = ref_obj
 
         for subdomain in ["scm_extension"]:
-            ref_obj = {"$ref":config_json["pathinfo"]["htmlroot"] + "/js/" + subdomain + ".json"}
+            ref_obj = {"$ref":config_json["pathinfo"]["schemaroot"] + subdomain + ".json"}
             out_json["schema"]["properties"]["extension_domain"]["properties"][subdomain] = ref_obj
 
         for subdomain in ["fhir_extension"]:
-            ref_obj = {"$ref":config_json["pathinfo"]["htmlroot"] + "/js/" + subdomain + ".json"}
+            ref_obj = {"$ref":config_json["pathinfo"]["schemaroot"] + subdomain + ".json"}
             out_json["schema"]["properties"]["extension_domain"]["properties"][subdomain]["items"] = ref_obj
 
         out_json["startval"]= {
