@@ -75,6 +75,8 @@ def main():
     if options.action == "list_users":
         print "#status,fname,lname,email"
         for doc in mongo_cl_users.find({}):
+            for f in ["fname", "lname", "status", "email"]:
+                doc[f] = doc[f] if f in doc else ""
             print "%s,%s,%s,%s" % (doc["status"],doc["fname"],doc["lname"],doc["email"])
     elif options.action == "list_bco":
         print "#bco_id|name|createdby"
