@@ -1,13 +1,5 @@
-var typeId = 268;
-var childList = {};
-var isMain = {};
-var nodeid2name = {};
-var nodeid2index = {};
-var treeJson = [];
-var toggleCount = {};
-
+var resJson = {};
 var editorObj = {};
-
 var pageId = "";
 var bcoId = "";
 
@@ -75,6 +67,7 @@ $(document).on('click', '.savebco', function (event) {
     event.preventDefault();
     $('html').animate({scrollTop:0}, 'fast');
     $('body').animate({scrollTop:0}, 'fast');
+    
     saveObject();
 });
 
@@ -132,7 +125,14 @@ function setHomePage(){
         inJson = {"svc":"search_objects", "queryfield":queryField, "queryvalue":queryValue};
     }
 
-    
+    if ("auth" in resJson){
+        if(resJson["auth"]["status"] != 1){
+            fillStaticHtmlCn("home.html", "#pagecn");
+            return;
+        }
+    }
+
+
     $("#pagecn").append(getProgressIcon());
     var url = cgiRoot + '/bco_editor';
     var reqObj = new XMLHttpRequest();
@@ -189,7 +189,7 @@ function setEditPage(){
     
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
-                var resJson = JSON.parse(reqObj.responseText);
+                resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
                     var msg = resJson["errormsg"] + '. Please ';
                     msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.';
@@ -246,12 +246,14 @@ function setViewPage(){
     reqObj.onreadystatechange = function() {
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
+                resJson = JSON.parse(reqObj.responseText);
                 var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                 s += 'margin-bottom:20px;';
                 var links = '<a id=edit class="editlink">Edit Object</a>';
+                links = (resJson["editflag"] == true ? links : "Read Only");
                 var cn = '<div style="'+s+'">'+links+'</div>';
                 cn += '<DIV style="padding:20px 0px 0px 20px;"><pre style="white-space:pre-wrap;">';
-                cn += reqObj.responseText + '</pre></DIV>';
+                cn +=  JSON.stringify(resJson["bco"], null, 4) + '</pre></DIV>';
                 $("#pagecn").html(cn);
             }
             catch(e) {
@@ -415,7 +417,10 @@ function saveObject(){
     var bcoJson = editorObj.getValue();
     $("#pagecn").append(getProgressIcon());
     var url = cgiRoot + '/bco_editor';
-    
+   
+    //Force this!
+    bcoJson["bco_id"] = bcoId;
+
 
     var inJson = {"svc":"save_object", "bco":bcoJson}
     var form = document.getElementById('bco_form');
