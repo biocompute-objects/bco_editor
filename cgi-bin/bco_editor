@@ -60,7 +60,8 @@ def save_object(in_json, logged_email):
                     return {"taskstatus": 1, "bcoid":bco_id}
         else:
             bco_id = util.get_next_sequence_value(mongo_cl_counters, "bcoid")
-            bco_url = config_json["pathinfo"]["bcoprefix"] % (str(bco_id))
+            bco_str_id = "000000"[0:6-len(str(bco_id))] + str(bco_id)
+            bco_url = config_json["pathinfo"]["bcoprefix"] % (bco_str_id)
             in_json["bco_id"] = bco_url
             in_json["provenance_domain"]["created"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
             in_json["provenance_domain"]["contributors"] = [
