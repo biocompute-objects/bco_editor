@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Library/WebServer/CGI-Executables/bco_editor/bco_editor", line 227, in get_profile_view_json
+    doc = mongo_cl_users.find_one({"email":auth_obj["email"]})
+NameError: global name 'mongo_cl_users' is not defined

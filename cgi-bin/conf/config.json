@@ -23,6 +23,10 @@
             ,"typelist":["string","string","string","string"]
         }   
     }
+    ,"profileinfo":[
+        {"field":"fname" , "label":"First Name"},
+        {"field":"lname" , "label":"Last Name"}
+    ]
 }
 
 
