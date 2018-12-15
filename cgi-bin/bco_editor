@@ -21,20 +21,6 @@ from pymongo import MongoClient
 __version__="1.0"
 
 
-def register_user(mongo_cl_users, user_obj):
-
-    user_obj["status"] = 0
-    try:
-        user_obj["password"] = bcrypt.hashpw(user_obj["password"].encode('utf-8'), bcrypt.gensalt())
-        if mongo_cl_users.find({"email":user_obj["email"]}).count() != 0:
-            out_json = {"taskstatus":0, "errormsg":"The email submitted is already registered!"}
-        else:
-            res = mongo_cl_users.insert_one(user_obj)
-            out_json = {"taskstatus":1}
-    except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), log_dir)
-
-    return out_json
 
 
 def save_object(in_json, logged_email):
@@ -220,6 +206,8 @@ def get_object_edit_json(in_json):
 
 
 
+
+
 #~~~~~~~~~~~~~~~~~~~~~
 def main():
 
@@ -249,6 +237,7 @@ def main():
     global mongo_cl
     global mongo_cl_bco
     global mongo_cl_counters
+    global mongo_cl_users
     global log_dir
     global client
 
@@ -282,7 +271,14 @@ def main():
                 auth_obj = auth.login(mongo_cl_users, in_json, config_json["dbinfo"]["sessionlife"],log_dir)
                 logged_email = auth_obj["email"] if auth_obj["status"] == 1 else ""
             elif svc == "register_user":
-                out_json = register_user(mongo_cl_users, in_json)
+                out_json = auth.register_user(mongo_cl_users, in_json, log_dir)
+            elif svc == "get_profile" and (auth_obj["status"] == 1 or local_flag):
+                out_json = auth.get_profile(mongo_cl_users, auth_obj, config_json["profileinfo"], log_dir)
+            elif svc == "save_profile" and (auth_obj["status"] == 1 or local_flag):
+                out_json = auth.save_user(mongo_cl_users, in_json, logged_email, log_dir)
+            elif svc == "reset_password" and (auth_obj["status"] == 1 or local_flag):
+                current_pass, new_pass = in_json["passwordone"], in_json["passwordtwo"]
+                out_json = auth.reset_password(mongo_cl_users, logged_email, current_pass,new_pass, log_dir)
             elif svc == "search_objects" and (auth_obj["status"] == 1 or local_flag):
                 out_json = search_objects(in_json)
             elif svc == "get_object_view_json" and (auth_obj["status"] == 1 or local_flag):

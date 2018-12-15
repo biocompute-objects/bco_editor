@@ -73,4 +73,71 @@ def authenticate(log_dir):
 
 
 
+def reset_password(mongo_cl_users, logged_email, current_password, new_password, log_dir):
+
+    out_json = {}
+    try:
+        login_user = mongo_cl_users.find_one({'email' : logged_email})
+        stored_password = login_user['password'].encode('utf-8')
+        current_password = current_password.encode('utf-8')
+        if bcrypt.hashpw(current_password, stored_password) == stored_password:
+            new_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            update_obj = {"password":new_password}
+            result = mongo_cl_users.update_one({"email":logged_email}, {'$set': update_obj}, upsert=False)
+            return {"taskstatus": 1}
+        else:
+            return {"taskstatus":0, "errormsg":"Current password does not match stored password"} 
+    except Exception, e:
+        out_json = util.log_error(traceback.format_exc(), log_dir)
+
+    return out_json
+
+
+
+def register_user(mongo_cl_users, user_obj, log_dir):
+    user_obj["status"] = 0
+    try:
+        user_obj["password"] = bcrypt.hashpw(user_obj["password"].encode('utf-8'), bcrypt.gensalt())
+        if mongo_cl_users.find({"email":user_obj["email"]}).count() != 0:
+            out_json = {"taskstatus":0, "errormsg":"The email submitted is already registered!"}
+        else:
+            res = mongo_cl_users.insert_one(user_obj)
+            out_json = {"taskstatus":1}
+    except Exception, e:
+        out_json = util.log_error(traceback.format_exc(), log_dir)
+
+    return out_json
+
+
+
+
+def save_user(mongo_cl_users, in_json, logged_email, log_dir):
+    out_json = {}
+    try:
+        result = mongo_cl_users.update_one({"email":logged_email}, {'$set': in_json}, upsert=False)
+        return {"taskstatus": 1}
+    except Exception, e:
+        out_json = util.log_error(traceback.format_exc(), log_dir)
+
+    return out_json
+
+def get_profile(mongo_cl_users, auth_obj, profile_obj, log_dir):
+
+    out_json = {}
+    try:
+        doc = mongo_cl_users.find_one({"email":auth_obj["email"]})
+        doc.pop("_id")
+        doc.pop("password")
+        if doc == None:
+            out_json = {"taskstatus":0, "errormsg":"Object does not exist!"}
+        else:
+            out_json = {"userinfo":[]}
+            for o in profile_obj:
+                o["value"] = doc[o["field"]]
+                out_json["userinfo"].append(o)
+    except Exception, e:
+        out_json = util.log_error(traceback.format_exc(), log_dir)
+
+    return out_json
+
 
