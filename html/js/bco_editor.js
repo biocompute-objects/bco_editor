@@ -172,8 +172,7 @@ function setHomePage(){
                 }
                 
                 if(resJson["taskstatus"] == 0){
-                    var msg = resJson["errormsg"] + '. Please ';
-                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.';
+                    var msg = resJson["errormsg"];
                     $("#pagecn").html(getMessagePanel(msg));
                     return;
                 }
@@ -216,8 +215,7 @@ function setEditPage(){
             try {
                 resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
-                    var msg = resJson["errormsg"] + '. Please ';
-                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.';
+                    var msg = resJson["errormsg"];
                     $("#pagecn").html(getMessagePanel(msg));
                     return;
                 }
@@ -421,8 +419,7 @@ function loginUser(){
             try {
                 resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
-                    var msg = resJson["errormsg"] + '. Please ';
-                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.';
+                    var msg = resJson["errormsg"];
                     $("#pagecn").html(getMessagePanel(msg));
                     return;
                 }
@@ -434,7 +431,6 @@ function loginUser(){
                 }
                 else{
                     var msg = resJson["auth"]["errormsg"];
-                    msg += ' <a id=logout href="">Click here</a> to go back.'
                     $("#pagecn").html(getMessagePanel(msg));
                 }
             }
@@ -467,8 +463,7 @@ function registerUser(){
             try {
                 resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
-                    var msg = resJson["errormsg"] + '. Please ';
-                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.';
+                    var msg = resJson["errormsg"];
                     $("#pagecn").html(getMessagePanel(msg));
                     return;
                 }
@@ -515,8 +510,7 @@ function saveObject(){
                 console.log(reqObj.responseText);
                 resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
-                    var msg = resJson["errormsg"] + '. Please ';
-                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.';
+                    var msg = resJson["errormsg"];
                     $("#pagecn").html(getMessagePanel(msg));
                     return;
                 }
@@ -644,8 +638,7 @@ function saveProfile(){
             try {
                 resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
-                    var msg = resJson["errormsg"] + '. Please ';
-                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.';
+                    var msg = resJson["errormsg"];
                     $("#pagecn").html(getMessagePanel(msg));
                     return;
                 }
