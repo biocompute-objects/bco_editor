@@ -244,6 +244,13 @@ def main():
     
     try:
         config_json = json.loads(open("conf/config.json", "r").read())
+        if os.path.exists("conf/config.custom.json"):
+            custom_config_json = json.loads(open("conf/config.custom.json", "r").read())
+            for k_one in custom_config_json:
+                for k_two in custom_config_json[k_one]:
+                    if k_one in config_json:
+                        if k_two in config_json[k_one]:
+                            config_json[k_one][k_two] = custom_config_json[k_one][k_two]
         log_dir = config_json["pathinfo"]["htmlpath"] + "/log/"
     except Exception, e:
         out_json = {"taskstatus":0, "errormsg":"Loading config failed!"}
@@ -301,6 +308,8 @@ def main():
 
     print "Content-Type: application/json"
     print          
+    
+    out_json["version"] = config_json["version"]
     print json.dumps(out_json, indent=4)
 
 
