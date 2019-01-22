@@ -1,6 +1,6 @@
 {
     "commit":"5308e78001be81cd51ccfeaaf1d8678bd773acba",
-    "version":"1.0",
+    "version":"1.1",
     "dbinfo":{
         "mongodbname":"bcodb_1_tst"
         ,"mongodbuser":"bcodbadmin"
