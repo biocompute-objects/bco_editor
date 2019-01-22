@@ -149,7 +149,7 @@ def get_object_edit_json(in_json):
         else:
             bco_json = {
                 "bco_id":"-1",
-                "bco_spec_version":"",
+                "bco_spec_version":config_json["specversion"],
                 "checksum":"",
                 "created":"",
                 "modified":"",
@@ -311,7 +311,7 @@ def main():
     print "Content-Type: application/json"
     print          
     
-    out_json["version"] = config_json["version"]
+    out_json["editorversion"] = config_json["editorversion"]
     print json.dumps(out_json, indent=4)
 
 
