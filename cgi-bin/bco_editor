@@ -13,6 +13,7 @@ import datetime
 import auth
 import util
 import bcrypt
+import hashlib
 
 import pymongo
 from pymongo import MongoClient
@@ -40,12 +41,18 @@ def save_object(in_json, logged_email):
                 if logged_email not in creator_list:
                     return {"taskstatus":0, "errormsg":"You do not have privilege to change this object!"}
                 else:
+                    in_json.pop("checksum")
+                    in_json["checksum"] = hashlib.md5(json.dumps(in_json)).hexdigest()
                     in_json.pop("bco_id")
                     in_json["provenance_domain"]["modified"] = datetime.datetime.now().isoformat()
                     #in_json["provenance_domain"]["modified"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
+                    
+
                     result = mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': in_json}, upsert=False)
                     return {"taskstatus": 1, "bcoid":bco_id}
         else:
+            in_json.pop("checksum")
+            in_json["checksum"] = hashlib.md5(json.dumps(in_json)).hexdigest()
             bco_id = util.get_next_sequence_value(mongo_cl_counters, "bcoid")
             bco_str_id = "000000"[0:6-len(str(bco_id))] + str(bco_id)
             bco_url = config_json["pathinfo"]["bcoprefix"] % (bco_str_id)

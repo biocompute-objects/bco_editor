@@ -2803,9 +2803,10 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
         e.stopPropagation();
         self.toggleAddProperty();
       });
-      this.addproperty_controls.appendChild(this.addproperty_button);
-      this.addproperty_controls.appendChild(this.addproperty_holder);
-      this.refreshAddProperties();
+      //Turned off by Robel
+      //this.addproperty_controls.appendChild(this.addproperty_button);
+      //this.addproperty_controls.appendChild(this.addproperty_holder);
+      //this.refreshAddProperties();
     }
 
     // Fix table cell ordering

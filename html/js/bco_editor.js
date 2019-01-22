@@ -494,6 +494,13 @@ function saveObject(){
    
     //Force this!
     bcoJson["bco_id"] = bcoId;
+    
+    var regex = /^((\d+)\.(\d+)\.(\d+))(?:-([\dA-Za-z\-]+(?:\.[\dA-Za-z\-]+)*))?(?:\+([\dA-Za-z\-]+(?:\.[\dA-Za-z\-]+)*))?$/
+    if(bcoJson["provenance_domain"]["version"].match(regex) == null){
+        $("#pagecn").html(getMessagePanel("Invalid version format for BCO"));
+        return;
+    }
+
 
 
     var inJson = {"svc":"save_object", "bco":bcoJson}

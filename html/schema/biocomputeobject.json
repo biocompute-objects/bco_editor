@@ -11,6 +11,7 @@
         "provenance_domain",
         "usability_domain",
         "description_domain",
+        "extension_domain",
         "execution_domain",
         "io_domain",
         "error_domain"
@@ -145,6 +146,13 @@
             "$ref": "usability_domain.json"
         },
         "extension_domain": {
+            "type": "object",
+            "title": "Extension Domain",
+            "description": "Extenion domain",
+            "required": [
+                "fhir_extension",
+                "scm_extension"
+            ],
             "properties": {
                 "fhir_extension": {
                     "type": "array",

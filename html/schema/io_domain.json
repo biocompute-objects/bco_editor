@@ -11,11 +11,12 @@
     "properties": {
         "input_subdomain": {
             "type": "array",
-            "title": "input_domain",
+            "title": "input_subdomain",
             "description": "A record of the references and input files for the entire pipeline. Each type of input file is listed under a key for that type.",
             "items": {
                 "additionalProperties": false,
                 "type": "object",
+                "title": "input",
                 "required": [
                     "uri"
                 ],
@@ -32,7 +33,7 @@
             "description": "A record of the outputs for the entire pipeline.",
             "items": {
                 "type": "object",
-                "title": "The Items Schema",
+                "title": "output",
                 "required": [
                     "mediatype",
                     "uri"
