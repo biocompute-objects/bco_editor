@@ -163,7 +163,7 @@ function setHomePage(){
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
                 resJson = JSON.parse(reqObj.responseText);
-                $("#versioncn").html(resJson["version"]);
+                $("#versioncn").html(resJson["editorversion"]);
                 if ("auth" in resJson){
                     if(resJson["auth"]["status"] != 1){
                         setUnSignedHomePage();
