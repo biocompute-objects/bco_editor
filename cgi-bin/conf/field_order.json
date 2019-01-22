@@ -1,7 +1,7 @@
 {
     "bco_id":0.1
     ,"type":0.2
-    ,"digital_signature":0.3
+    ,"checksum":0.3
     ,"bco_spec_version":0.4
     ,"provenance_domain":1.0
     ,"name": 1.1
@@ -18,11 +18,11 @@
     ,"orcid":1.96
     ,"affiliation":1.97
     ,"usability_domain":2.0
-    ,"execution_domain":3.0
-    ,"descsription_domain":4.0
-    ,"extension_domain":5.0
+    ,"extension_domain":3.0
+    ,"description_domain":4.0
+    ,"execution_domain":5.0
     ,"parametric_domain":6.0
     ,"io_domain":7.0
-    ,"description_domain":8.0
     ,"error_domain":9.0
 }
+
