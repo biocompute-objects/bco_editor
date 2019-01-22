@@ -41,7 +41,8 @@ def save_object(in_json, logged_email):
                     return {"taskstatus":0, "errormsg":"You do not have privilege to change this object!"}
                 else:
                     in_json.pop("bco_id")
-                    in_json["provenance_domain"]["modified"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
+                    in_json["provenance_domain"]["modified"] = datetime.datetime.now().isoformat()
+                    #in_json["provenance_domain"]["modified"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
                     result = mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': in_json}, upsert=False)
                     return {"taskstatus": 1, "bcoid":bco_id}
         else:
@@ -49,7 +50,8 @@ def save_object(in_json, logged_email):
             bco_str_id = "000000"[0:6-len(str(bco_id))] + str(bco_id)
             bco_url = config_json["pathinfo"]["bcoprefix"] % (bco_str_id)
             in_json["bco_id"] = bco_url
-            in_json["provenance_domain"]["created"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
+            in_json["provenance_domain"]["created"] = datetime.datetime.now().isoformat()
+            #in_json["provenance_domain"]["created"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
             in_json["provenance_domain"]["contributors"] = [
                 {
                     "name": "", 
