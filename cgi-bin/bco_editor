@@ -5,7 +5,7 @@ import cgi
 import commands
 from optparse import OptionParser
 import traceback
-from json_tricks import dump, dumps, load, loads, strip_comments
+#from json_tricks import dump, dumps, load, loads, strip_comments
 import json
 import re
 import time
@@ -13,6 +13,7 @@ import datetime
 import auth
 import util
 import bcrypt
+import hashlib
 
 import pymongo
 from pymongo import MongoClient
@@ -21,50 +22,56 @@ from pymongo import MongoClient
 __version__="1.0"
 
 
-def register_user(mongo_cl_users, user_obj):
-
-    user_obj["status"] = 0
-    try:
-        user_obj["password"] = bcrypt.hashpw(user_obj["password"].encode('utf-8'), bcrypt.gensalt())
-        if mongo_cl_users.find({"email":user_obj["email"]}).count() != 0:
-            out_json = {"taskstatus":0, "errormsg":"The email submitted is already registered!"}
-        else:
-            res = mongo_cl_users.insert_one(user_obj)
-            out_json = {"taskstatus":1}
-    except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
-        
-    return out_json
 
 
-def save_object(in_json):
+def save_object(in_json, logged_email):
 
-    email = "xx"
     out_json = {}
     try:
-        bco_id = int(in_json["bco_id"])
-        if bco_id != -1:
-            in_json.pop("bco_id")
-            in_json["provenance_domain"]["modified"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
-            result = mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': in_json}, upsert=False)
-            out_json = {"taskstatus": 1, "bcoid":bco_id}
+        bco_id = in_json["bco_id"]
+        if bco_id != "-1":
+            doc = mongo_cl_bco.find_one({"bco_id":bco_id})
+            if doc == None:
+                return {"taskstatus":0, "errormsg":"Object does not exist!"}
+            else:
+                creator_list = []
+                for o in doc["provenance_domain"]["contributors"]:
+                    if "createdBy" in o["contribution"]:
+                        creator_list.append(o["email"])
+                if logged_email not in creator_list:
+                    return {"taskstatus":0, "errormsg":"You do not have privilege to change this object!"}
+                else:
+                    in_json.pop("checksum")
+                    in_json["checksum"] = hashlib.md5(json.dumps(in_json)).hexdigest()
+                    in_json.pop("bco_id")
+                    in_json["provenance_domain"]["modified"] = datetime.datetime.now().isoformat()
+                    #in_json["provenance_domain"]["modified"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
+                    
+
+                    result = mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': in_json}, upsert=False)
+                    return {"taskstatus": 1, "bcoid":bco_id}
         else:
+            in_json.pop("checksum")
+            in_json["checksum"] = hashlib.md5(json.dumps(in_json)).hexdigest()
             bco_id = util.get_next_sequence_value(mongo_cl_counters, "bcoid")
-            in_json["bco_id"] = bco_id
-            in_json["provenance_domain"]["created"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
+            bco_str_id = "000000"[0:6-len(str(bco_id))] + str(bco_id)
+            bco_url = config_json["pathinfo"]["bcoprefix"] % (bco_str_id)
+            in_json["bco_id"] = bco_url
+            in_json["provenance_domain"]["created"] = datetime.datetime.now().isoformat()
+            #in_json["provenance_domain"]["created"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
             in_json["provenance_domain"]["contributors"] = [
                 {
                     "name": "", 
                     "affiliation": "", 
-                    "email": email,
+                    "email": logged_email,
                     "orcid": "", 
                     "contribution": ["createdBy"]
                 }
             ]
             result = mongo_cl_bco.insert_one(in_json)
-            out_json = {"bcoid":bco_id, "taskstatus":1}
+            out_json = {"bcoid":bco_url, "taskstatus":1}
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
+        out_json = util.log_error(traceback.format_exc(), log_dir)
 
     return out_json
 
@@ -77,16 +84,28 @@ def search_objects(in_json):
         query_obj = {}
         if in_json["queryvalue"] != "":
             if in_json["queryfield"] == "bco_id":
-                query_obj = {"bco_id":int(in_json["queryvalue"])}
+                bco_str_id = "000000"[0:6-len(str(in_json["queryvalue"]))] + str(in_json["queryvalue"])
+                bco_url = config_json["pathinfo"]["bcoprefix"] % (bco_str_id)
+                query_obj = {"bco_id":bco_url}
             if in_json["queryfield"] == "name":
-                query_obj = {"provenance_domain":{"name":in_json["queryvalue"]}}
-
+                query_obj = {"provenance_domain.name":{'$regex':in_json["queryvalue"], '$options': 'i'}}
         row = []
         obj_list = []
         obj_list.append(config_json["tableheaders"]["searchresults"]["labellist"])
         obj_list.append(config_json["tableheaders"]["searchresults"]["typelist"])
 
         for doc in mongo_cl_bco.find(query_obj):
+            if "provenance_domain" not in doc:
+                continue
+            tv_list = ["name" in doc["provenance_domain"]]
+            tv_list += ["created" in doc["provenance_domain"]]
+            tv_list += ["contributors" in doc["provenance_domain"]]
+            if False in tv_list:
+                continue
+            tv_list = [len(doc["provenance_domain"]["contributors"]) > 0]
+
+            if False in tv_list:
+                continue
             doc.pop("_id")
             created_by = doc["provenance_domain"]["contributors"][0]["email"]
             bco_id = str(doc["bco_id"])
@@ -105,7 +124,7 @@ def search_objects(in_json):
         out_json["searchresults"] = obj_list
         out_json["taskstatus"] = taskstatus
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
+        out_json = util.log_error(traceback.format_exc(), log_dir)
 
 
         
@@ -114,21 +133,24 @@ def search_objects(in_json):
 
 def get_object_view_json(in_json):
  
+    out_json = {}
     try:
-        out_json = mongo_cl_bco.find_one({"bco_id":in_json["bcoid"]})
-        if out_json == None:
+        doc = mongo_cl_bco.find_one({"bco_id":in_json["bcoid"]})
+        if doc == None:
             out_json = {"taskstatus":0, "errormsg":"Object does not exist!"}
         else:
-            out_json.pop("_id")
-            if "none" in out_json:
-                out_json.pop("none")
+            doc.pop("_id")
+            out_json = {"bco":doc, "creators":[]}
+            for o in doc["provenance_domain"]["contributors"]:
+                if "createdBy" in o["contribution"]:
+                    out_json["creators"].append(o["email"])
+            out_json["creators"] = sorted(set(out_json["creators"]))
         ordr_dict = json.loads(open("conf/field_order.json").read())
-        out_json = util.order_json_obj(out_json,ordr_dict)
+        out_json["bco"] = util.order_json_obj(out_json["bco"],ordr_dict)
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
+        out_json = util.log_error(traceback.format_exc(), log_dir)
 
     return out_json
-
 
 
 def get_object_edit_json(in_json):
@@ -136,7 +158,7 @@ def get_object_edit_json(in_json):
 
     try:
         bco_json = {}
-        if in_json["bcoid"] != -1:
+        if in_json["bcoid"] != "-1":
             bco_json = mongo_cl_bco.find_one({"bco_id":in_json["bcoid"]})
             if bco_json == None:
                 out_json = {"taskstatus":0, "errormsg":"Object does not exist!"}
@@ -145,9 +167,9 @@ def get_object_edit_json(in_json):
                     bco_json.pop("_id")
         else:
             bco_json = {
-                "bco_id":-1,
-                "bco_spec_version":"",
-                "digital_signature":"",
+                "bco_id":"-1",
+                "bco_spec_version":config_json["specversion"],
+                "checksum":"",
                 "created":"",
                 "modified":"",
                 "provenance_domain":{},
@@ -155,9 +177,6 @@ def get_object_edit_json(in_json):
                 "error_domain":{}
             }
             
-        created_by = "xxx"
-        if in_json["bcoid"] != -1:
-            created_by = bco_json["provenance_domain"]["contributors"][0]["email"]
         
         domain_list  = [
             "provenance_domain", 
@@ -169,38 +188,44 @@ def get_object_edit_json(in_json):
             "error_domain"
         ]
 
-        mainschema_file = config_json["pathinfo"]["htmlpath"] + "/js/biocomputeobject.json"
-        out_json = loads(open(mainschema_file, "r").read(), preserve_order=True)
+        out_json = {"schema":{}}
+        mainschema_file = config_json["pathinfo"]["schemapath"] + "biocomputeobject.json"
+        out_json["schema"] = json.loads(open(mainschema_file, "r").read())
+        ordr_dict = json.loads(open("conf/field_order.json").read())
+        out_json = util.order_json_obj(out_json,ordr_dict)
+
 
         for domain in domain_list:
-            ref_obj = {"$ref":config_json["rootinfo"]["htmlroot"] + "/js/" + domain + ".json"}
+            ref_obj = {"$ref":config_json["pathinfo"]["schemaroot"] + domain + ".json"}
             out_json["schema"]["properties"][domain] = ref_obj
 
         for subdomain in ["scm_extension"]:
-            ref_obj = {"$ref":config_json["rootinfo"]["htmlroot"] + "/js/" + subdomain + ".json"}
+            ref_obj = {"$ref":config_json["pathinfo"]["schemaroot"] + subdomain + ".json"}
             out_json["schema"]["properties"]["extension_domain"]["properties"][subdomain] = ref_obj
-    
+
         for subdomain in ["fhir_extension"]:
-            ref_obj = {"$ref":config_json["rootinfo"]["htmlroot"] + "/js/" + subdomain + ".json"}
-            out_json["schema"]["properties"]["extension_domain"]["properties"][subdomain]["items"] = ref_obj                     
+            ref_obj = {"$ref":config_json["pathinfo"]["schemaroot"] + subdomain + ".json"}
+            out_json["schema"]["properties"]["extension_domain"]["properties"][subdomain]["items"] = ref_obj
+
         out_json["startval"]= {
             "bco_id":bco_json["bco_id"],
             "bco_spec_version":bco_json["bco_spec_version"],
-            "digital_signature": bco_json["digital_signature"],
+            "checksum": bco_json["checksum"],
         }
-        for domain in domain_list:
+        for domain in domain_list + ["extension_domain"]:
             out_json["startval"][domain] = bco_json[domain] if domain in bco_json else {}
-
+        
         ordr_dict = json.loads(open("conf/field_order.json").read())
         out_json["startval"] = util.order_json_obj(out_json["startval"],ordr_dict) 
-        out_json["readonly"] = 0
         out_json["taskstatus"] = 1
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
+        out_json = util.log_error(traceback.format_exc(), log_dir)
 
 
 
     return out_json
+
+
 
 
 
@@ -216,11 +241,12 @@ def main():
     form_dict = cgi.FieldStorage()
     (options,args) = parser.parse_args()
 
-    
+    local_flag = False
     in_json = {}
     if len(form_dict.keys()) > 0:
         in_json = json.loads(form_dict["injson"].value) if "injson" in form_dict else {}
     else:
+        local_flag = True
         for key in ([options.injson]):
             if not (key):
                 parser.print_help()
@@ -232,50 +258,79 @@ def main():
     global mongo_cl
     global mongo_cl_bco
     global mongo_cl_counters
+    global mongo_cl_users
     global log_dir
+    global client
 
+    
+    try:
+        config_json = json.loads(open("conf/config.json", "r").read())
+        if os.path.exists("conf/config.custom.json"):
+            custom_config_json = json.loads(open("conf/config.custom.json", "r").read())
+            for k_one in custom_config_json:
+                for k_two in custom_config_json[k_one]:
+                    if k_one in config_json:
+                        if k_two in config_json[k_one]:
+                            config_json[k_one][k_two] = custom_config_json[k_one][k_two]
+        log_dir = config_json["pathinfo"]["htmlpath"] + "/log/"
+    except Exception, e:
+        out_json = {"taskstatus":0, "errormsg":"Loading config failed!"}
 
     try:
-
-        config_json = json.loads(open("conf/config.json", "r").read())
-        log_dir = config_json["pathinfo"]["htmlpath"] + "/log/"
-        client = MongoClient('mongodb://localhost:27017', 
+        client = MongoClient('mongodb://localhost:27017',
             username=config_json["dbinfo"]["mongodbuser"],
             password=config_json["dbinfo"]["mongodbpassword"],
             authSource=config_json["dbinfo"]["mongodbname"],
-            authMechanism='SCRAM-SHA-1'
+            authMechanism='SCRAM-SHA-1',
+            serverSelectionTimeoutMS=10000
         )
-        
+        client.server_info()
         mongo_dbh = client[config_json["dbinfo"]["mongodbname"]]
-        mongo_cl_bco = mongo_dbh[config_json["dbinfo"]["mongocl_bco"]]
-        mongo_cl_counters = mongo_dbh[config_json["dbinfo"]["mongocl_counters"]]
-        mongo_cl_users = mongo_dbh[config_json["dbinfo"]["mongocl_users"]]
+        mongo_cl_bco = mongo_dbh[config_json["dbinfo"]["collections"]["bco"]]
+        mongo_cl_counters = mongo_dbh[config_json["dbinfo"]["collections"]["counters"]]
+        mongo_cl_users = mongo_dbh[config_json["dbinfo"]["collections"]["users"]]
+    
+        try:
+            svc = in_json["svc"] if "svc" in in_json else ""
+            auth_obj = auth.authenticate(log_dir)
+            logged_email = auth_obj["email"] if auth_obj["status"] == 1 else ""
+            if svc == "login_user":
+                out_json = {}
+                auth_obj = auth.login(mongo_cl_users, in_json, config_json["dbinfo"]["sessionlife"],log_dir)
+                logged_email = auth_obj["email"] if auth_obj["status"] == 1 else ""
+            elif svc == "register_user":
+                out_json = auth.register_user(mongo_cl_users, in_json, log_dir)
+            elif svc == "get_profile" and (auth_obj["status"] == 1 or local_flag):
+                out_json = auth.get_profile(mongo_cl_users, auth_obj, config_json["profileinfo"], log_dir)
+            elif svc == "save_profile" and (auth_obj["status"] == 1 or local_flag):
+                out_json = auth.save_user(mongo_cl_users, in_json, logged_email, log_dir)
+            elif svc == "reset_password" and (auth_obj["status"] == 1 or local_flag):
+                current_pass, new_pass = in_json["passwordone"], in_json["passwordtwo"]
+                out_json = auth.reset_password(mongo_cl_users, logged_email, current_pass,new_pass, log_dir)
+            elif svc == "search_objects" and (auth_obj["status"] == 1 or local_flag):
+                out_json = search_objects(in_json)
+            elif svc == "get_object_view_json" and (auth_obj["status"] == 1 or local_flag):
+                out_json = get_object_view_json(in_json)
+                out_json["editflag"] = logged_email in out_json["creators"]
+            elif svc == "get_object_edit_json" and (auth_obj["status"] == 1 or local_flag):
+                out_json = get_object_edit_json(in_json)
+            elif svc == "save_object" and (auth_obj["status"] == 1 or local_flag):
+                out_json = save_object(in_json["bco"], logged_email)
+            else:
+                out_json = {"taskstatus":0, "errormsg":"Submitted service does not exist!"}
+            out_json["auth"] = auth_obj
+        except Exception, e:
+            out_json = util.log_error(traceback.format_exc(), log_dir)
 
-
-        svc = in_json["svc"] if "svc" in in_json else ""
-        auth_json = auth.authenticate(log_dir)
-        if svc == "login_user":
-            out_json = {}
-            auth_json = auth.login(mongo_cl_users, in_json, config_json["dbinfo"]["sessionlife"],log_dir)
-        elif svc == "register_user":
-            out_json = register_user(mongo_cl_users, in_json)
-        elif svc == "search_objects":
-            out_json = search_objects(in_json)
-        elif svc == "get_object_view_json":
-            out_json = get_object_view_json(in_json)
-        elif svc == "get_object_edit_json":
-            out_json = get_object_edit_json(in_json)
-        elif svc == "save_object":
-            out_json = save_object(in_json["bco"])
-        else:
-            out_json = {"taskstatus":0, "errormsg":"Submitted service does not exist!"}
-        out_json["auth"] = auth_json
-    except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), config_json["pathinfo"]["htmlpath"] + "/log/")
-
+    except pymongo.errors.ServerSelectionTimeoutError as err:
+        out_json = {"taskstatus":0, "errormsg":"Connection to mongodb failed!"}
+    except pymongo.errors.OperationFailure as err:
+        out_json = {"taskstatus":0, "errormsg":"MongoDB auth failed!"}
 
     print "Content-Type: application/json"
     print          
+    
+    out_json["editorversion"] = config_json["editorversion"]
     print json.dumps(out_json, indent=4)
 
 
