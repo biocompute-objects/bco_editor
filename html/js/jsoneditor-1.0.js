@@ -2803,9 +2803,10 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
         e.stopPropagation();
         self.toggleAddProperty();
       });
-      this.addproperty_controls.appendChild(this.addproperty_button);
-      this.addproperty_controls.appendChild(this.addproperty_holder);
-      this.refreshAddProperties();
+      //Turned off by Robel
+      //this.addproperty_controls.appendChild(this.addproperty_button);
+      //this.addproperty_controls.appendChild(this.addproperty_holder);
+      //this.refreshAddProperties();
     }
 
     // Fix table cell ordering
@@ -6199,22 +6200,26 @@ JSONEditor.AbstractTheme = Class.extend({
     el.style.margin = '20px 0px 0px 0px';
     //el.style.fontSize = '.8em';
     if(typeof text === "string") {
+        //box-set-2
+        el.style.border = '0px dashed red';
         el.textContent = text;
     }
     else {
         el.style.margin = '20px 0px 0px 30px';
         el.style.fontWeight = 'normal';
-        if(text.textContent.indexOf("_domain") != -1 || text.textContent.indexOf("BioCompute") != -1){
+        if(text.textContent.indexOf(" Domain") != -1 || text.textContent.indexOf("BioCompute") != -1){
             el.style.fontWeight = 'bold';
             el.style.width = '95%';
             el.style.padding = '10px 10px 10px 10px';
-            el.style.margin = '2px 0px 2px 20px';
+            //box-set-3
+            el.style.border = '0px dashed orange';
+            el.style.margin = '2px 0px 2px 30px';
             el.style.background = '#eee';
             if (text.textContent.indexOf("BioCompute") != -1){
                 var btnEl = document.createElement('button');
                 btnEl.type = 'button';
                 btnEl.id = 'savebco';
-                btnEl.className = 'savebco';
+                btnEl.className = 'submitbtn';
                 btnEl.style.fontSize = '12px'; //Robel
                 btnEl.style.width = '150px';
                 btnEl.style.height = '25px';
@@ -6317,6 +6322,7 @@ JSONEditor.AbstractTheme = Class.extend({
     el.style.background = '#e0e7ed'; //Robel
     el.style.border = '0px dashed orange';
     el.style.fontSize = '13px'; //Robel
+    el.style.padding = '10px'; //Robel
     el.setAttribute('type',type);
     return el;
   },
@@ -6326,10 +6332,11 @@ JSONEditor.AbstractTheme = Class.extend({
   getFormControl: function(label, input, description) {
     var el = document.createElement('div');
     //el.className = 'form-control';
-    el.style.height = '70px';
+    el.style.height = '80px';
     el.style.width = '700px';
-    //el.style.border = '0px solid #ddd';
-    el.style.margin = '0px 0px 0px 20px';
+    //box-set-1
+    el.style.border = '0px solid orange'; 
+    el.style.margin = '0px 0px 0px 30px';
     if(label) {
         el.appendChild(label);
     }

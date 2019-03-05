@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Library/WebServer/CGI-Executables/bco_editor/bco_editor", line 192, in get_object_edit_json
+    "bco_id":bco_json["bco_id"],
+TypeError: 'NoneType' object has no attribute '__getitem__'

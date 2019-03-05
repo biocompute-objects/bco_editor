@@ -1,13 +1,5 @@
-var typeId = 268;
-var childList = {};
-var isMain = {};
-var nodeid2name = {};
-var nodeid2index = {};
-var treeJson = [];
-var toggleCount = {};
-
+var resJson = {};
 var editorObj = {};
-
 var pageId = "";
 var bcoId = "";
 
@@ -15,73 +7,146 @@ var bcoId = "";
 ////////////////////////////////
 $(document ).ready(function() {
 
+
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
+    handleBackBtn();
+
+
     $("#loginformcn").css("display", "none");
     $("#pagelinkcn").css("display", "block");
-    $("#pagelinkcn").append('<div id=logout class=pagelink>Logout</div>');
-    $("#pagelinkcn").append('<div class=divider>|</div>');
-    $("#pagelinkcn").append('<div id=loginmsg class=loginmsg></div>');
+
+
     $("#searchboxcn").html(getSearchForm());
     $("#pagecn").html(setHomePage());
+
+
 });
 
 
-$(document).on('click', '.pagelink, .createlink, .editlink, .viewlink', function (event) {
+
+
+
+$(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink', function (event) {
     event.preventDefault();
-    pageId = this.id.split("_")[0];
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
+
+    pageId = this.id.split("|")[0];
+
 
     if(pageId == 'home'){
         setHomePage();
     }
     else if(pageId == 'view'){
-        bcoId = parseInt(this.id.split("_")[1]);
+        bcoId = this.id.split("|")[1];
         setViewPage();
     }
     else if(pageId == 'edit'){
         setEditPage();
     }
     else if(pageId == 'create'){
-        bcoId = -1;
+        bcoId = "-1";
         setEditPage();
     }
+    else if(pageId == 'profile'){
+        setProfilePage();
+    }
+    else if(["tutorial"].indexOf(pageId) != -1){
+        fillStaticHtmlCn(pageId + ".html", "#pagecn")
+    }
+    
 });
 
 $(document).on('click', '#savebco', function (event) {
     event.preventDefault();
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
     saveObject();
 });
 
+$(document).on('click', '#saveprofile', function (event) {
+    event.preventDefault();
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
+    saveProfile();
+});
+
+$(document).on('click', '#resetpassword', function (event) {
+    event.preventDefault();
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
+    resetPassword();
+});
+
+
+
+
 $(document).on('click', '#logout', function (event) {
     event.preventDefault();
-    setCookie("sessionid","",-1);
     logoutUser();
 });
 
 $(document).on('click', '#searchbtn', function (event) {
     event.preventDefault();
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
     $("#pagecn").html(setHomePage());
 });
 
 $(document).on('click', '#login', function (event) {
     event.preventDefault();
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
     loginUser();
 });
 
 
 $(document).on('click', '#register', function (event) {
     event.preventDefault();
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
     registerUser();
 });
 
 
 function logoutUser(){
-    $("#loginformcn").css("display", "block");
-    $("#pagelinkcn").css("display", "none");
-    $("#searchboxcn").css("display", "none");
-    fillStaticHtmlCn("home.html", "#pagecn")
+    
+    setCookie("sessionid","",-1);
+    $('html').animate({scrollTop:0}, 'fast');
+    $('body').animate({scrollTop:0}, 'fast');
+    window.location.href = htmlRoot;
 }
 
 
+function setUnSignedHomePage(){
+  
+    $("#pagelinkcn").html("");
+    $("#pagelinkcn").append('<div id=tutorial class=menudiv>Tutorial</div>');
+    $("#pagelinkcn").append('<div class=divider>|</div>');
+    $("#pagelinkcn").append('<div id=home class=menudiv>Home</div>');
+ 
+    $("#searchboxcn").css("display", "none");
+    fillStaticHtmlCn("home.html", "#pagecn");
+    return;
+
+}
+
 function setHomePage(){
+
+    $("#pagelinkcn").html("");
+    $("#pagelinkcn").append('<div id=logout class=menudiv>Logout</div>');
+    $("#pagelinkcn").append('<div class=divider>|</div>');
+    $("#pagelinkcn").append('<div id=loginmsg class=loginmsg></div>');
+    $("#pagelinkcn").append('<div class=divider>|</div>');
+    $("#pagelinkcn").append('<div id=tutorial class=menudiv>Tutorial</div>');
+    $("#pagelinkcn").append('<div class=divider>|</div>');
+    $("#pagelinkcn").append('<div id=profile class=menudiv>Profile</div>');
+    $("#pagelinkcn").append('<div class=divider>|</div>');
+    $("#pagelinkcn").append('<div id=home class=menudiv>Home</div>');
+
+    $("#searchboxcn").css("display", "block");
+                   
     var inJson = {}
     if ($("#queryfield").val() != undefined){
         var queryField = $("#queryfield").val().trim();
@@ -89,7 +154,6 @@ function setHomePage(){
         inJson = {"svc":"search_objects", "queryfield":queryField, "queryvalue":queryValue};
     }
 
-    
     $("#pagecn").append(getProgressIcon());
     var url = cgiRoot + '/bco_editor';
     var reqObj = new XMLHttpRequest();
@@ -99,27 +163,31 @@ function setHomePage(){
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
                 resJson = JSON.parse(reqObj.responseText);
-                if (resJson["auth"]["status"] != 1){
-                    logoutUser();
+                $("#versioncn").html(resJson["editorversion"]);
+                if ("auth" in resJson){
+                    if(resJson["auth"]["status"] != 1){
+                        setUnSignedHomePage();
+                        return;
+                    }
+                }
+                
+                if(resJson["taskstatus"] == 0){
+                    var msg = resJson["errormsg"];
+                    $("#pagecn").html(getMessagePanel(msg));
                     return;
                 }
+                var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
+                s += 'margin-bottom:20px;';
+                var cn = '<div style="'+s+'"><a id=create class="createlink">Create Object</a></div>';
+                cn += '<div id=searchresultscn></div>';
+                $("#pagecn").html(cn);
                 $("#loginmsg").html('Signed as ' + resJson["auth"]["email"]);
-                if(resJson["taskstatus"] == 0){
-                    $("#searchresultscn").html(getMessagePanel(resJson["errormsg"]));
+                if (resJson["searchresults"].length > 2){
+                    var argObj = {"containerid":"searchresultscn", "pagesize":50, "onselect":""};
+                    rndrGoogleTable(resJson["searchresults"], argObj);
                 }
                 else{
-                    var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
-                    s += 'margin-bottom:20px;';
-                    var cn = '<div style="'+s+'"><a id=create class="createlink">Create Object</a></div>';
-                    cn += '<div id=searchresultscn></div>';
-                    $("#pagecn").html(cn);
-                    if (resJson["searchresults"].length > 2){
-                        var argObj = {"containerid":"searchresultscn", "pagesize":50, "onselect":""};
-                        rndrGoogleTable(resJson["searchresults"], argObj);
-                    }
-                    else{
-                        $("#searchresultscn").html(getMessagePanel("No objects found for your search!"));
-                    }
+                    $("#searchresultscn").html(getMessagePanel("No objects found for your search!"));
                 }
             }
             catch(e) {
@@ -145,9 +213,11 @@ function setEditPage(){
     
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
-                var resJson = JSON.parse(reqObj.responseText);
+                resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
-                    $("#pagecn").html(getMessagePanel(resJson["errormsg"]));
+                    var msg = resJson["errormsg"];
+                    $("#pagecn").html(getMessagePanel(msg));
+                    return;
                 }
                 else{
                     readOnly = (resJson["readOnly"] == 1 ? 1 : 0);
@@ -159,10 +229,14 @@ function setEditPage(){
                     else{
                         var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                         s += 'margin-bottom:20px;';
-                        var links = '<a id=view_'+bcoId+' class="viewlink">View Object</a>';
+                        var links = '<a id=view|'+bcoId+' class="viewlink">View Object</a>';
                         var cn = '<div style="'+s+'">'+links+'</div>';
                         var style = 'background:#fff;margin-top:20px;font-size:13px;';
                         cn += '<div id="editor_div" style="'+style+'"></div>';
+                        var style = 'background:#f1f1f1;margin:0px 0px 100px 20px;padding:10px;';
+                        style += 'text-align:right;width:90%;';
+                        var saveBtn = '<input class=submitbtn id=savebco type=submit value="Save Changes">';
+                        cn += '<div style="'+style+'">'+saveBtn+'</div>';
                         $("#pagecn").html(cn);
                         var schemaObj = JSON.parse(reqObj.responseText);
                         schemaObj["ajax"] = true;
@@ -185,7 +259,7 @@ function setEditPage(){
 
 
 function setViewPage(){
-    
+
     $("#pagecn").html(getProgressIcon());
     var url = cgiRoot + '/bco_editor';
     var reqObj = new XMLHttpRequest();
@@ -194,12 +268,14 @@ function setViewPage(){
     reqObj.onreadystatechange = function() {
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
+                resJson = JSON.parse(reqObj.responseText);
                 var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                 s += 'margin-bottom:20px;';
                 var links = '<a id=edit class="editlink">Edit Object</a>';
+                links = (resJson["editflag"] == true ? links : "Read Only");
                 var cn = '<div style="'+s+'">'+links+'</div>';
                 cn += '<DIV style="padding:20px 0px 0px 20px;"><pre style="white-space:pre-wrap;">';
-                cn += reqObj.responseText + '</pre></DIV>';
+                cn +=  JSON.stringify(resJson["bco"], null, 4) + '</pre></DIV>';
                 $("#pagecn").html(cn);
             }
             catch(e) {
@@ -209,6 +285,61 @@ function setViewPage(){
         }
     };
     var postData = 'injson='+JSON.stringify({"svc":"get_object_view_json", "bcoid":bcoId});
+    reqObj.send(postData);
+    console.log('request='+postData);
+    return;
+}
+
+
+function setProfilePage(){
+
+    $("#pagecn").html(getProgressIcon());
+    var url = cgiRoot + '/bco_editor';
+    var reqObj = new XMLHttpRequest();
+    reqObj.open("POST", url, true);
+    reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    reqObj.onreadystatechange = function() {
+        if (reqObj.readyState == 4 && reqObj.status == 200) {
+            try {
+                //console.log(reqObj.responseText);
+                resJson = JSON.parse(reqObj.responseText);
+                var s = 'width:100%;margin:100px 0px 20px 0px;text-align:right;border-bottom:1px solid #ccc;';
+                var cn = '<div style="'+s+'"></div>';
+                var s = 'padding:0px;font-style:italic;margin-right:100px;';
+                cn += '<div class="col-md-4" style="'+s+'">';
+                cn += '<h3>User Profile</h3>';
+                for (var i in resJson["userinfo"]){
+                    var o = resJson["userinfo"][i];
+                    var txtBox = '<input class=txtinputbox name="'+o["field"]+'" value="'+o["value"]+'">';
+                    cn += o["label"] + '<br>'+ txtBox;
+                }
+                var saveBtn = '<input class=submitbtn id=saveprofile type=submit value="Save Profile">';
+                cn += saveBtn;
+                cn += '</div>';
+                var s = 'padding:0px;font-style:italic;margin-right:100px;';
+                cn += '<div class="col-md-4" style="'+s+'">';
+                cn += '<h3>Password Reset</h3>';
+                var txtBox = '<input type=password class=txtinputbox name="passwordone" value="">';
+                cn += 'Current Password<br>'+ txtBox;
+                var onkeyUp = 'onkeyup="validatePassword(this.value);"';
+                var txtBox = '<input type=password class=txtinputbox name="passwordtwo" value="" '+onkeyUp+'>';
+                cn += 'New Password <span id=pwdvalmsg></span><br>'+ txtBox;
+                var txtBox = '<input type=password class=txtinputbox name="passwordthree" value="">';
+                cn += 'Re-enter New Password<br>'+ txtBox ;
+                var saveBtn = '<input class=submitbtn id=resetpassword type=submit value="Reset Password">';
+                cn += saveBtn;
+                cn += '</div>';
+
+                $("#pagecn").html(cn);
+                $("#searchboxcn").css("display", "none");
+            }
+            catch(e) {
+                $("#pagecn").html(getMessagePanel("setViewPage, please report this error!"));
+                console.log(e);
+            }
+        }
+    };
+    var postData = 'injson='+JSON.stringify({"svc":"get_profile"});
     reqObj.send(postData);
     console.log('request='+postData);
     return;
@@ -287,15 +418,19 @@ function loginUser(){
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
                 resJson = JSON.parse(reqObj.responseText);
+                if(resJson["taskstatus"] == 0){
+                    var msg = resJson["errormsg"];
+                    $("#pagecn").html(getMessagePanel(msg));
+                    return;
+                }
                 if (resJson["auth"]["status"] == 1){
-                    $("#loginmsg").html(resJson["auth"]["msg"]);
                     setCookie("sessionid", resJson["auth"]["sessionid"], 7);
                     setCookie("email", resJson["auth"]["email"], 7);
-                    window.location.href = htmlRoot;
+                    //window.location.href = htmlRoot;
+                    setHomePage();
                 }
                 else{
                     var msg = resJson["auth"]["errormsg"];
-                    msg += ' <a id=logout href="">Click here</a> to go back.'
                     $("#pagecn").html(getMessagePanel(msg));
                 }
             }
@@ -328,9 +463,9 @@ function registerUser(){
             try {
                 resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
-                    var msg = resJson["errormsg"] + '. Please ';
-                    msg += '<a id=logout href="">click here</a> to try again, or contact admin if this persists.'
+                    var msg = resJson["errormsg"];
                     $("#pagecn").html(getMessagePanel(msg));
+                    return;
                 }
                 else{
                     var msg = 'You have registered successfully! Please contact admin for activation, or ';
@@ -356,18 +491,35 @@ function saveObject(){
     var bcoJson = editorObj.getValue();
     $("#pagecn").append(getProgressIcon());
     var url = cgiRoot + '/bco_editor';
+   
+    //Force this!
+    bcoJson["bco_id"] = bcoId;
     
+    var regex = /^((\d+)\.(\d+)\.(\d+))(?:-([\dA-Za-z\-]+(?:\.[\dA-Za-z\-]+)*))?(?:\+([\dA-Za-z\-]+(?:\.[\dA-Za-z\-]+)*))?$/
+    if(bcoJson["provenance_domain"]["version"].match(regex) == null){
+        $("#pagecn").html(getMessagePanel("Invalid version format for BCO"));
+        return;
+    }
+
+
+
     var inJson = {"svc":"save_object", "bco":bcoJson}
+    var form = document.getElementById('bco_form');
+    var formData = new FormData(form);
+    formData.append("injson", JSON.stringify(inJson));
+
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
-    reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    //reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     reqObj.onreadystatechange = function() {
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
-                console.log('response='+reqObj.responseText);
+                console.log(reqObj.responseText);
                 resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
-                    $("#pagecn").html(getMessagePanel(resJson["errormsg"]));
+                    var msg = resJson["errormsg"];
+                    $("#pagecn").html(getMessagePanel(msg));
+                    return;
                 }
                 else{
                     bcoId = resJson["bcoid"];
@@ -380,9 +532,8 @@ function saveObject(){
             }
         }
     };
-    var postData = 'injson=' + JSON.stringify(inJson);
-    reqObj.send(postData);
-    console.log('request='+postData);
+    reqObj.send(formData);
+    //console.log('request='+postData);
     return;
 }
 
@@ -450,8 +601,183 @@ function handleRowSelection(row){
 
     $('html').animate({scrollTop:0}, 'fast');
     $('body').animate({scrollTop:0}, 'fast');
-    bcoId = parseInt(row[0]);
+    bcoId = row[0];
     setViewPage();
     return;
 }
+
+
+function handleBackBtn(){
+
+    if (window.history && window.history.pushState) {
+        $(window).on('popstate', function() {
+            var hashLocation = location.hash;
+            var hashSplit = hashLocation.split("#!/");
+            var hashName = hashSplit[1];
+            if (hashName !== '') {
+                var hash = window.location.hash;
+                if (hash === '') {
+                    setHomePage();
+                    //alert('Back button was pressed.');
+                }
+            }
+        });
+        //window.history.pushState('forward', null, './#forward');
+    }
+}
+
+
+
+function saveProfile(){
+
+    var inJson = {"svc":"save_profile"};
+    for (var i in resJson["userinfo"]){
+        var o = resJson["userinfo"][i];
+        inJson[o["field"]] = $("input[name="+o["field"]+"]").val();
+    }
+
+    var url = cgiRoot + '/bco_editor';
+    var reqObj = new XMLHttpRequest();
+    reqObj.open("POST", url, true);
+    reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    reqObj.onreadystatechange = function() {
+        if (reqObj.readyState == 4 && reqObj.status == 200) {
+            try {
+                resJson = JSON.parse(reqObj.responseText);
+                if(resJson["taskstatus"] == 0){
+                    var msg = resJson["errormsg"];
+                    $("#pagecn").html(getMessagePanel(msg));
+                    return;
+                }
+                else{
+                    var msg = 'Saved successfully!';
+                    msg += ' <a id=profile class="pagelink" href="">Click here</a> to get back.';
+                    $("#pagecn").html(getMessagePanel(msg));
+                }
+            }
+            catch(e) {
+                $("#pagecn").html(getMessagePanel("saveProfile, please report this error!"));
+                console.log(e);
+            }
+        }
+    };
+    var postData = 'injson='+JSON.stringify(inJson);
+    reqObj.send(postData);
+    console.log('request='+postData);
+}
+
+
+function resetPassword(){
+
+
+    var passwordOne = $("input[name=passwordone]").val(); 
+    var passwordTwo = $("input[name=passwordtwo]").val();
+    var passwordThree = $("input[name=passwordthree]").val();
+
+    var msg = '';
+    if (passwordOne.trim() == '' || passwordTwo.trim() == '' || passwordThree.trim() == ''){
+        msg += 'Error: please enter all values!';
+        msg += ' <a id=profile class="pagelink" href="">Click here</a> to get back.';
+    }
+    if (passwordTwo.trim() != passwordThree.trim()){
+        msg += 'Error: new passwords do not match!';
+        msg += ' <a id=profile class="pagelink" href="">Click here</a> to get back.';
+    }
+    if ($("#pwdvalmsg").html() == 'Weak'){
+        msg += 'Error: weak password!';
+        msg += ' <a id=profile class="pagelink" href="">Click here</a> to get back.';
+    }
+
+    if(msg != ''){
+        $("#pagecn").html(getMessagePanel(msg));
+        return;
+    }
+
+    var inJson = {
+        "svc":"reset_password", 
+        "passwordone":passwordOne, "passwordtwo":passwordTwo,
+        "passwordthree":passwordThree};
+    var url = cgiRoot + '/bco_editor';
+    var reqObj = new XMLHttpRequest();
+    reqObj.open("POST", url, true);
+    reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    reqObj.onreadystatechange = function() {
+        if (reqObj.readyState == 4 && reqObj.status == 200) {
+            try {
+                resJson = JSON.parse(reqObj.responseText);
+                if(resJson["taskstatus"] == 0){
+                    var msg = resJson["errormsg"] + '.';
+                    msg += ' <a id=profile class="pagelink" href="">Click here</a> to get back.';
+                    $("#pagecn").html(getMessagePanel(msg));
+                    return;
+                }
+                else{
+                    var msg = 'Password reset successfully!';
+                    msg += ' <a id=profile class="pagelink" href="">Click here</a> to get back.';
+                    $("#pagecn").html(getMessagePanel(msg));
+                }
+            }
+            catch(e) {
+                $("#pagecn").html(getMessagePanel("saveProfile, please report this error!"));
+                console.log(e);
+            }
+        }
+    };
+    var postData = 'injson='+JSON.stringify(inJson);
+    reqObj.send(postData);
+    console.log('request='+postData);
+    return;
+
+}
+
+
+
+function validatePassword(password) {
+                
+    // Do not show anything when the length of password is zero.
+    if (password.length === 0) {
+        document.getElementById("pwdvalmsg").innerHTML = "";
+        return;
+    }
+    
+    // Create an array and push all possible values that you want in password
+    var matchedCase = new Array();
+    matchedCase.push("[$@$!%*#?&]"); // Special Charector
+    matchedCase.push("[A-Z]");      // Uppercase Alpabates
+    matchedCase.push("[0-9]");      // Numbers
+    
+    matchedCase.push("[a-z]");     // Lowercase Alphabates
+                
+    // Check the conditions
+    var ctr = 0;
+    for (var i = 0; i < matchedCase.length; i++) {
+        if (new RegExp(matchedCase[i]).test(password)) {
+            ctr++;
+        }
+    }
+    
+    // Display it
+    var color = "";
+    var strength = "";
+    switch (ctr) {
+        case 0:
+        case 1:
+        case 2:
+            strength = "Weak";
+            color = "red";
+            break;
+        case 3:
+            strength = "Medium";
+            color = "orange";
+            break;
+        case 4:
+            strength = "Strong";
+            color = "green";
+            break;
+    }
+    document.getElementById("pwdvalmsg").innerHTML = " (" +  strength + ")";
+    document.getElementById("pwdvalmsg").style.color = color;
+    
+}
+
 

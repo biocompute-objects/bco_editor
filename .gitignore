@@ -1,2 +1,3 @@
-html/log/*
-cgi-bin/tmp/
+html/js/backup/*
+cgi-bin/*.pyc
+.DS_Store

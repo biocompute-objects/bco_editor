@@ -24,7 +24,7 @@ body {
     font-size:12px;
 }
 
-.pagelink{
+.menudiv{
     display:block;
     float:right;
     width:auto;
@@ -33,6 +33,9 @@ body {
     cursor:pointer;
 }
 
+.pagelink{
+    cursor:pointer;
+}
 .txtinputbox{
     height:35px;
     width:100%;
@@ -40,7 +43,22 @@ body {
     padding:10px;
     border:1px solid #ddd;
     border-radius:5px;
+    font-style:normal;
 }
+
+.submitbtn{
+    height:35px;
+    padding:0px 15px 0px 15px;
+    background:#ddd;
+    border:1px solid #ddd;
+    border-radius:5px;
+    font-style:normal;
+}
+
+.submitbtn:hover{
+    background:#eee;
+}
+
 
 .loginmsg{
     display:block;
@@ -58,7 +76,7 @@ body {
     margin:1px 10px 0px 10px;
 }
 
-.createlink, .editlink{
+.createlink, .editlink, .viewlink{
     cursor:pointer;
 }
 
