@@ -85,16 +85,28 @@ def search_objects(in_json):
         query_obj = {}
         if in_json["queryvalue"] != "":
             if in_json["queryfield"] == "bco_id":
-                query_obj = {"bco_id":int(in_json["queryvalue"])}
+                bco_str_id = "000000"[0:6-len(str(in_json["queryvalue"]))] + str(in_json["queryvalue"])
+                bco_url = config_json["pathinfo"]["bcoprefix"] % (bco_str_id)
+                query_obj = {"bco_id":bco_url}
             if in_json["queryfield"] == "name":
-                query_obj = {"provenance_domain":{"name":in_json["queryvalue"]}}
-
+                query_obj = {"provenance_domain.name":{'$regex':in_json["queryvalue"], '$options': 'i'}}
         row = []
         obj_list = []
         obj_list.append(config_json["tableheaders"]["searchresults"]["labellist"])
         obj_list.append(config_json["tableheaders"]["searchresults"]["typelist"])
 
         for doc in mongo_cl_bco.find(query_obj):
+            if "provenance_domain" not in doc:
+                continue
+            tv_list = ["name" in doc["provenance_domain"]]
+            tv_list += ["created" in doc["provenance_domain"]]
+            tv_list += ["contributors" in doc["provenance_domain"]]
+            if False in tv_list:
+                continue
+            tv_list = [len(doc["provenance_domain"]["contributors"]) > 0]
+
+            if False in tv_list:
+                continue
             doc.pop("_id")
             created_by = doc["provenance_domain"]["contributors"][0]["email"]
             bco_id = str(doc["bco_id"])
