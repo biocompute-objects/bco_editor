@@ -148,11 +148,8 @@ function setHomePage(){
     $("#searchboxcn").css("display", "block");
                    
     var inJson = {}
-    if ($("#queryfield").val() != undefined){
-        var queryField = $("#queryfield").val().trim();
-        var queryValue = $("#queryvalue").val().trim();
-        inJson = {"svc":"search_objects", "queryfield":queryField, "queryvalue":queryValue};
-    }
+    var queryValue = $("#queryvalue").val().trim();
+    inJson = {"svc":"search_objects",  "queryvalue":queryValue};
 
     $("#pagecn").append(getProgressIcon());
     var url = cgiRoot + '/bco_editor';
@@ -374,21 +371,14 @@ function fillStaticHtmlCn(fileName, containerId){
 
 function getSearchForm(){
     
-    var fieldList = ["bco_id", "name"];
-    var queryField = '<select class=queryfield id=queryfield>';
-    for (var i in fieldList){
-        queryField += '<option value="'+fieldList[i]+'">'+fieldList[i]+'</option>';
-    }
-    queryField += '</select>';
     var queryValue = '<input type=text class=queryvalue id=queryvalue value="">';
     var searchBtn = '<input type=submit class=searchbtn id=searchbtn value="Search">';
-
+    var msg = 'You can search by BCO ID, name or contributor.';
     var cn = '<table width=100% style="border-bottom:1px solid #ccc;"><tr>';
-    cn += '<td width=15%>Search field<br>'+queryField+'</td>';
-    cn += '<td width=40%>Search value<br>'+queryValue+'</td>';
+    cn += '<td width=70%>Search term<br>'+queryValue+'</td>';
     cn += '<td width=10%><br>'+searchBtn+'</td>';
     cn += '<td></td>';
-    cn += '</tr><tr height=5><td colspan=4></td></tr></table>';
+    cn += '</tr><tr height=30><td colspan=3 style="font-size:11px;font-style:italic;" valign=top>'+msg+'</td></tr></table>';
     return cn;
 }
 

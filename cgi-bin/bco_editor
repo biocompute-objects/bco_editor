@@ -83,12 +83,12 @@ def search_objects(in_json):
     try:
         query_obj = {}
         if in_json["queryvalue"] != "":
-            if in_json["queryfield"] == "bco_id":
-                bco_str_id = "000000"[0:6-len(str(in_json["queryvalue"]))] + str(in_json["queryvalue"])
-                bco_url = config_json["pathinfo"]["bcoprefix"] % (bco_str_id)
-                query_obj = {"bco_id":bco_url}
-            if in_json["queryfield"] == "name":
-                query_obj = {"provenance_domain.name":{'$regex':in_json["queryvalue"], '$options': 'i'}}
+            query = str(in_json["queryvalue"])
+            cond_objs = []
+            cond_objs.append({"bco_id":{'$regex':query, '$options': 'i'}})
+            cond_objs.append({"provenance_domain.name":{'$regex':query, '$options': 'i'}})
+            cond_objs.append({"provenance_domain.contributors.name":{'$regex':query, '$options': 'i'}})
+            query_obj = { "$or": cond_objs }
         row = []
         obj_list = []
         obj_list.append(config_json["tableheaders"]["searchresults"]["labellist"])
