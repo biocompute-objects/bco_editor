@@ -379,11 +379,10 @@ function getSearchForm(){
     var queryValue = '<input type=text class=queryvalue id=queryvalue value="">';
     var searchBtn = '<input type=submit class=searchbtn id=searchbtn value="Search">';
     var msg = 'You can search by BCO ID, name or contributor.';
-    var cn = '<table width=100% style="border-bottom:1px solid #ccc;"><tr>';
-    cn += '<td width=70%>Search term<br>'+queryValue+'</td>';
-    cn += '<td width=10%><br>'+searchBtn+'</td>';
-    cn += '<td></td>';
-    cn += '</tr><tr height=30><td colspan=3 style="font-size:11px;font-style:italic;" valign=top>'+msg+'</td></tr></table>';
+    var cn = '<table width=100% style="background:#f6f6f6;"><tr>';
+    cn += '<td width=70% style="padding:20px 0px 20px 20px;font-size:11px;">Search term<br>'+queryValue+ '<br>'+ msg + '</td>';
+    cn += '<td width=10%><br>'+searchBtn+'<br>&nbsp;</td>';
+    cn += '<td></td></tr></table>';
     return cn;
 }
 

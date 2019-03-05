@@ -109,11 +109,14 @@ div.progresscn{
 }
 .queryvalue{
     width:99%;
-    height:30px;
+    height:35px;
     margin-right:1%;
+    padding:10px;
+    border-radius:5px;
+    border:1px solid #ccc;
 }
 .searchbtn{
-    height:30px;
+    height:35px;
     width:80%;
 }
 
