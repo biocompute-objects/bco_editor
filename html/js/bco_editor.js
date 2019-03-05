@@ -378,9 +378,9 @@ function getSearchForm(){
     
     var queryValue = '<input type=text class=queryvalue id=queryvalue value="">';
     var searchBtn = '<input type=submit class=searchbtn id=searchbtn value="Search">';
-    var msg = 'You can search by BCO ID, name or contributor.';
+    var msg = '<span style="font-size:11px;">You can search by BCO ID, name or contributor.</span>';
     var cn = '<table width=100% style="background:#f6f6f6;"><tr>';
-    cn += '<td width=70% style="padding:20px 0px 20px 20px;font-size:11px;">Search term<br>'+queryValue+ '<br>'+ msg + '</td>';
+    cn += '<td width=70% style="padding:20px 0px 20px 20px;"><b>Search term</b><br>'+queryValue+ '<br>'+ msg + '</td>';
     cn += '<td width=10%><br>'+searchBtn+'<br>&nbsp;</td>';
     cn += '<td></td></tr></table>';
     return cn;
