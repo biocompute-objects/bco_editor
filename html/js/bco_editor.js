@@ -173,13 +173,18 @@ function setHomePage(){
                     $("#pagecn").html(getMessagePanel(msg));
                     return;
                 }
-                var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
-                s += 'margin-bottom:20px;';
-                var cn = '<div style="'+s+'"><a id=create class="createlink">Create Object</a></div>';
+                var s1 = 'display:block;float:left;border-bottom:1px solid #ccc;padding:5px;margin-bottom:20px;';
+                var s2 = 'width:70%;'
+                var cn = '<div id=searchstatcn style="'+s1 + s2+'"></div>';
+                var s2 = 'width:30%;text-align:right;'
+                cn += '<div style="'+s1 + s2 +'"><a id=create class="createlink">Create Object</a></div>';
                 cn += '<div id=searchresultscn></div>';
                 $("#pagecn").html(cn);
                 $("#loginmsg").html('Signed as ' + resJson["auth"]["email"]);
                 if (resJson["searchresults"].length > 2){
+                    var n = resJson["searchresults"].length - 2;
+                    var statMsg = "Total of " + n  + " object(s) found.";
+                    $("#searchstatcn").html(statMsg);
                     var argObj = {"containerid":"searchresultscn", "pagesize":50, "onselect":""};
                     rndrGoogleTable(resJson["searchresults"], argObj);
                 }
