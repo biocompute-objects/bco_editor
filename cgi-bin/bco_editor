@@ -112,11 +112,15 @@ def search_objects(in_json):
             bco_id = str(doc["bco_id"])
             #linked_id = '<a id=view_'+bco_id+' class=viewlink href="#">' 
             #linked_id += bco_id + '</a>'
+            creators = []
+            for o in doc["provenance_domain"]["contributors"]:
+                val = o["name"] if o["name"].strip() != "" else o["email"]
+                creators.append(val)
             row = [
                 bco_id
                 ,doc["provenance_domain"]["name"]
                 ,doc["provenance_domain"]["created"]
-                ,doc["provenance_domain"]["contributors"][0]["email"]
+                ,", ".join(creators)
             ]
             obj_list.append(row)
         
