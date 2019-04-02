@@ -17,7 +17,7 @@ def make_hash_string():
 
 
 
-def login(mongo_cl_users, in_json, session_life, log_dir):
+def login(mongo_cl_users, in_json, session_life, mongo_cl_log):
    
     try:
         
@@ -43,13 +43,13 @@ def login(mongo_cl_users, in_json, session_life, log_dir):
         else:
             out_json = {"status":0, "errormsg":"Login failed! Invalid email/password combination"}
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), log_dir)
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
     return out_json
 
 
 
-def authenticate(log_dir):
+def authenticate(mongo_cl_log):
 
     out_json = {}
     try:
@@ -67,13 +67,13 @@ def authenticate(log_dir):
         else:
             out_json =  {"status":0, "errormsg": "No cookie found!"}
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), log_dir)
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
     return out_json
 
 
 
-def reset_password(mongo_cl_users, logged_email, current_password, new_password, log_dir):
+def reset_password(mongo_cl_users, logged_email, current_password, new_password, mongo_cl_log):
 
     out_json = {}
     try:
@@ -88,13 +88,13 @@ def reset_password(mongo_cl_users, logged_email, current_password, new_password,
         else:
             return {"taskstatus":0, "errormsg":"Current password does not match stored password"} 
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), log_dir)
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
     return out_json
 
 
 
-def register_user(mongo_cl_users, user_obj, log_dir):
+def register_user(mongo_cl_users, user_obj, mongo_cl_log):
     user_obj["status"] = 0
     try:
         user_obj["password"] = bcrypt.hashpw(user_obj["password"].encode('utf-8'), bcrypt.gensalt())
@@ -104,24 +104,24 @@ def register_user(mongo_cl_users, user_obj, log_dir):
             res = mongo_cl_users.insert_one(user_obj)
             out_json = {"taskstatus":1}
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), log_dir)
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
     return out_json
 
 
 
 
-def save_user(mongo_cl_users, in_json, logged_email, log_dir):
+def save_user(mongo_cl_users, in_json, logged_email, mongo_cl_log):
     out_json = {}
     try:
         result = mongo_cl_users.update_one({"email":logged_email}, {'$set': in_json}, upsert=False)
         return {"taskstatus": 1}
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), log_dir)
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
     return out_json
 
-def get_profile(mongo_cl_users, auth_obj, profile_obj, log_dir):
+def get_profile(mongo_cl_users, auth_obj, profile_obj, mongo_cl_log):
 
     out_json = {}
     try:
@@ -136,7 +136,7 @@ def get_profile(mongo_cl_users, auth_obj, profile_obj, log_dir):
                 o["value"] = doc[o["field"]]
                 out_json["userinfo"].append(o)
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), log_dir)
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
     return out_json
 

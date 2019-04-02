@@ -72,7 +72,7 @@ def save_object(in_json, logged_email):
             result = mongo_cl_bco.insert_one(in_json)
             out_json = {"bcoid":bco_url, "taskstatus":1}
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), log_dir)
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
     return out_json
 
@@ -129,7 +129,7 @@ def search_objects(in_json):
         out_json["searchresults"] = obj_list
         out_json["taskstatus"] = taskstatus
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), log_dir)
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
 
         
@@ -153,7 +153,7 @@ def get_object_view_json(in_json):
         ordr_dict = json.loads(open("conf/field_order.json").read())
         out_json["bco"] = util.order_json_obj(out_json["bco"],ordr_dict)
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), log_dir)
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
     return out_json
 
@@ -224,7 +224,7 @@ def get_object_edit_json(in_json):
         out_json["startval"] = util.order_json_obj(out_json["startval"],ordr_dict) 
         out_json["taskstatus"] = 1
     except Exception, e:
-        out_json = util.log_error(traceback.format_exc(), log_dir)
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
 
 
@@ -264,10 +264,12 @@ def main():
     global mongo_cl_bco
     global mongo_cl_counters
     global mongo_cl_users
-    global log_dir
+    global mongo_cl_log
     global client
 
-    
+    print "Content-Type: application/json"
+    print
+
     try:
         config_json = json.loads(open("conf/config.json", "r").read())
         if os.path.exists("conf/config.custom.json"):
@@ -277,9 +279,10 @@ def main():
                     if k_one in config_json:
                         if k_two in config_json[k_one]:
                             config_json[k_one][k_two] = custom_config_json[k_one][k_two]
-        log_dir = config_json["pathinfo"]["htmlpath"] + "/log/"
     except Exception, e:
         out_json = {"taskstatus":0, "errormsg":"Loading config failed!"}
+        print json.dumps(out_json, indent=4)
+        sys.exit()
 
     try:
         client = MongoClient('mongodb://localhost:27017',
@@ -294,24 +297,25 @@ def main():
         mongo_cl_bco = mongo_dbh[config_json["dbinfo"]["collections"]["bco"]]
         mongo_cl_counters = mongo_dbh[config_json["dbinfo"]["collections"]["counters"]]
         mongo_cl_users = mongo_dbh[config_json["dbinfo"]["collections"]["users"]]
-    
+        mongo_cl_log = mongo_dbh[config_json["dbinfo"]["collections"]["log"]]
+
         try:
             svc = in_json["svc"] if "svc" in in_json else ""
-            auth_obj = auth.authenticate(log_dir)
+            auth_obj = auth.authenticate(mongo_cl_log)
             logged_email = auth_obj["email"] if auth_obj["status"] == 1 else ""
             if svc == "login_user":
                 out_json = {}
-                auth_obj = auth.login(mongo_cl_users, in_json, config_json["dbinfo"]["sessionlife"],log_dir)
+                auth_obj = auth.login(mongo_cl_users, in_json, config_json["dbinfo"]["sessionlife"],mongo_cl_log)
                 logged_email = auth_obj["email"] if auth_obj["status"] == 1 else ""
             elif svc == "register_user":
-                out_json = auth.register_user(mongo_cl_users, in_json, log_dir)
+                out_json = auth.register_user(mongo_cl_users, in_json, mongo_cl_log)
             elif svc == "get_profile" and (auth_obj["status"] == 1 or local_flag):
-                out_json = auth.get_profile(mongo_cl_users, auth_obj, config_json["profileinfo"], log_dir)
+                out_json = auth.get_profile(mongo_cl_users, auth_obj, config_json["profileinfo"], mongo_cl_log)
             elif svc == "save_profile" and (auth_obj["status"] == 1 or local_flag):
-                out_json = auth.save_user(mongo_cl_users, in_json, logged_email, log_dir)
+                out_json = auth.save_user(mongo_cl_users, in_json, logged_email, mongo_cl_log)
             elif svc == "reset_password" and (auth_obj["status"] == 1 or local_flag):
                 current_pass, new_pass = in_json["passwordone"], in_json["passwordtwo"]
-                out_json = auth.reset_password(mongo_cl_users, logged_email, current_pass,new_pass, log_dir)
+                out_json = auth.reset_password(mongo_cl_users, logged_email, current_pass,new_pass, mongo_cl_log)
             elif svc == "search_objects" and (auth_obj["status"] == 1 or local_flag):
                 out_json = search_objects(in_json)
             elif svc == "get_object_view_json" and (auth_obj["status"] == 1 or local_flag):
@@ -325,15 +329,13 @@ def main():
                 out_json = {"taskstatus":0, "errormsg":"Submitted service does not exist!"}
             out_json["auth"] = auth_obj
         except Exception, e:
-            out_json = util.log_error(traceback.format_exc(), log_dir)
+            out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
     except pymongo.errors.ServerSelectionTimeoutError as err:
         out_json = {"taskstatus":0, "errormsg":"Connection to mongodb failed!"}
     except pymongo.errors.OperationFailure as err:
         out_json = {"taskstatus":0, "errormsg":"MongoDB auth failed!"}
 
-    print "Content-Type: application/json"
-    print          
     
     out_json["editorversion"] = config_json["editorversion"]
     print json.dumps(out_json, indent=4)
