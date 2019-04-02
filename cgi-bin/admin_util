@@ -29,7 +29,7 @@ def main():
 
     usage = "\n%prog  [options]"
     parser = OptionParser(usage,version="%prog " + __version__)
-    msg = "list_users|upsert_user|delete_user|reset_bcocounter|delete_bco|list_bco"
+    msg = "list_users|upsert_user|delete_user|reset_bcocounter|delete_bco|list_bco|list_log"
     parser.add_option("-a","--action",action="store",dest="action",help=msg)
 
     group_1 = OptionGroup(parser, "Additional options for upsert_user and delete_user actions")
@@ -64,7 +64,6 @@ def main():
  
     
     
-    log_dir = config_json["pathinfo"]["htmlpath"] + "/log/"
         
     client = MongoClient('mongodb://localhost:27017', 
         username=config_json["dbinfo"]["mongodbuser"],
@@ -77,6 +76,7 @@ def main():
     mongo_cl_bco = mongo_dbh[config_json["dbinfo"]["collections"]["bco"]]
     mongo_cl_counters = mongo_dbh[config_json["dbinfo"]["collections"]["counters"]]
     mongo_cl_users = mongo_dbh[config_json["dbinfo"]["collections"]["users"]]
+    mongo_cl_log = mongo_dbh[config_json["dbinfo"]["collections"]["log"]]
 
 
 
@@ -98,6 +98,10 @@ def main():
                     createdby = obj["email"]
                     break
             print "%s|%s|%s" % (doc["bco_id"], name, createdby)
+    elif options.action == "list_log":
+        for doc in mongo_cl_log.find({}):
+            doc.pop("_id")
+            print json.dumps(doc, indent=4)
     elif options.action == "delete_user":
         if not (options.email):
             parser.print_help()

@@ -10,6 +10,7 @@
             "bco":"c_bco"
             ,"counters":"c_counters"
             ,"users":"c_users"
+            ,"log":"c_log"
         }
     }
     ,"pathinfo":{
