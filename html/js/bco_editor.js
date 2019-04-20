@@ -242,7 +242,10 @@ function setEditPage(){
                         $("#pagecn").html(cn);
                         var schemaObj = JSON.parse(reqObj.responseText);
                         schemaObj["ajax"] = true;
+                        schemaObj.show_errors = "interaction"
+                        JSONEditor.defaults.options.theme = 'bootstrap3';
                         editorObj = new JSONEditor(document.getElementById('editor_div'),schemaObj);
+
                     }
                 }
             }
@@ -482,6 +485,11 @@ function registerUser(){
 
 function saveObject(){
 
+    var errors = editorObj.validate();    
+    editorObj.root.showValidationErrors(errors);    
+    if (errors.length) {
+      return
+    }
     var bcoJson = editorObj.getValue();
     $("#pagecn").append(getProgressIcon());
     var url = cgiRoot + '/bco_editor';
