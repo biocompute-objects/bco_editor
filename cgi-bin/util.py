@@ -15,13 +15,16 @@ def get_random_string(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-def log_error(coll_obj, error_log):
+def log_error(coll_obj, error_log, error_msg=None):
 
     try:
         error_id = get_random_string(6)
         error_obj = {"id":error_id, "log":error_log}
         res = coll_obj.insert_one(error_obj)
-        return {"taskstatus":0, "errormsg":"exception-error-" + error_id}
+        if error_msg:
+            return {"taskstatus":0, "errormsg":error_msg}
+        else:
+            return {"taskstatus":0, "errormsg":"exception-error-" + error_id}
     except Exception, e:
         return {"taskstatus":0, "errormsg":"Unable to log error!"}
 
