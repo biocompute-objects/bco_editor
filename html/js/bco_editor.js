@@ -3,29 +3,18 @@ var editorObj = {};
 var pageId = "";
 var bcoId = "";
 
-
 ////////////////////////////////
 $(document ).ready(function() {
+  $('html').animate({scrollTop:0}, 'fast');
+  $('body').animate({scrollTop:0}, 'fast');
+  handleBackBtn();
 
+  $("#loginformcn").css("display", "none");
+  $("#pagelinkcn").css("display", "block");
 
-    $('html').animate({scrollTop:0}, 'fast');
-    $('body').animate({scrollTop:0}, 'fast');
-    handleBackBtn();
-
-
-    $("#loginformcn").css("display", "none");
-    $("#pagelinkcn").css("display", "block");
-
-
-    $("#searchboxcn").html(getSearchForm());
-    $("#pagecn").html(setHomePage());
-
-
+  $("#searchboxcn").html(getSearchForm());
+  $("#pagecn").html(setHomePage());
 });
-
-
-
-
 
 $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink', function (event) {
     event.preventDefault();
@@ -34,28 +23,21 @@ $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink'
 
     pageId = this.id.split("|")[0];
 
-
     if(pageId == 'home'){
         setHomePage();
-    }
-    else if(pageId == 'view'){
+    } else if(pageId == 'view'){
         bcoId = this.id.split("|")[1];
         setViewPage();
-    }
-    else if(pageId == 'edit'){
+    } else if(pageId == 'edit'){
         setEditPage();
-    }
-    else if(pageId == 'create'){
+    } else if(pageId == 'create'){
         bcoId = "-1";
         setEditPage();
-    }
-    else if(pageId == 'profile'){
+    } else if(pageId == 'profile'){
         setProfilePage();
-    }
-    else if(["tutorial"].indexOf(pageId) != -1){
+    } else if(["tutorial"].indexOf(pageId) != -1){
         fillStaticHtmlCn(pageId + ".html", "#pagecn")
-    }
-    
+    }    
 });
 
 $(document).on('click', '#savebco', function (event) {
@@ -78,9 +60,6 @@ $(document).on('click', '#resetpassword', function (event) {
     $('body').animate({scrollTop:0}, 'fast');
     resetPassword();
 });
-
-
-
 
 $(document).on('click', '#logout', function (event) {
     event.preventDefault();
@@ -482,6 +461,14 @@ function registerUser(){
 
 function saveObject(){
 
+
+    var errors = editorObj.validate();    
+    editorObj.root.showValidationErrors(errors);    
+    if (errors.length) {
+      errors.map(error => showError(error.path + " : " + error.message));
+      return
+    }
+
     var bcoJson = editorObj.getValue();
     $("#pagecn").append(getProgressIcon());
     var url = cgiRoot + '/bco_editor';
@@ -512,12 +499,14 @@ function saveObject(){
                 resJson = JSON.parse(reqObj.responseText);
                 if(resJson["taskstatus"] == 0){
                     var msg = resJson["errormsg"];
-                    $("#pagecn").html(getMessagePanel(msg));
+                    showError(msg)
+                    // $("#pagecn").html(getMessagePanel(msg));
                     return;
                 }
                 else{
                     bcoId = resJson["bcoid"];
-                    setEditPage();
+                    showSuccess("Your bco "+ bcoJson['bco_spec_version'] + " has been successfully submitted.");
+                    setHomePage();
                 }
             }
             catch(e) {
@@ -774,4 +763,22 @@ function validatePassword(password) {
     
 }
 
+
+function showSuccess(message) {
+  $.toast({
+    heading: 'Success',
+    text: message,
+    icon: 'success',
+    position: 'bottom-right'
+  })
+}
+
+function showError(message) {
+  $.toast({
+    heading: 'Error',
+    text: message,
+    icon: 'error',
+    position: 'bottom-right'
+  })
+}
 
