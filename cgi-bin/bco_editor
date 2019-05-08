@@ -18,6 +18,16 @@ import hashlib
 import pymongo
 from pymongo import MongoClient
 
+<<<<<<< HEAD
+=======
+
+__version__="1.0"
+
+
+
+
+
+>>>>>>> roll back to b64885f
 def save_object(in_json, logged_email):
 
     out_json = {}
@@ -69,7 +79,11 @@ def save_object(in_json, logged_email):
 
     return out_json
 
+
+
 def search_objects(in_json):
+
+
     try:
         query_obj = {}
         if in_json["queryvalue"] != "":
@@ -197,9 +211,11 @@ def get_object_edit_json(in_json):
         out_json["taskstatus"] = 1
     except Exception, e:
         out_json = util.log_error(mongo_cl_log, traceback.format_exc())
+
+
+
     return out_json
 
-#~~~~~~~~~~~~~~~~~~~~~
 def main():
 
     usage = "\n%prog  [options]"
