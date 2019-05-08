@@ -74,8 +74,8 @@ def save_object(in_json, logged_email):
             ]
             result = mongo_cl_bco.insert_one(in_json)
             out_json = {"bcoid":bco_url, "taskstatus":1}
-    except Exception as e:
-        out_json = util.log_error(mongo_cl_log, traceback.format_exc(), str(e))
+    except Exception, e:
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
     return out_json
 
