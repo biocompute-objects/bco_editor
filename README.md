@@ -10,7 +10,6 @@ Software requirement
 * MongoDB Community or Enterprise version
 
 
-
 ### MongoDB Installation Example
 If you do not have MongoDB installed on your server, here is an example of [MongoDB installation instruction steps](mongodb_installation.md) steps for CentOs server. 
 
@@ -60,7 +59,7 @@ Or you can copy the folders physically.
   $ sudo cp -r /myrepositories/bco_editor/html /var/www/html/bco_editor
 ```
 
-You need also to make sure that apache has write access to /var/www/html/bco_editor/log/.
+You also need to make sure that apache has write access to /var/www/html/bco_editor/log/.
 
 ```
   $ sudo chown -R apache:apache /var/www/html/bco_editor/log/
@@ -100,7 +99,6 @@ Deleting BioCompute object
   $ python admin_util -a delete_bco -o 2
 
 ```
-
 
 
 
