@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "bco_editor", line 194, in get_object_edit_json
-    "digital_signature": bco_json["digital_signature"],
-KeyError: 'digital_signature'

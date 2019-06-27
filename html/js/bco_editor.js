@@ -16,7 +16,7 @@ $(document ).ready(function() {
   $("#pagecn").html(setHomePage());
 });
 
-$(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink', function (event) {
+$(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink, .importlink', function (event) {
     event.preventDefault();
     $('html').animate({scrollTop:0}, 'fast');
     $('body').animate({scrollTop:0}, 'fast');
@@ -25,6 +25,10 @@ $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink'
 
     if(pageId == 'home'){
         setHomePage();
+    } else if (pageId == 'import') {
+        importBcos()
+    } else if (pageId == 'search') {
+        setSearchPage()
     } else if(pageId == 'view'){
         bcoId = this.id.split("|")[1];
         setViewPage();
@@ -70,7 +74,10 @@ $(document).on('click', '#searchbtn', function (event) {
     event.preventDefault();
     $('html').animate({scrollTop:0}, 'fast');
     $('body').animate({scrollTop:0}, 'fast');
-    $("#pagecn").html(setHomePage());
+    if (checkCookie('sessionid'))
+        $("#pagecn").html(setHomePage());
+    else
+        $("#pagecn").html(setSearchPage());
 });
 
 $(document).on('click', '#login', function (event) {
@@ -104,6 +111,8 @@ function setUnSignedHomePage(){
     $("#pagelinkcn").append('<div id=tutorial class=menudiv>Tutorial</div>');
     $("#pagelinkcn").append('<div class=divider>|</div>');
     $("#pagelinkcn").append('<div id=home class=menudiv>Home</div>');
+    $("#pagelinkcn").append('<div class=divider>|</div>');
+    $("#pagelinkcn").append('<div id=search class=menudiv>Search</div>');
  
     $("#searchboxcn").css("display", "none");
     fillStaticHtmlCn("home.html", "#pagecn");
@@ -153,10 +162,11 @@ function setHomePage(){
                     return;
                 }
                 var s1 = 'display:block;float:left;border-bottom:1px solid #ccc;padding:5px;margin-bottom:20px;';
-                var s2 = 'width:70%;'
+                var s2 = 'width:50%;'
                 var cn = '<div id=searchstatcn style="'+s1 + s2+'"></div>';
                 var s2 = 'width:30%;text-align:right;'
                 cn += '<div style="'+s1 + s2 +'"><a id=create class="createlink">Create Object</a></div>';
+                // cn += '<div style="'+s1 +'"><a id=import class="importlink">Import Objects from remote</a></div>';
                 cn += '<div id=searchresultscn></div>';
                 $("#pagecn").html(cn);
                 $("#loginmsg").html('Signed as ' + resJson["auth"]["email"]);
@@ -274,6 +284,103 @@ function setViewPage(){
     return;
 }
 
+function importBcos() {
+    var inJson = {}
+    inJson = {"svc":"importbcos"};
+
+    $("#pagecn").append(getProgressIcon());
+    var url = cgiRoot + '/bco_editor';
+    var reqObj = new XMLHttpRequest();
+    reqObj.open("POST", url, true);
+    reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    reqObj.onreadystatechange = function() {
+        if (reqObj.readyState == 4 && reqObj.status == 200) {
+            try {
+                resJson = JSON.parse(reqObj.responseText);
+                $("#versioncn").html(resJson["editorversion"]);
+                
+                if(resJson["taskstatus"] == 0){
+                    var msg = resJson["errormsg"];
+                    $("#pagecn").html(getMessagePanel(msg));
+                    return;
+                }
+                var s1 = 'display:block;float:left;border-bottom:1px solid #ccc;padding:5px;margin-bottom:20px;';
+                var s2 = 'width:70%;'
+                var cn = '<div id=searchstatcn style="'+s1 + s2+'"></div>';
+                var s2 = 'width:30%;text-align:right;'
+                cn += '<div style="'+s1 + s2 +'"></div>';
+                cn += '<DIV style="padding:20px 0px 0px 20px;">importing bcos from oncomx.org and glygen.org. please check home page a few mins later.</div>';
+                $("#pagecn").html(cn);
+                
+            }
+            catch(e) {
+                $("#pagecn").html(getMessagePanel("setHomePage, please report this error!"));
+                console.log(e);
+            }
+        }
+    };
+    var postData = 'injson=' + JSON.stringify(inJson);
+    reqObj.send(postData);
+    console.log(postData);
+    return;
+
+
+}
+
+function setSearchPage(){
+
+    $("#searchboxcn").css("display", "block");
+                   
+    var inJson = {}
+    var queryValue = $("#queryvalue").val().trim();
+    inJson = {"svc":"search_objects_no_auth",  "queryvalue":queryValue};
+
+    $("#pagecn").append(getProgressIcon());
+    var url = cgiRoot + '/bco_editor';
+    var reqObj = new XMLHttpRequest();
+    reqObj.open("POST", url, true);
+    reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    reqObj.onreadystatechange = function() {
+        if (reqObj.readyState == 4 && reqObj.status == 200) {
+            try {
+                resJson = JSON.parse(reqObj.responseText);
+                $("#versioncn").html(resJson["editorversion"]);
+                
+                if(resJson["taskstatus"] == 0){
+                    var msg = resJson["errormsg"];
+                    $("#pagecn").html(getMessagePanel(msg));
+                    return;
+                }
+                var s1 = 'display:block;float:left;border-bottom:1px solid #ccc;padding:5px;margin-bottom:20px;';
+                var s2 = 'width:70%;'
+                var cn = '<div id=searchstatcn style="'+s1 + s2+'"></div>';
+                var s2 = 'width:30%;text-align:right;'
+                cn += '<div style="'+s1 + s2 +'"></div>';
+                cn += '<div id=searchresultscn></div>';
+                $("#pagecn").html(cn);
+                if (resJson["searchresults"].length > 2){
+                    var n = resJson["searchresults"].length - 2;
+                    var statMsg = "Total of " + n  + " object(s) found.";
+                    $("#searchstatcn").html(statMsg);
+                    var argObj = {"containerid":"searchresultscn", "pagesize":50, "onselect":""};
+                    rndrGoogleTable(resJson["searchresults"], argObj);
+                }
+                else{
+                    $("#searchresultscn").html(getMessagePanel("No objects found for your search!"));
+                }
+            }
+            catch(e) {
+                $("#pagecn").html(getMessagePanel("setHomePage, please report this error!"));
+                console.log(e);
+            }
+        }
+    };
+    var postData = 'injson=' + JSON.stringify(inJson);
+    reqObj.send(postData);
+    console.log(postData);
+    return;
+}
+
 
 function setProfilePage(){
 
@@ -377,6 +484,15 @@ function setCookie(cname, cvalue, exdays) {
     return;    
 }
 
+function checkCookie(cname) {
+    var cookies = document.cookie.split(';')
+    for (var c of cookies) {
+        if (c.includes(cname)) {
+            return true
+        }
+    }
+    return false
+}
 
 function loginUser(){
     var inJson = {"svc":"login_user"};

@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "bco_editor", line 227, in get_profile_view_json
-    doc = mongo_cl_users.find_one({"email":auth_obj["email"]})
-KeyError: 'email'
