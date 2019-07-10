@@ -166,7 +166,7 @@ function setHomePage(){
                 var cn = '<div id=searchstatcn style="'+s1 + s2+'"></div>';
                 var s2 = 'width:30%;text-align:right;'
                 cn += '<div style="'+s1 + s2 +'"><a id=create class="createlink">Create Object</a></div>';
-                // cn += '<div style="'+s1 +'"><a id=import class="importlink">Import Objects from remote</a></div>';
+                cn += '<div style="'+s1 +'"><a id=import class="importlink">Import Objects from remote</a></div>';
                 cn += '<div id=searchresultscn></div>';
                 $("#pagecn").html(cn);
                 $("#loginmsg").html('Signed as ' + resJson["auth"]["email"]);

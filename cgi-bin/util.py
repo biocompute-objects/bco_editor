@@ -14,6 +14,17 @@ from collections import OrderedDict
 def get_random_string(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
+def add_id(coll_obj, _id):
+    try: 
+        obj = {"bco_id": _id}
+        # res = coll_obj.insert_one(obj)
+        file_obj = open('ids.txt', 'a')
+        file_obj.write(_id + '\n')
+        file_obj.close()
+        return True
+    except:
+        return False
+
 
 def log_error(coll_obj, error_log, error_msg=None):
 

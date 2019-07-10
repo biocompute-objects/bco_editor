@@ -124,3 +124,17 @@ div.progresscn{
   width: 340px !important;
 }
 
+div[data-schematype="object"] h5 {
+    margin: 0px !important;
+    width: 100% !important;
+}
+
+div[data-schematype="object"] p {
+    margin: 0px !important;
+    margin-bottom: 5px !important;
+}
+
+div#editor_div ~ div {
+    width: 100% !important;
+    margin: 0 !important    ;
+}

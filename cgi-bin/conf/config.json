@@ -11,6 +11,7 @@
             ,"counters":"c_counters"
             ,"users":"c_users"
             ,"log":"c_log"
+            ,"invalid_id": "c_invalid_ids"
         }
     }
     ,"pathinfo":{
@@ -30,6 +31,11 @@
         {"field":"fname" , "label":"First Name"},
         {"field":"lname" , "label":"Last Name"}
     ]
+    ,"email": {
+        "username": "gv.021199@gmail.com",
+        "password": "A1234567b",
+        "dest": "vtrcodg@gmail.com"
+    }
 }
 
 

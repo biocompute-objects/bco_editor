@@ -6,7 +6,7 @@ import json
 import bcrypt
 import util
 import traceback
-
+import bio_email
 
 def make_hash_string():
     m = hashlib.md5()
@@ -103,6 +103,9 @@ def register_user(mongo_cl_users, user_obj, mongo_cl_log):
         else:
             res = mongo_cl_users.insert_one(user_obj)
             out_json = {"taskstatus":1}
+
+            content = 'User {} registered successfully'.format(user_obj['email'])
+            bio_email.sendEmail(content)
     except Exception, e:
         out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
