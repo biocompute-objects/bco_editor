@@ -244,11 +244,12 @@ def get_object_view_json(in_json):
 
 def get_schema(internal=False):
     mainschema_file = config_json["pathinfo"]["schemapath"] + "biocomputeobject.json"
+
     schema_file = open(mainschema_file, "r")
     base_uri = 'file://{}/'.format(os.path.dirname(schema_file.name))
     schema = jsonref.load(schema_file, base_uri=base_uri, jsonschema=True)  
     return schema
-    
+
     # mainschema_file = config_json["pathinfo"]["schemapath"] + "biocomputeobject.json"
     # schema = json.loads(open(mainschema_file, "r").read())
     # ordr_dict = json.loads(open("conf/field_order.json").read())
@@ -337,8 +338,6 @@ def get_object_edit_json(in_json):
 
 #~~~~~~~~~~~~~~~~~~~~~
 def main():
-    import pdb
-
     usage = "\n%prog  [options]"
     parser = OptionParser(usage,version="%prog " + __version__)
     msg = "Input JSON text"

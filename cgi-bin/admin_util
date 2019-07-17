@@ -13,9 +13,7 @@ import util
 
 import pymongo
 from pymongo import MongoClient
-
-
-
+import bio_email
 
 __version__="1.0"
 __status__ = "Dev"
@@ -50,7 +48,7 @@ def main():
     for key in ([options.action]):
         if not (key):
             parser.print_help()
-            sys.exit(0)
+            # sys.exit(0)
 
 
     config_json = json.loads(open("./conf/config.json", "r").read())
@@ -77,9 +75,6 @@ def main():
     mongo_cl_counters = mongo_dbh[config_json["dbinfo"]["collections"]["counters"]]
     mongo_cl_users = mongo_dbh[config_json["dbinfo"]["collections"]["users"]]
     mongo_cl_log = mongo_dbh[config_json["dbinfo"]["collections"]["log"]]
-
-
-
 
 
     if options.action == "list_users":
@@ -126,6 +121,20 @@ def main():
         if len(update_obj.keys()) == 0:
             print "Atleast one field must change"
             sys.exit()
+
+        c_user = mongo_cl_users.find_one({ 'email': options.email })
+        if c_user:
+            if int(options.status) == 1:
+                # confirm approval to user
+                bio_email.sendEmail(bio_email.makeContent(bio_email.confirmSubject(), bio_email.approvalBody()), options.email)
+            else:
+                # confirm denial to user
+                bio_email.sendEmail(bio_email.makeContent(bio_email.confirmSubject(), bio_email.denialBody()), options.email)
+        else:
+            # register to admin
+            bio_email.sendEmail(bio_email.makeContent(bio_email.registerSubject(), bio_email.registerBody(options.email)), config_json['email']['dest'])
+            if int(options.status) == 1:
+                bio_email.sendEmail(bio_email.makeContent(bio_email.confirmSubject(), bio_email.approvalBody()), options.email)
         res = mongo_cl_users.update_one(query_obj, {'$set': update_obj}, upsert=True)
     elif options.action == "reset_bcocounter":
         if mongo_cl_bco.find({}).count() == 0:

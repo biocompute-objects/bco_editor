@@ -104,8 +104,7 @@ def register_user(mongo_cl_users, user_obj, mongo_cl_log):
             res = mongo_cl_users.insert_one(user_obj)
             out_json = {"taskstatus":1}
 
-            content = 'User {} registered successfully'.format(user_obj['email'])
-            bio_email.sendEmail(content)
+            bio_email.sendEmail(bio_email.makeContent(bio_email.registerSubject(), bio_email.registerBody(user_obj['email'])), 'object.biocompute@gmail.com')
     except Exception, e:
         out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
