@@ -886,7 +886,8 @@ function showSuccess(message) {
     heading: 'Success',
     text: message,
     icon: 'success',
-    position: 'bottom-right'
+    position: 'bottom-right',
+    hideAfter: false
   })
 }
 
@@ -895,7 +896,8 @@ function showError(message) {
     heading: 'Error',
     text: message,
     icon: 'error',
-    position: 'bottom-right'
+    position: 'bottom-right',
+    hideAfter: false
   })
 }
 

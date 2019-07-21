@@ -19,7 +19,7 @@ def registerSubject():
 def registerBody(email):
 	return '''
 		<p>A new user has requested acces to the BCO Editor. </p>
-		<p>Please review this request in /software/bco_editor/cgi-bin as soon as you are able to and activatet via </p>
+		<p>Please review this request in /software/bco_editor/cgi-bin as soon as you are able to and activate via </p>
 		<p><strong>python admin_util -a upsert_user -e {} -s 1 </strong></p>
 		<p>, or forward to keeneyjg@gwu.edu.</p>
 
@@ -30,16 +30,16 @@ def confirmSubject():
 
 def approvalBody():
 	return '''
-		<p>Congratualtions,</p>
-		<p>This message is to inform you that your request for account access to https://www.biocomputeobject has been reviewed by an administrator and approved. 
-			You many now begin building and editing BCOs via this link.
+		<p>Congratulaltions,</p>
+		<p>This message is to inform you that your request for account access to https://www.biocomputeobject.org has been reviewed by an administrator and approved. 
+			You may now begin building and editing BCOs via this link.
 		</p>
 	'''
 
 def denialBody():
 	return '''
 		<p>We are sorry,</p>
-		<p>This message is to inform you that your request for account access to https://www.biocomputeobject has been denied. 
+		<p>This message is to inform you that your request for account access to https://www.biocomputeobject.org has been denied. 
 			Please contact the system administrator at object.biocompute@gmail.com for more details.
 		</p>
 	'''
