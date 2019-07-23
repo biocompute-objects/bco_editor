@@ -33,7 +33,77 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 # sys.stderr = sys.stdout
 __version__="1.0"
 
+def make_correct_data(input_json):
+    try:
+        del input_json['name']
+    except:
+        pass
+    try:
+        del input_json['version']
+    except:
+        pass
+    try:
+        del input_json['license']
+    except:
+        pass
+    try:
+        del input_json['contributors']
+    except:
+        pass
+    try:
+        del input_json['created']
+    except:
+        pass
+    try:
+        del input_json['modified']
+    except:
+        pass
 
+
+    for item in input_json['description_domain']['pipeline_steps']['input_list']:
+        try:
+            if item['sha1_chksum']:
+                item['sha1_checksum'] = item.pop(sha1_chksum)
+            else:
+                del item['sha1_chksum']
+        except:
+            pass
+
+    try:
+        if input_json['execution_domain']['software_prerequisites']['uri']['sha1_chksum']: 
+            input_json['execution_domain']['software_prerequisites']['uri']['sha1_checksum'] = input_json['execution_domain']['software_prerequisites']['uri'].pop('sha1_chksum')
+        else:
+            input_json['execution_domain']['software_prerequisites']['uri']['sha1_chksum']
+    except:
+        pass
+
+    for item in input_json['execution_domain']['script']:
+        try:
+            if item['uri']['sha1_chksum']:
+                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
+            else:
+                del item['uri']['sha1_chksum']
+        except:
+            pass
+
+    for item in input_json['io_domain']['input_subdomain']:
+        try:
+            if item['uri']['sha1_chksum']:
+                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
+            else:
+                del item['uri']['sha1_chksum']
+        except:
+            pass
+    for item in input_json['io_domain']['output_subdomain']:
+        try:
+            if item['uri']['sha1_chksum']:
+                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
+            else:
+                del item['uri']['sha1_chksum']
+        except:
+            pass
+    
+    return input_json
 
 def save_object(in_json, logged_email):
     # validating json data with schema
@@ -51,6 +121,8 @@ def save_object(in_json, logged_email):
     # pdb.set_trace()
     util.log_error(mongo_cl_log, 'bco_id', 'msg')
     real_id = bco_id = in_json["bco_id"]
+
+    in_json = make_correct_data(in_json)
     try:
         
 
@@ -110,7 +182,7 @@ def import_bcos(in_json, logged_email):
     bco_domain = "https://data.glygen.org"
     bco_version = "v-1.0.13"
     # traceback.print_exc('start')
-    file_obj = open('input.json', 'a')
+    file_obj = open('input1.json', 'a')
     file_obj.write('[')
     for i in xrange(1,1000):
         bco_id = "DSBCO_000000"[0:12-len(str(i))] + str(i)
@@ -162,7 +234,7 @@ def import_bcos(in_json, logged_email):
             util.log_error(mongo_cl_log, str(e), str(e))
 
     file_obj.write(']')
-
+    file_obj.close()
     return {"result": True}
 
 def search_objects(in_json):

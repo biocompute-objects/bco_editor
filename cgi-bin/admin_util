@@ -126,15 +126,15 @@ def main():
         if c_user:
             if int(options.status) == 1:
                 # confirm approval to user
-                bio_email.sendEmail(bio_email.makeContent(bio_email.confirmSubject(), bio_email.approvalBody()), options.email)
+                bio_email.sendEmail(bio_email.confirmSubject(), bio_email.approvalBody(), options.email)
             else:
                 # confirm denial to user
-                bio_email.sendEmail(bio_email.makeContent(bio_email.confirmSubject(), bio_email.denialBody()), options.email)
+                bio_email.sendEmail(bio_email.confirmSubject(), bio_email.denialBody(), options.email)
         else:
             # register to admin
-            bio_email.sendEmail(bio_email.makeContent(bio_email.registerSubject(), bio_email.registerBody(options.email)), config_json['email']['dest'])
+            bio_email.sendEmail(bio_email.registerSubject(), bio_email.registerBody(options.email), config_json['email']['dest'])
             if int(options.status) == 1:
-                bio_email.sendEmail(bio_email.makeContent(bio_email.confirmSubject(), bio_email.approvalBody()), options.email)
+                bio_email.sendEmail(bio_email.confirmSubject(), bio_email.approvalBody(), options.email)
         res = mongo_cl_users.update_one(query_obj, {'$set': update_obj}, upsert=True)
     elif options.action == "reset_bcocounter":
         if mongo_cl_bco.find({}).count() == 0:

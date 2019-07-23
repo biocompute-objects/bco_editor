@@ -3,15 +3,23 @@ import json
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-def sendEmail(content, dest):
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
+def sendEmail(subject, content, dest):
 	config_json = json.loads(open("conf/config.json", "r").read())
-	server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-	server.login(config_json['email']['username'], config_json['email']['password'])
-	server.sendmail(
-	  config_json['email']['username'], 
-	  dest, 
-	  content)
-	server.quit()
+	
+	message = Mail(
+		from_email='no-reply@biocomputeobject.com',
+		to_emails=dest,
+		subject=subject,
+		html_content=content)
+
+	try:
+		sg = SendGridAPIClient(config_json['email']['api_key'])
+		response = sg.send(message)
+	except Exception as e:
+		print(e.message)
 
 def registerSubject():
 	return 'New user request for BCO Editor'
@@ -30,7 +38,7 @@ def confirmSubject():
 
 def approvalBody():
 	return '''
-		<p>Congratulaltions,</p>
+		<p>Congratulations,</p>
 		<p>This message is to inform you that your request for account access to https://www.biocomputeobject.org has been reviewed by an administrator and approved. 
 			You may now begin building and editing BCOs via this link.
 		</p>

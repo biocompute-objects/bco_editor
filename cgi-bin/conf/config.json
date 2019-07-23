@@ -32,9 +32,7 @@
         {"field":"lname" , "label":"Last Name"}
     ]
     ,"email": {
-        "username": "object.biocompute@gmail.com",
-        "password": "11Gorilla88",
-        "dest": "object.biocompute@gmail.com"
+        "dest": "object.biocompute@gmail.com",
     }
 }
 
