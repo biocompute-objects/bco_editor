@@ -32,7 +32,7 @@
         {"field":"lname" , "label":"Last Name"}
     ]
     ,"email": {
-        "dest": "object.biocompute@gmail.com",
+        "dest": "object.biocompute@gmail.com"
     }
 }
 

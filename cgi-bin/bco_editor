@@ -34,6 +34,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 __version__="1.0"
 
 def make_correct_data(input_json):
+    
     try:
         del input_json['name']
     except:
@@ -60,23 +61,25 @@ def make_correct_data(input_json):
         pass
 
 
-    for item in input_json['description_domain']['pipeline_steps']['input_list']:
+    for item in input_json['description_domain']['pipeline_steps']:
+        for iitem in item['input_list']:
+            try:
+                if iitem['sha1_chksum']:
+                    iitem['sha1_checksum'] = iitem.pop(sha1_chksum)
+                else:
+                    del iitem['sha1_chksum']
+            except:
+                pass
+
+    for item in input_json['execution_domain']['software_prerequisites']:
         try:
-            if item['sha1_chksum']:
-                item['sha1_checksum'] = item.pop(sha1_chksum)
+            if item['uri']['sha1_chksum']: 
+                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
             else:
-                del item['sha1_chksum']
+                del item['uri']['sha1_chksum']
         except:
             pass
-
-    try:
-        if input_json['execution_domain']['software_prerequisites']['uri']['sha1_chksum']: 
-            input_json['execution_domain']['software_prerequisites']['uri']['sha1_checksum'] = input_json['execution_domain']['software_prerequisites']['uri'].pop('sha1_chksum')
-        else:
-            input_json['execution_domain']['software_prerequisites']['uri']['sha1_chksum']
-    except:
-        pass
-
+    # pdb.set_trace()
     for item in input_json['execution_domain']['script']:
         try:
             if item['uri']['sha1_chksum']:
@@ -122,7 +125,6 @@ def save_object(in_json, logged_email):
     util.log_error(mongo_cl_log, 'bco_id', 'msg')
     real_id = bco_id = in_json["bco_id"]
 
-    in_json = make_correct_data(in_json)
     try:
         
 
@@ -176,6 +178,18 @@ def save_object(in_json, logged_email):
         out_json = util.log_error(mongo_cl_log, traceback.format_exc(), str(e))
 
     return out_json
+
+def read_file():
+    result = []
+    with open('correct.json', 'r') as f:
+        data = json.load(f)
+        for item in data:
+            # print(json.dumps(make_correct_data(item)))
+            # result.append(make_correct_data(item))
+            save_object(item, '')
+
+    # with open('correct.json', 'w') as f:
+    #     json.dump(result, f)
 
 def import_bcos(in_json, logged_email):
     # pdb.set_trace()
@@ -410,6 +424,7 @@ def get_object_edit_json(in_json):
 
 #~~~~~~~~~~~~~~~~~~~~~
 def main():
+    
     usage = "\n%prog  [options]"
     parser = OptionParser(usage,version="%prog " + __version__)
     msg = "Input JSON text"
@@ -421,15 +436,15 @@ def main():
 
     local_flag = False
     in_json = {}
-    if len(form_dict.keys()) > 0:
-        in_json = json.loads(form_dict["injson"].value) if "injson" in form_dict else {}
-    else:
-        local_flag = True
-        for key in ([options.injson]):
-            if not (key):
-                parser.print_help()
-                sys.exit(0)
-        in_json = json.loads(options.injson)
+    # if len(form_dict.keys()) > 0:
+    #     in_json = json.loads(form_dict["injson"].value) if "injson" in form_dict else {}
+    # else:
+    #     local_flag = True
+    #     for key in ([options.injson]):
+    #         if not (key):
+    #             parser.print_help()
+    #             sys.exit(0)
+    #     in_json = json.loads(options.injson)
 
 
     global config_json
@@ -454,6 +469,7 @@ def main():
                         if k_two in config_json[k_one]:
                             config_json[k_one][k_two] = custom_config_json[k_one][k_two]
     except Exception, e:
+        print(e)
         out_json = {"taskstatus":0, "errormsg":"Loading config failed!"}
         print json.dumps(out_json, indent=4)
         sys.exit()
@@ -476,6 +492,7 @@ def main():
         # pdb.set_trace()
         # import_bcos(in_json, 'email@gmail.com')
         # pdb.set_trace()
+        read_file()
         try:
             svc = in_json["svc"] if "svc" in in_json else ""
             auth_obj = {"status": 0}
