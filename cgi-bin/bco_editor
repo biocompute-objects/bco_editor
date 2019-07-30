@@ -14,46 +14,67 @@ import auth
 import util
 import bcrypt
 import hashlib
+import requests
+import pdb
 
 import pymongo
 from pymongo import MongoClient
+import jsonref
+from jsonschema import validate
+import threading
 
-<<<<<<< HEAD
-=======
+# import cgitb
+# cgitb.enable()
+# import requests.packages.urllib3
+# requests.packages.urllib3.disable_warnings()
+import warnings
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
+# sys.stderr = sys.stdout
 __version__="1.0"
 
 
-
-
-
->>>>>>> roll back to b64885f
 def save_object(in_json, logged_email):
+    # validating json data with schema
+    
+    try:
+        mainschema_file = config_json["pathinfo"]["schemapath"] + "biocomputeobject.json"
+        schema_file = open(mainschema_file, "r")
+        base_uri = 'file://{}/'.format(os.path.dirname(schema_file.name))
+        schema = jsonref.load(schema_file, base_uri=base_uri, jsonschema=True)        
+    except Exception as e:
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc())
+        return out_json
 
     out_json = {}
-    try:
-        bco_id = in_json["bco_id"]
-        if bco_id != "-1":
-            doc = mongo_cl_bco.find_one({"bco_id":bco_id})
-            if doc == None:
-                return {"taskstatus":0, "errormsg":"Object does not exist!"}
-            else:
-                creator_list = []
-                for o in doc["provenance_domain"]["contributors"]:
-                    if "createdBy" in o["contribution"]:
-                        creator_list.append(o["email"])
-                if logged_email not in creator_list:
-                    return {"taskstatus":0, "errormsg":"You do not have privilege to change this object!"}
-                else:
-                    in_json.pop("checksum")
-                    in_json["checksum"] = hashlib.md5(json.dumps(in_json)).hexdigest()
-                    in_json.pop("bco_id")
-                    in_json["provenance_domain"]["modified"] = datetime.datetime.now().isoformat()
-                    #in_json["provenance_domain"]["modified"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
-                    
+    # pdb.set_trace()
+    util.log_error(mongo_cl_log, 'bco_id', 'msg')
+    real_id = bco_id = in_json["bco_id"]
 
-                    result = mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': in_json}, upsert=False)
-                    return {"taskstatus": 1, "bcoid":bco_id}
+    try:
+        
+
+        # if bco_id != "-1":
+        doc = mongo_cl_bco.find_one({"bco_id":bco_id})
+        if doc != None:
+        #     return {"taskstatus":0, "errormsg":"Object does not exist!"}
+        # else:
+            creator_list = []
+            for o in doc["provenance_domain"]["contributors"]:
+                if "createdBy" in o["contribution"]:
+                    creator_list.append(o["email"])
+            if logged_email not in creator_list:
+                return {"taskstatus":0, "errormsg":"You do not have privilege to change this object!"}
+            else:
+                in_json.pop("checksum")
+                in_json["checksum"] = hashlib.md5(json.dumps(in_json)).hexdigest()
+                in_json["provenance_domain"]["modified"] = datetime.datetime.now().isoformat()
+                #in_json["provenance_domain"]["modified"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
+                validate(in_json, schema)                    
+                
+                in_json.pop("bco_id")
+                result = mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': in_json}, upsert=False)
+                return {"taskstatus": 1, "bcoid":bco_id}
         else:
             in_json.pop("checksum")
             in_json["checksum"] = hashlib.md5(json.dumps(in_json)).hexdigest()
@@ -72,14 +93,98 @@ def save_object(in_json, logged_email):
                     "contribution": ["createdBy"]
                 }
             ]
+            validate(in_json, schema)
+            
             result = mongo_cl_bco.insert_one(in_json)
             out_json = {"bcoid":bco_url, "taskstatus":1}
+<<<<<<< HEAD
     except Exception, e:
         out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
     return out_json
 
 
+=======
+    except Exception as e:
+        print "*"*100
+        print e
+        util.add_id(mongo_cl_invalid, real_id)
+        out_json = util.log_error(mongo_cl_log, traceback.format_exc(), str(e))
+
+    return out_json
+
+def read_file():
+    result = []
+    with open('correct.json', 'r') as f:
+        data = json.load(f)
+        for item in data:
+            # print(json.dumps(make_correct_data(item)))
+            # result.append(make_correct_data(item))
+            save_object(item, '')
+
+    # with open('correct.json', 'w') as f:
+    #     json.dump(result, f)
+
+def import_bcos(in_json, logged_email):
+    # pdb.set_trace()
+    bco_domain = "https://data.glygen.org"
+    bco_version = "v-1.0.13"
+    # traceback.print_exc('start')
+    file_obj = open('input1.json', 'a')
+    file_obj.write('[')
+    for i in xrange(1,1000):
+        bco_id = "DSBCO_000000"[0:12-len(str(i))] + str(i)
+        bco_url = "%s/%s/%s" % (bco_domain, bco_id, bco_version)
+        try:
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore', category=InsecureRequestWarning)
+                response = requests.get(bco_url, verify=False)            
+                if response.content.strip() != "":
+                    bco_obj = json.loads(response.content)
+                    print response.content
+                    file_obj.write(response.content)
+                    file_obj.write(', \n')
+                    # try:
+                    #     save_object(bco_obj, logged_email)
+                    # except Exception as e:
+                    #     util.log_error(mongo_cl_log, str(e), str(e))
+                    #     print "-"*100
+                    #     print e
+        except Exception as e:
+            pdb.set_trace()
+            util.log_error(mongo_cl_log, str(e), str(e))
+
+    bco_domain = "https://data.oncomx.org"
+    bco_version = "v-1.0.6"
+    for i in xrange(1,1000):
+        bco_id = "DSBCO_000000"[0:12-len(str(i))] + str(i)
+        bco_url = "%s/%s/%s" % (bco_domain, bco_id, bco_version)
+        # response = requests.get(bco_url, verify=False)
+        try:
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore', category=InsecureRequestWarning)
+                response = requests.get(bco_url, verify=False)            
+                if response.content.strip() != "":
+                    bco_obj = json.loads(response.content)
+                    print response.content
+                    file_obj.write(response.content)
+                    file_obj.write(', \n')
+                    # try:
+                    #     save_object(bco_obj, logged_email)
+                    # except Exception as e:
+                    #     util.log_error(mongo_cl_log, str(e), str(e))
+                    #     print "-"*100
+                    #     print e
+        except Exception as e:
+            pdb.set_trace()
+            print "-"*100
+            print e
+            util.log_error(mongo_cl_log, str(e), str(e))
+
+    file_obj.write(']')
+    file_obj.close()
+    return {"result": True}
+>>>>>>> 4ed7633be354b95839b356fad18fbe31f67a7993
 
 def search_objects(in_json):
 
@@ -160,6 +265,48 @@ def get_object_view_json(in_json):
 
     return out_json
 
+def get_schema(internal=False):
+    mainschema_file = config_json["pathinfo"]["schemapath"] + "biocomputeobject.json"
+
+    schema_file = open(mainschema_file, "r")
+    base_uri = 'file://{}/'.format(os.path.dirname(schema_file.name))
+    schema = jsonref.load(schema_file, base_uri=base_uri, jsonschema=True)  
+    return schema
+
+    # mainschema_file = config_json["pathinfo"]["schemapath"] + "biocomputeobject.json"
+    # schema = json.loads(open(mainschema_file, "r").read())
+    # ordr_dict = json.loads(open("conf/field_order.json").read())
+    # schema = util.order_json_obj(schema,ordr_dict)
+    # domain_list  = [
+    #     "provenance_domain", 
+    #     "usability_domain", 
+    #     "execution_domain", 
+    #     "description_domain",
+    #     "parametric_domain",
+    #     "io_domain",
+    #     "error_domain"
+    # ]
+
+    # schema_path = 'schemaroot'
+    # if internal:
+    #     schema_path = 'schemapath'
+
+
+    # for domain in domain_list:
+    #     ref_obj = {"$ref":config_json["pathinfo"][schema_path] + domain + ".json"}
+    #     schema["properties"][domain] = ref_obj
+
+    # for subdomain in ["scm_extension"]:
+    #     ref_obj = {"$ref":config_json["pathinfo"][schema_path] + 'extension_domain/' + subdomain + ".json"}
+    #     schema["properties"]["extension_domain"]["properties"][subdomain] = ref_obj
+
+    # for subdomain in ["fhir_extension"]:
+    #     ref_obj = {"$ref":config_json["pathinfo"][schema_path] + 'extension_domain/' + subdomain + ".json"}
+    #     schema["properties"]["extension_domain"]["properties"][subdomain]["items"] = ref_obj
+
+    # return schema
+
+
 
 def get_object_edit_json(in_json):
 
@@ -197,7 +344,35 @@ def get_object_edit_json(in_json):
         ]
 
         out_json = {"schema":get_schema()}
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+        
+=======
+        # mainschema_file = config_json["pathinfo"]["schemapath"] + "biocomputeobject.json"
+        # out_json["schema"] = json.loads(open(mainschema_file, "r").read())
+        # ordr_dict = json.loads(open("conf/field_order.json").read())
+        # out_json = util.order_json_obj(out_json,ordr_dict)
+
+
+        # for domain in domain_list:
+        #     ref_obj = {"$ref":config_json["pathinfo"]["schemaroot"] + domain + ".json"}
+        #     out_json["schema"]["properties"][domain] = ref_obj
+
+        # for subdomain in ["scm_extension"]:
+        #     ref_obj = {"$ref":config_json["pathinfo"]["schemaroot"] + subdomain + ".json"}
+        #     out_json["schema"]["properties"]["extension_domain"]["properties"][subdomain] = ref_obj
+
+        # for subdomain in ["fhir_extension"]:
+        #     ref_obj = {"$ref":config_json["pathinfo"]["schemaroot"] + subdomain + ".json"}
+        #     out_json["schema"]["properties"]["extension_domain"]["properties"][subdomain]["items"] = ref_obj
+
+>>>>>>> parent of b64885f... "This version of the bco_editor includes (a) a notification once a successful submission is made and (b) an error notification in case of an error."
+=======
+>>>>>>> 4ed7633be354b95839b356fad18fbe31f67a7993
+>>>>>>> Update bco_editor
         out_json["startval"]= {
             "bco_id":bco_json["bco_id"],
             "bco_spec_version":bco_json["bco_spec_version"],
@@ -216,8 +391,23 @@ def get_object_edit_json(in_json):
 
     return out_json
 
-def main():
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~
+>>>>>>> parent of b64885f... "This version of the bco_editor includes (a) a notification once a successful submission is made and (b) an error notification in case of an error."
+=======
+#~~~~~~~~~~~~~~~~~~~~~
+>>>>>>> 4ed7633be354b95839b356fad18fbe31f67a7993
+>>>>>>> Update bco_editor
+def main():
+    
     usage = "\n%prog  [options]"
     parser = OptionParser(usage,version="%prog " + __version__)
     msg = "Input JSON text"
@@ -229,15 +419,15 @@ def main():
 
     local_flag = False
     in_json = {}
-    if len(form_dict.keys()) > 0:
-        in_json = json.loads(form_dict["injson"].value) if "injson" in form_dict else {}
-    else:
-        local_flag = True
-        for key in ([options.injson]):
-            if not (key):
-                parser.print_help()
-                sys.exit(0)
-        in_json = json.loads(options.injson)
+    # if len(form_dict.keys()) > 0:
+    #     in_json = json.loads(form_dict["injson"].value) if "injson" in form_dict else {}
+    # else:
+    #     local_flag = True
+    #     for key in ([options.injson]):
+    #         if not (key):
+    #             parser.print_help()
+    #             sys.exit(0)
+    #     in_json = json.loads(options.injson)
 
 
     global config_json
@@ -246,6 +436,7 @@ def main():
     global mongo_cl_counters
     global mongo_cl_users
     global mongo_cl_log
+    global mongo_cl_invalid
     global client
 
     print "Content-Type: application/json"
@@ -261,6 +452,7 @@ def main():
                         if k_two in config_json[k_one]:
                             config_json[k_one][k_two] = custom_config_json[k_one][k_two]
     except Exception, e:
+        print(e)
         out_json = {"taskstatus":0, "errormsg":"Loading config failed!"}
         print json.dumps(out_json, indent=4)
         sys.exit()
@@ -279,11 +471,18 @@ def main():
         mongo_cl_counters = mongo_dbh[config_json["dbinfo"]["collections"]["counters"]]
         mongo_cl_users = mongo_dbh[config_json["dbinfo"]["collections"]["users"]]
         mongo_cl_log = mongo_dbh[config_json["dbinfo"]["collections"]["log"]]
-
+        mongo_cl_invalid = mongo_dbh[config_json["dbinfo"]["collections"]["invalid_id"]]
+        # pdb.set_trace()
+        # import_bcos(in_json, 'email@gmail.com')
+        # pdb.set_trace()
+        read_file()
         try:
             svc = in_json["svc"] if "svc" in in_json else ""
-            auth_obj = auth.authenticate(mongo_cl_log)
-            logged_email = auth_obj["email"] if auth_obj["status"] == 1 else ""
+            auth_obj = {"status": 0}
+            if svc != "search_objects_no_auth":
+                auth_obj = auth.authenticate(mongo_cl_log)
+                logged_email = auth_obj["email"] if auth_obj["status"] == 1 else ""
+
             if svc == "login_user":
                 out_json = {}
                 auth_obj = auth.login(mongo_cl_users, in_json, config_json["dbinfo"]["sessionlife"],mongo_cl_log)
@@ -297,9 +496,17 @@ def main():
             elif svc == "reset_password" and (auth_obj["status"] == 1 or local_flag):
                 current_pass, new_pass = in_json["passwordone"], in_json["passwordtwo"]
                 out_json = auth.reset_password(mongo_cl_users, logged_email, current_pass,new_pass, mongo_cl_log)
-            elif svc == "search_objects" and (auth_obj["status"] == 1 or local_flag):
+            # elif svc == "search_objects" and (auth_obj["status"] == 1 or local_flag):
+            elif svc == "search_objects" or svc == "search_objects_no_auth":
                 out_json = search_objects(in_json)
-            elif svc == "get_object_view_json" and (auth_obj["status"] == 1 or local_flag):
+            elif svc == "importbcos"  and (auth_obj["status"] == 1 or local_flag):
+                # import thread
+                # thread.start_new_thread(import_bcos, (in_json, logged_email, ))
+                import_bcos(in_json, logged_email)
+                # t1 = threading.Thread(target=import_bcos, args=(in_json, logged_email, ))
+                # t1.start()
+                out_json = {"result": True}
+            elif svc == "get_object_view_json":
                 out_json = get_object_view_json(in_json)
                 out_json["editflag"] = logged_email in out_json["creators"]
             elif svc == "get_object_edit_json" and (auth_obj["status"] == 1 or local_flag):
@@ -315,6 +522,8 @@ def main():
     except pymongo.errors.ServerSelectionTimeoutError as err:
         out_json = {"taskstatus":0, "errormsg":"Connection to mongodb failed!"}
     except pymongo.errors.OperationFailure as err:
+        print err
+        return err
         out_json = {"taskstatus":0, "errormsg":"MongoDB auth failed!"}
 
     
