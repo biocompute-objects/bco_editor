@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Library/WebServer/CGI-Executables/bco_editor/bco_editor", line 45, in save_object
+    in_json["checksum"] = hashlib.md5(json.loads(in_json)).hexdigest()
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/json/__init__.py", line 338, in loads
+    return _default_decoder.decode(s)
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/json/decoder.py", line 366, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+TypeError: expected string or buffer

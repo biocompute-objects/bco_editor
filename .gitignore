@@ -1,0 +1,3 @@
+html/js/backup/*
+cgi-bin/*.pyc
+.DS_Store

@@ -1,0 +1,36 @@
+Traceback (most recent call last):
+  File "bco_editor", line 89, in search_objects
+    for doc in mongo_cl_bco.find(query_obj):
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/cursor.py", line 1132, in next
+    if len(self.__data) or self._refresh():
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/cursor.py", line 1055, in _refresh
+    self.__collation))
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/cursor.py", line 892, in __send_message
+    **kwargs)
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/mongo_client.py", line 950, in _send_message_with_response
+    exhaust)
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/mongo_client.py", line 961, in _reset_on_error
+    return func(*args, **kwargs)
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/server.py", line 99, in send_message_with_response
+    with self.get_socket(all_credentials, exhaust) as sock_info:
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/contextlib.py", line 17, in __enter__
+    return self.gen.next()
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/server.py", line 168, in get_socket
+    with self.pool.get_socket(all_credentials, checkout) as sock_info:
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/contextlib.py", line 17, in __enter__
+    return self.gen.next()
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/pool.py", line 852, in get_socket
+    sock_info.check_auth(all_credentials)
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/pool.py", line 570, in check_auth
+    auth.authenticate(credentials, self)
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/auth.py", line 486, in authenticate
+    auth_func(credentials, sock_info)
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/auth.py", line 209, in _authenticate_scram_sha1
+    res = sock_info.command(source, cmd)
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/pool.py", line 477, in command
+    collation=collation)
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/network.py", line 116, in command
+    parse_write_concern_error=parse_write_concern_error)
+  File "build/bdist.macosx-10.11-intel/egg/pymongo/helpers.py", line 210, in _check_command_response
+    raise OperationFailure(msg % errmsg, code, response)
+OperationFailure: Authentication failed.

@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/robelkahsay/work-projects/bco_editor/cgi-bin/auth.py", line 81, in reset_password
+    stored_password = login_user['password'].encode('utf-8')
+TypeError: 'NoneType' object has no attribute '__getitem__'
