@@ -138,3 +138,7 @@ div#editor_div ~ div {
     width: 100% !important;
     margin: 0 !important    ;
 }
+
+input#downloadbtn {
+    margin-left: 5px;
+}

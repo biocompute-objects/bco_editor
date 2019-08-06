@@ -12,6 +12,7 @@ import time
 import datetime
 import auth
 import util
+import bio_hash
 import bcrypt
 import hashlib
 import requests
@@ -126,39 +127,22 @@ def save_object(in_json, logged_email):
     real_id = bco_id = in_json["bco_id"]
 
     try:
-        
+        data = bio_hash.hashed_object(in_json)
 
         # if bco_id != "-1":
-        doc = mongo_cl_bco.find_one({"bco_id":bco_id})
+        doc = mongo_cl_bco.find_one({"checksum":data["checksum"]})
         if doc != None:
         #     return {"taskstatus":0, "errormsg":"Object does not exist!"}
         # else:
-            creator_list = []
-            for o in doc["provenance_domain"]["contributors"]:
-                if "createdBy" in o["contribution"]:
-                    creator_list.append(o["email"])
-            if logged_email not in creator_list:
-                return {"taskstatus":0, "errormsg":"You do not have privilege to change this object!"}
-            else:
-                in_json.pop("checksum")
-                in_json["checksum"] = hashlib.md5(json.dumps(in_json)).hexdigest()
-                in_json["provenance_domain"]["modified"] = datetime.datetime.now().isoformat()
-                #in_json["provenance_domain"]["modified"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
-                validate(in_json, schema)                    
-                
-                in_json.pop("bco_id")
-                result = mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': in_json}, upsert=False)
-                return {"taskstatus": 1, "bcoid":bco_id}
+            return {"taskstatus":0, "errormsg":"Error. We found an exact copy of your BCO in our database. Duplicate BCOs cannot be submitted!"}            
         else:
-            in_json.pop("checksum")
-            in_json["checksum"] = hashlib.md5(json.dumps(in_json)).hexdigest()
             bco_id = util.get_next_sequence_value(mongo_cl_counters, "bcoid")
             bco_str_id = "000000"[0:6-len(str(bco_id))] + str(bco_id)
             bco_url = config_json["pathinfo"]["bcoprefix"] % (bco_str_id)
-            in_json["bco_id"] = bco_url
-            in_json["provenance_domain"]["created"] = datetime.datetime.now().isoformat()
+            data["bco_id"] = bco_url
+            data["provenance_domain"]["created"] = datetime.datetime.now().isoformat()
             #in_json["provenance_domain"]["created"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
-            in_json["provenance_domain"]["contributors"] = [
+            daata["provenance_domain"]["contributors"] = [
                 {
                     "name": "", 
                     "affiliation": "", 
@@ -167,9 +151,9 @@ def save_object(in_json, logged_email):
                     "contribution": ["createdBy"]
                 }
             ]
-            validate(in_json, schema)
+            validate(data, schema)
             
-            result = mongo_cl_bco.insert_one(in_json)
+            result = mongo_cl_bco.insert_one(data)
             out_json = {"bcoid":bco_url, "taskstatus":1}
     except Exception as e:
         print "*"*100
@@ -436,15 +420,15 @@ def main():
 
     local_flag = False
     in_json = {}
-    # if len(form_dict.keys()) > 0:
-    #     in_json = json.loads(form_dict["injson"].value) if "injson" in form_dict else {}
-    # else:
-    #     local_flag = True
-    #     for key in ([options.injson]):
-    #         if not (key):
-    #             parser.print_help()
-    #             sys.exit(0)
-    #     in_json = json.loads(options.injson)
+    if len(form_dict.keys()) > 0:
+        in_json = json.loads(form_dict["injson"].value) if "injson" in form_dict else {}
+    else:
+        local_flag = True
+        for key in ([options.injson]):
+            if not (key):
+                parser.print_help()
+                sys.exit(0)
+        in_json = json.loads(options.injson)
 
 
     global config_json
@@ -492,7 +476,7 @@ def main():
         # pdb.set_trace()
         # import_bcos(in_json, 'email@gmail.com')
         # pdb.set_trace()
-        read_file()
+        # read_file()
         try:
             svc = in_json["svc"] if "svc" in in_json else ""
             auth_obj = {"status": 0}
