@@ -69,6 +69,10 @@ $(document).on('click', '#logout', function (event) {
     event.preventDefault();
     logoutUser();
 });
+$(document).on('click', '#downloadbtn', function (event) {
+    event.preventDefault();
+    download();
+});
 
 $(document).on('click', '#searchbtn', function (event) {
     event.preventDefault();
@@ -266,7 +270,9 @@ function setViewPage(){
                 var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                 s += 'margin-bottom:20px;';
                 var links = '<a id=edit class="editlink">Edit Object</a>';
-                links = (resJson["editflag"] == true ? links : "Read Only");
+                var downloadButton = !checkCookie('sessionid') ? '<input type="button" id=downloadbtn value=Download></input>' : ''
+                links = (resJson["editflag"] == true ? links : "Read Only" + downloadButton);
+                localStorage.viewItem = JSON.stringify(resJson["bco"])
                 var cn = '<div style="'+s+'">'+links+'</div>';
                 cn += '<DIV style="padding:20px 0px 0px 20px;"><pre style="white-space:pre-wrap;">';
                 cn +=  JSON.stringify(resJson["bco"], null, 4) + '</pre></DIV>';
@@ -878,6 +884,22 @@ function validatePassword(password) {
     document.getElementById("pwdvalmsg").innerHTML = " (" +  strength + ")";
     document.getElementById("pwdvalmsg").style.color = color;
     
+}
+
+function download() {
+    var data = JSON.parse(localStorage.viewItem)
+    var text = JSON.stringify(data, null, 4)
+    var filename = data['bco_id'] + '.json'
+
+    var element = document.createElement('a')
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+    document.body.removeChild(element)
 }
 
 
