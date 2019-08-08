@@ -10,6 +10,7 @@ import time
 import datetime
 import bcrypt
 import util
+import bio_hash
 
 import pymongo
 from pymongo import MongoClient
@@ -19,7 +20,17 @@ __version__="1.0"
 __status__ = "Dev"
 
 
+def regenerate_checksum():
+    all_bcos = mongo_cl_bco.find()
+    for bco in all_bcos:
+        print bco
+        bco.pop('_id')
+        data = bio_hash.hashed_object(bco)
+        bco_id = data['bco_id']
+        data.pop('bco_id')
+        mongo_cl_bco.update_one({ 'bco_id': bco_id }, {'$set': data})
 
+    return True
 
 
 #################################
@@ -27,7 +38,7 @@ def main():
 
     usage = "\n%prog  [options]"
     parser = OptionParser(usage,version="%prog " + __version__)
-    msg = "list_users|upsert_user|delete_user|reset_bcocounter|delete_bco|list_bco|list_log"
+    msg = "list_users|upsert_user|delete_user|reset_bcocounter|delete_bco|list_bco|list_log|regenerate_checksum"
     parser.add_option("-a","--action",action="store",dest="action",help=msg)
 
     group_1 = OptionGroup(parser, "Additional options for upsert_user and delete_user actions")
@@ -69,6 +80,12 @@ def main():
         authSource=config_json["dbinfo"]["mongodbname"],
         authMechanism='SCRAM-SHA-1'
     )
+
+    global mongo_dbh
+    global mongo_cl_bco
+    global mongo_cl_counters
+    global mongo_cl_users
+    global mongo_cl_log
         
     mongo_dbh = client[config_json["dbinfo"]["mongodbname"]]
     mongo_cl_bco = mongo_dbh[config_json["dbinfo"]["collections"]["bco"]]
@@ -83,6 +100,9 @@ def main():
             for f in ["fname", "lname", "status", "email"]:
                 doc[f] = doc[f] if f in doc else ""
             print "%s,%s,%s,%s" % (doc["status"],doc["fname"],doc["lname"],doc["email"])
+    if options.action == 'regenerate_checksum':
+        regenerate_checksum()
+        print "success"
     elif options.action == "list_bco":
         print "#bco_id|name|createdby"
         for doc in mongo_cl_bco.find({}):
