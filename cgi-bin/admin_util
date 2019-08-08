@@ -11,29 +11,29 @@ import datetime
 import bcrypt
 import util
 import bio_hash
-
+import bio_editor
 import pymongo
 from pymongo import MongoClient
 import bio_email
-
+import yaml
 __version__="1.0"
 __status__ = "Dev"
+
 
 
 def regenerate_checksum():
     all_bcos = mongo_cl_bco.find()
     for bco in all_bcos:
-        print bco
+	bco = bio_editor.make_correct_data(bco)
         bco.pop('_id')
         data = bio_hash.hashed_object(bco)
         bco_id = data['bco_id']
         data.pop('bco_id')
+        print bco_id
         mongo_cl_bco.update_one({ 'bco_id': bco_id }, {'$set': data})
 
     return True
-
-
-#################################
+################################a
 def main():
 
     usage = "\n%prog  [options]"

@@ -28,79 +28,61 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 __version__="1.0"
 
 def make_correct_data(input_json):
-   ''' 
-    try:
-        del input_json['name']
-    except:
-        pass
-    try:
-        del input_json['version']
-    except:
-        pass
-    try:
-        del input_json['license']
-    except:
-        pass
-    try:
-        del input_json['contributors']
-    except:
-        pass
-    try:
-        del input_json['created']
-    except:
-        pass
-    try:
-        del input_json['modified']
-    except:
-        pass
-'''
-
-    for item in input_json['description_domain']['pipeline_steps']:
-        for iitem in item['input_list']:
+    for i in range(len(input_json['description_domain']['pipeline_steps'])):
+        for j in range(len(input_json['description_domain']['pipeline_steps'][i]['input_list'])):
             try:
-                if iitem['sha1_chksum']:
-                    iitem['sha1_checksum'] = iitem.pop(sha1_chksum)
-                else:
-                    del iitem['sha1_chksum']
+                del input_json['description_domain']['pipeline_steps'][i]['input_list'][j]['sha1_chksum']
             except:
                 pass
-
-    for item in input_json['execution_domain']['software_prerequisites']:
+        for j in range(len(input_json['description_domain']['pipeline_steps'][i]['output_list'])):
+            try:
+                del input_json['description_domain']['pipeline_steps'][i]['output_list'][j]['sha1_chksum']
+            except:
+                pass
         try:
-            if item['uri']['sha1_chksum']: 
-                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
-            else:
-                del item['uri']['sha1_chksum']
-        except:
-            pass
-    for item in input_json['execution_domain']['script']:
-        try:
-            if item['uri']['sha1_chksum']:
-                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
-            else:
-                del item['uri']['sha1_chksum']
+            for j in range(len(input_json['description_domain']['pipeline_steps'][i]['prerequisite'])):
+                try:
+                    del input_json['description_domain']['pipeline_steps'][i]['prerequisite'][j]['uri']['sha1_chksum']
+                except:
+                    pass
         except:
             pass
 
-    for item in input_json['io_domain']['input_subdomain']:
+    for i in range(len(input_json['execution_domain']['software_prerequisites'])):
         try:
-            if item['uri']['sha1_chksum']:
-                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
+            if input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_chksum']: 
+                input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_checksum'] = input_json['execution_domain']['software_prerequisites'][i]['uri'].pop('sha1_chksum')
             else:
-                del item['uri']['sha1_chksum']
+                del input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_chksum']
         except:
             pass
-    for item in input_json['io_domain']['output_subdomain']:
+    for i in range(len(input_json['execution_domain']['script'])):
         try:
-            if item['uri']['sha1_chksum']:
-                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
+            if input_json['execution_domain']['script'][i]['uri']['sha1_chksum']:
+                input_json['execution_domain']['script'][i]['uri']['sha1_checksum'] = input_json['execution_domain']['script'][i]['uri'].pop('sha1_chksum')
             else:
-                del item['uri']['sha1_chksum']
+                del input_json['execution_domain']['script'][i]['uri']['sha1_chksum']
         except:
             pass
-    
+
+    for i in range(len(input_json['io_domain']['input_subdomain'])):
+        try:
+            if input_json['io_domain']['input_subdomain'][i]['uri']['sha1_chksum']:
+                input_json['io_domain']['input_subdomain'][i]['uri']['sha1_checksum'] = input_json['io_domain']['input_subdomain'][i]['uri'].pop('sha1_chksum')
+            else:
+                del input_json['io_domain']['input_subdomain'][i]['uri']['sha1_chksum']
+        except:
+            pass
+    for i in range(len(input_json['io_domain']['output_subdomain'])):
+        try:
+            if input_json['io_domain']['output_subdomain'][i]['uri']['sha1_chksum']:
+                input_json['io_domain']['output_subdomain'][i]['uri']['sha1_checksum'] = input_json['io_domain']['output_subdomain'][i]['uri'].pop('sha1_chksum')
+            else:
+                del input_json['io_domain']['output_subdomain'][i]['uri']['sha1_chksum']
+        except:
+            pass
+
     return input_json
-
 def save_object(in_json, logged_email):
     # validating json data with schema
     

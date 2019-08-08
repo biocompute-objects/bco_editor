@@ -9,7 +9,8 @@
 import hashlib
 import sys, json, ast
 import bencode
-
+import pdb
+import yaml
 #______________________________________________________________________________#
 def json_parse( filename ):
     """removes top level fields from BCO and returns a string"""
@@ -24,11 +25,13 @@ def sha256_checksum( string ):
     """input to hash"""
     
     sha256 = hashlib.sha256()
-    sha256.update(bencode.bencode(string))
+    sha256.update(bencode.encode(string))
     return sha256.hexdigest()
 
 def hashed_object(data):
-    data = ast.literal_eval(json.dumps(data))
+#    pdb.set_trace()
+    data = yaml.load(json.dumps(data, ensure_ascii=False))
+
     bco_id, bco_spec = data['bco_id'], data['bco_spec_version']
     del data['bco_id'], data['checksum'], data['bco_spec_version']
     data['checksum'] = sha256_checksum(data)
