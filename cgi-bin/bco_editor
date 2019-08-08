@@ -5,7 +5,6 @@ import cgi
 import commands
 from optparse import OptionParser
 import traceback
-#from json_tricks import dump, dumps, load, loads, strip_comments
 import json
 import re
 import time
@@ -23,15 +22,9 @@ from pymongo import MongoClient
 import jsonref
 from jsonschema import validate
 import threading
-
-# import cgitb
-# cgitb.enable()
-# import requests.packages.urllib3
-# requests.packages.urllib3.disable_warnings()
 import warnings
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-# sys.stderr = sys.stdout
 __version__="1.0"
 
 def make_correct_data(input_json):
@@ -80,7 +73,6 @@ def make_correct_data(input_json):
                 del item['uri']['sha1_chksum']
         except:
             pass
-    # pdb.set_trace()
     for item in input_json['execution_domain']['script']:
         try:
             if item['uri']['sha1_chksum']:
@@ -122,39 +114,54 @@ def save_object(in_json, logged_email):
         return out_json
 
     out_json = {}
-    # pdb.set_trace()
     util.log_error(mongo_cl_log, 'bco_id', 'msg')
     real_id = bco_id = in_json["bco_id"]
 
+    # pdb.set_trace()
     try:
         data = bio_hash.hashed_object(in_json)
+        if bco_id != "-1":
+            doc = mongo_cl_bco.find_one({"bco_id":bco_id})
+            creator_list = []
+            for o in doc["provenance_domain"]["contributors"]:
+                if "createdBy" in o["contribution"]:
+                    creator_list.append(o["email"])
+            if logged_email not in creator_list:
+                return {"taskstatus":0, "errormsg":"You do not have privilege to change this object!"}
+            else:
+                in_json["provenance_domain"]["modified"] = datetime.datetime.now().isoformat()
+                data = bio_hash.hashed_object(in_json)
 
-        # if bco_id != "-1":
-        doc = mongo_cl_bco.find_one({"checksum":data["checksum"]})
-        if doc != None:
-        #     return {"taskstatus":0, "errormsg":"Object does not exist!"}
-        # else:
-            return {"taskstatus":0, "errormsg":"Error. We found an exact copy of your BCO in our database. Duplicate BCOs cannot be submitted!"}            
+                #in_json["provenance_domain"]["modified"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
+                validate(in_json, schema)                    
+                
+                data.pop("bco_id")
+                result = mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': data}, upsert=False)
+                return {"taskstatus": 1, "bcoid":bco_id}
         else:
-            bco_id = util.get_next_sequence_value(mongo_cl_counters, "bcoid")
-            bco_str_id = "000000"[0:6-len(str(bco_id))] + str(bco_id)
-            bco_url = config_json["pathinfo"]["bcoprefix"] % (bco_str_id)
-            data["bco_id"] = bco_url
-            data["provenance_domain"]["created"] = datetime.datetime.now().isoformat()
-            #in_json["provenance_domain"]["created"] = datetime.datetime.now().strftime("%b %d, %Y %H:%M:%S")
-            daata["provenance_domain"]["contributors"] = [
-                {
-                    "name": "", 
-                    "affiliation": "", 
-                    "email": logged_email,
-                    "orcid": "", 
-                    "contribution": ["createdBy"]
-                }
-            ]
-            validate(data, schema)
-            
-            result = mongo_cl_bco.insert_one(data)
-            out_json = {"bcoid":bco_url, "taskstatus":1}
+
+            doc = mongo_cl_bco.find_one({"checksum":data["checksum"]})
+            if doc != None:
+                return {"taskstatus":0, "errormsg":"Error. We found an exact copy of your BCO in our database. Duplicate BCOs cannot be submitted!"}            
+            else:
+                bco_id = util.get_next_sequence_value(mongo_cl_counters, "bcoid")
+                bco_str_id = "000000"[0:6-len(str(bco_id))] + str(bco_id)
+                bco_url = config_json["pathinfo"]["bcoprefix"] % (bco_str_id)
+                data["bco_id"] = bco_url
+                data["provenance_domain"]["created"] = datetime.datetime.now().isoformat()
+                data["provenance_domain"]["contributors"] = [
+                    {
+                        "name": "", 
+                        "affiliation": "", 
+                        "email": logged_email,
+                        "orcid": "", 
+                        "contribution": ["createdBy"]
+                    }
+                ]
+                validate(data, schema)
+                data = bio_hash.hashed_object(data)
+                result = mongo_cl_bco.insert_one(data)
+                out_json = {"bcoid":bco_url, "taskstatus":1}
     except Exception as e:
         print "*"*100
         print e
@@ -168,18 +175,11 @@ def read_file():
     with open('correct.json', 'r') as f:
         data = json.load(f)
         for item in data:
-            # print(json.dumps(make_correct_data(item)))
-            # result.append(make_correct_data(item))
             save_object(item, '')
 
-    # with open('correct.json', 'w') as f:
-    #     json.dump(result, f)
-
 def import_bcos(in_json, logged_email):
-    # pdb.set_trace()
     bco_domain = "https://data.glygen.org"
     bco_version = "v-1.0.13"
-    # traceback.print_exc('start')
     file_obj = open('input1.json', 'a')
     file_obj.write('[')
     for i in xrange(1,1000):
@@ -194,12 +194,6 @@ def import_bcos(in_json, logged_email):
                     print response.content
                     file_obj.write(response.content)
                     file_obj.write(', \n')
-                    # try:
-                    #     save_object(bco_obj, logged_email)
-                    # except Exception as e:
-                    #     util.log_error(mongo_cl_log, str(e), str(e))
-                    #     print "-"*100
-                    #     print e
         except Exception as e:
             pdb.set_trace()
             util.log_error(mongo_cl_log, str(e), str(e))
@@ -209,7 +203,6 @@ def import_bcos(in_json, logged_email):
     for i in xrange(1,1000):
         bco_id = "DSBCO_000000"[0:12-len(str(i))] + str(i)
         bco_url = "%s/%s/%s" % (bco_domain, bco_id, bco_version)
-        # response = requests.get(bco_url, verify=False)
         try:
             with warnings.catch_warnings():
                 warnings.filterwarnings('ignore', category=InsecureRequestWarning)
@@ -219,12 +212,6 @@ def import_bcos(in_json, logged_email):
                     print response.content
                     file_obj.write(response.content)
                     file_obj.write(', \n')
-                    # try:
-                    #     save_object(bco_obj, logged_email)
-                    # except Exception as e:
-                    #     util.log_error(mongo_cl_log, str(e), str(e))
-                    #     print "-"*100
-                    #     print e
         except Exception as e:
             pdb.set_trace()
             print "-"*100
@@ -265,8 +252,6 @@ def search_objects(in_json):
             doc.pop("_id")
             created_by = doc["provenance_domain"]["contributors"][0]["email"]
             bco_id = str(doc["bco_id"])
-            #linked_id = '<a id=view_'+bco_id+' class=viewlink href="#">' 
-            #linked_id += bco_id + '</a>'
             creators = []
             for o in doc["provenance_domain"]["contributors"]:
                 val = o["name"] if o["name"].strip() != "" else o["email"]
@@ -320,44 +305,7 @@ def get_schema(internal=False):
     schema = jsonref.load(schema_file, base_uri=base_uri, jsonschema=True)  
     return schema
 
-    # mainschema_file = config_json["pathinfo"]["schemapath"] + "biocomputeobject.json"
-    # schema = json.loads(open(mainschema_file, "r").read())
-    # ordr_dict = json.loads(open("conf/field_order.json").read())
-    # schema = util.order_json_obj(schema,ordr_dict)
-    # domain_list  = [
-    #     "provenance_domain", 
-    #     "usability_domain", 
-    #     "execution_domain", 
-    #     "description_domain",
-    #     "parametric_domain",
-    #     "io_domain",
-    #     "error_domain"
-    # ]
-
-    # schema_path = 'schemaroot'
-    # if internal:
-    #     schema_path = 'schemapath'
-
-
-    # for domain in domain_list:
-    #     ref_obj = {"$ref":config_json["pathinfo"][schema_path] + domain + ".json"}
-    #     schema["properties"][domain] = ref_obj
-
-    # for subdomain in ["scm_extension"]:
-    #     ref_obj = {"$ref":config_json["pathinfo"][schema_path] + 'extension_domain/' + subdomain + ".json"}
-    #     schema["properties"]["extension_domain"]["properties"][subdomain] = ref_obj
-
-    # for subdomain in ["fhir_extension"]:
-    #     ref_obj = {"$ref":config_json["pathinfo"][schema_path] + 'extension_domain/' + subdomain + ".json"}
-    #     schema["properties"]["extension_domain"]["properties"][subdomain]["items"] = ref_obj
-
-    # return schema
-
-
-
 def get_object_edit_json(in_json):
-
-
     try:
         bco_json = {}
         if in_json["bcoid"] != "-1":
@@ -429,7 +377,7 @@ def main():
                 parser.print_help()
                 sys.exit(0)
         in_json = json.loads(options.injson)
-
+    # in_json = {"svc":"save_object","bco":{'bco_spec_version':'1.3.0','checksum':'57cbf5de8052cb15cf2f26561d4b244554849fe4881c44b810f2f1170873cf3e','extension_domain':{'fhir_extension':[],'scm_extension':{'scm_repository':'','scm_path':'','scm_type':'git','scm_commit':''}},'provenance_domain':{'license':'Data - Attribution 4.0 International CC BY 4.0 [https://creativecommons.org/licenses/by/4.0/]','name':'FDA Breast Cancer Biomarkers','contributors':[{'orcid':'','affiliation':'','contribution':['createdBy'],'name':'','email':''}],'created':'2019-07-26T06:36:06.634890','modified':'2019-04-27T10:31:09.359044','version':'1.0.6'},'description_domain':{'keywords':['cancer','breast cancer','biomarker','biomarker test','FDA'],'pipeline_steps':[{'name':'','step_number':1,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':'FDA-approved tests were downloaded a list of FDA-approved or cleared nucleic acid based tests from https://www.fda.gov/MedicalDevices/ProductsandMedicalProcedures/InVitroDiagnostics/ucm330711.htm'},{'name':'','step_number':2,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':'Potential headers were added for manual annotation'},{'name':'','step_number':3,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':'Manual annotation of breast cancer tests - search tools included PubMed, UniProt, EDRN, HGNC, Google'},{'name':'','step_number':4,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':'Added UniProtID column and EDRN values from biomarkers-joined.xlsx into FDA tests dataset'},{'name':'','step_number':5,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':' Hyperlinks added clinical use in AdoptionEvidence'},{'name':'','step_number':6,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':'Incorporated GTR terms https://www.ncbi.nlm.nih.gov/gtr/'},{'name':'','step_number':7,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':' Modified header definitions and variable descriptions'},{'name':'','step_number':8,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':'Manual population of chart based on database searches and review of literature'}]},'execution_domain':{'external_data_endpoints':[],'environment_variables':{},'script_driver':'','software_prerequisites':[],'script':[]},'error_domain':{'empirical_error':{},'algorithmic_error':{}},'parametric_domain':[{'step':'','param':'','value':''}],'usability_domain':['FDA-approved or cleared nucleic acid-based human biomarker tests for breast cancer - This file contains FDA-approved human biomarker tests for breast cancer. Each row represents one gene linked to its respective test. Genes are labeled by relevant identifiers/accessions from UniProtKB, HGNC, and EDRN. Tests are distinguished by manufacturer, FDA submission ID(s), clinical trial ID(s), and PubMed ID(s).'],'bco_id':'-1','io_domain':{'input_subdomain':[],'output_subdomain':[{'mediatype':'csv','uri':{'access_time':'','uri':'http://data.oncomx.org/ln2wwwdata/reviewed/human_cancer_biomarkers_breast.csv','filename':' human_cancer_biomarkers_breast.csv'}},{'mediatype':'csv','uri':{'access_time':'','uri':'http://data.oncomx.org/ln2wwwdata/reviewed/human_cancer_biomarkers_breast.stat.csv','filename':'human_cancer_biomarkers_breast.stat.csv'}}]}}}
 
     global config_json
     global mongo_cl
@@ -474,9 +422,6 @@ def main():
         mongo_cl_log = mongo_dbh[config_json["dbinfo"]["collections"]["log"]]
         mongo_cl_invalid = mongo_dbh[config_json["dbinfo"]["collections"]["invalid_id"]]
         # pdb.set_trace()
-        # import_bcos(in_json, 'email@gmail.com')
-        # pdb.set_trace()
-        # read_file()
         try:
             svc = in_json["svc"] if "svc" in in_json else ""
             auth_obj = {"status": 0}
@@ -497,15 +442,10 @@ def main():
             elif svc == "reset_password" and (auth_obj["status"] == 1 or local_flag):
                 current_pass, new_pass = in_json["passwordone"], in_json["passwordtwo"]
                 out_json = auth.reset_password(mongo_cl_users, logged_email, current_pass,new_pass, mongo_cl_log)
-            # elif svc == "search_objects" and (auth_obj["status"] == 1 or local_flag):
             elif svc == "search_objects" or svc == "search_objects_no_auth":
                 out_json = search_objects(in_json)
             elif svc == "importbcos"  and (auth_obj["status"] == 1 or local_flag):
-                # import thread
-                # thread.start_new_thread(import_bcos, (in_json, logged_email, ))
                 import_bcos(in_json, logged_email)
-                # t1 = threading.Thread(target=import_bcos, args=(in_json, logged_email, ))
-                # t1.start()
                 out_json = {"result": True}
             elif svc == "get_object_view_json":
                 out_json = get_object_view_json(in_json)

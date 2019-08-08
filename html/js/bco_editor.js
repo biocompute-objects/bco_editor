@@ -270,10 +270,10 @@ function setViewPage(){
                 var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                 s += 'margin-bottom:20px;';
                 var links = '<a id=edit class="editlink">Edit Object</a>';
-                var downloadButton = !checkCookie('sessionid') ? '<input type="button" id=downloadbtn value=Download></input>' : ''
-                links = (resJson["editflag"] == true ? links : "Read Only" + downloadButton);
+                var downloadButton = '<input type="button" id=downloadbtn value=Download></input>'
+                links = (resJson["editflag"] == true ? links : "Read Only");
                 localStorage.viewItem = JSON.stringify(resJson["bco"])
-                var cn = '<div style="'+s+'">'+links+'</div>';
+                var cn = '<div style="'+s+'">'+ links + downloadButton + '</div>';
                 cn += '<DIV style="padding:20px 0px 0px 20px;"><pre style="white-space:pre-wrap;">';
                 cn +=  JSON.stringify(resJson["bco"], null, 4) + '</pre></DIV>';
                 $("#pagecn").html(cn);
@@ -624,6 +624,8 @@ function saveObject(){
                     var msg = resJson["errormsg"];
                     showError(msg)
                     // $("#pagecn").html(getMessagePanel(msg));
+                    $("#pagecn > div").last().remove()
+                    setEditPage()
                     return;
                 }
                 else{
