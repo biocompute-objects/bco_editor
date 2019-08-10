@@ -33,12 +33,29 @@ def regenerate_checksum():
         mongo_cl_bco.update_one({ 'bco_id': bco_id }, {'$set': data})
 
     return True
+
+def import_bcos():
+    with open('input.json', 'r') as f:
+        data = json.load(f)
+        for index in range(len(data)):
+            # save_object(item, '')
+            item = data[index]
+            original_id = item['bco_id']
+            bco_id = util.get_next_sequence_value(mongo_cl_counters, "bcoid")
+            bco_str_id = "000000"[0:6-len(str(bco_id))] + str(bco_id)
+            bco_url = config_json["pathinfo"]["bcoprefix"] % (bco_str_id)
+            item["bco_id"] = bco_url
+            item['original_id'] = original_id
+            item["provenance_domain"]["created"] = datetime.datetime.now().isoformat()
+            item = bio_editor.make_correct_data(item)
+            mongo_cl_bco.insert_one(item)
+
 ################################a
 def main():
 
     usage = "\n%prog  [options]"
     parser = OptionParser(usage,version="%prog " + __version__)
-    msg = "list_users|upsert_user|delete_user|reset_bcocounter|delete_bco|list_bco|list_log|regenerate_checksum"
+    msg = "list_users|upsert_user|delete_user|reset_bcocounter|delete_bco|list_bco|list_log|regenerate_checksum|import_bcos"
     parser.add_option("-a","--action",action="store",dest="action",help=msg)
 
     group_1 = OptionGroup(parser, "Additional options for upsert_user and delete_user actions")
@@ -61,6 +78,7 @@ def main():
             parser.print_help()
             # sys.exit(0)
 
+    global config_json
 
     config_json = json.loads(open("./conf/config.json", "r").read())
     if os.path.exists("conf/config.custom.json"):
@@ -103,6 +121,10 @@ def main():
     if options.action == 'regenerate_checksum':
         regenerate_checksum()
         print "success"
+    if options.action == 'import_bcos':
+        import_bcos()
+        print 'success'
+    
     elif options.action == "list_bco":
         print "#bco_id|name|createdby"
         for doc in mongo_cl_bco.find({}):
