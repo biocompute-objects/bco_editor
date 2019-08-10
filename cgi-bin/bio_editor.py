@@ -31,14 +31,14 @@ def make_correct_data(input_json):
     for i in range(len(input_json['description_domain']['pipeline_steps'])):
         for j in range(len(input_json['description_domain']['pipeline_steps'][i]['input_list'])):
             try:
-                if input_json['description_domain']['pipeline_steps'][i]['input_list'][j]['sha1_chksum']:
+                if input_json['description_domain']['pipeline_steps'][i]['input_list'][j]['sha1_chksum'] != None:
                     input_json['description_domain']['pipeline_steps'][i]['input_list'][j]['sha1_checksum'] = input_json['description_domain']['pipeline_steps'][i]['input_list'][j]['sha1_chksum']
                 del input_json['description_domain']['pipeline_steps'][i]['input_list'][j]['sha1_chksum']
             except:
                 pass
         for j in range(len(input_json['description_domain']['pipeline_steps'][i]['output_list'])):
             try:
-                if input_json['description_domain']['pipeline_steps'][i]['output_list'][j]['sha1_chksum']:
+                if input_json['description_domain']['pipeline_steps'][i]['output_list'][j]['sha1_chksum'] != None:
                     input_json['description_domain']['pipeline_steps'][i]['output_list'][j]['sha1_checksum'] = input_json['description_domain']['pipeline_steps'][i]['output_list'][j]['sha1_chksum']
                 del input_json['description_domain']['pipeline_steps'][i]['output_list'][j]['sha1_chksum']
             except:
@@ -46,7 +46,7 @@ def make_correct_data(input_json):
         try:
             for j in range(len(input_json['description_domain']['pipeline_steps'][i]['prerequisite'])):
                 try:
-                    if input_json['description_domain']['pipeline_steps'][i]['prerequisite'][j]['uri']['sha1_chksum']:
+                    if input_json['description_domain']['pipeline_steps'][i]['prerequisite'][j]['uri']['sha1_chksum'] != None:
                         input_json['description_domain']['pipeline_steps'][i]['prerequisite'][j]['uri']['sha1_checksum'] = input_json['description_domain']['pipeline_steps'][i]['prerequisite'][j]['uri']['sha1_chksum']
                     del input_json['description_domain']['pipeline_steps'][i]['prerequisite'][j]['uri']['sha1_chksum']
                 except:
@@ -56,14 +56,14 @@ def make_correct_data(input_json):
 
     for i in range(len(input_json['execution_domain']['software_prerequisites'])):
         try:
-            if input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_chksum']: 
+            if input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_chksum'] != None: 
                 input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_checksum'] = input_json['execution_domain']['software_prerequisites'][i]['uri'].pop('sha1_chksum')
             del input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_chksum']
         except:
             pass
     for i in range(len(input_json['execution_domain']['script'])):
         try:
-            if input_json['execution_domain']['script'][i]['uri']['sha1_chksum']:
+            if input_json['execution_domain']['script'][i]['uri']['sha1_chksum'] != None:
                 input_json['execution_domain']['script'][i]['uri']['sha1_checksum'] = input_json['execution_domain']['script'][i]['uri'].pop('sha1_chksum')
             del input_json['execution_domain']['script'][i]['uri']['sha1_chksum']
         except:
@@ -71,14 +71,14 @@ def make_correct_data(input_json):
 
     for i in range(len(input_json['io_domain']['input_subdomain'])):
         try:
-            if input_json['io_domain']['input_subdomain'][i]['uri']['sha1_chksum']:
+            if input_json['io_domain']['input_subdomain'][i]['uri']['sha1_chksum'] != None:
                 input_json['io_domain']['input_subdomain'][i]['uri']['sha1_checksum'] = input_json['io_domain']['input_subdomain'][i]['uri'].pop('sha1_chksum')
             del input_json['io_domain']['input_subdomain'][i]['uri']['sha1_chksum']
         except:
             pass
     for i in range(len(input_json['io_domain']['output_subdomain'])):
         try:
-            if input_json['io_domain']['output_subdomain'][i]['uri']['sha1_chksum']:
+            if input_json['io_domain']['output_subdomain'][i]['uri']['sha1_chksum'] != None:
                 input_json['io_domain']['output_subdomain'][i]['uri']['sha1_checksum'] = input_json['io_domain']['output_subdomain'][i]['uri'].pop('sha1_chksum')
             del input_json['io_domain']['output_subdomain'][i]['uri']['sha1_chksum']
         except:
