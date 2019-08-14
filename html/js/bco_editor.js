@@ -179,7 +179,7 @@ function setHomePage(){
                     return;
                 }
                 var s1 = 'display:block;float:left;border-bottom:1px solid #ccc;padding:5px;margin-bottom:20px;';
-                var s2 = 'width:50%;'
+                var s2 = 'width:70%;'
                 var cn = '<div id=searchstatcn style="'+s1 + s2+'"></div>';
                 var s2 = 'width:30%;text-align:right;'
                 cn += '<div style="'+s1 + s2 +'"><a id=create class="createlink">Create Object</a></div>';
