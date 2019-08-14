@@ -145,12 +145,6 @@ function setHomePage(){
 
     $("#searchboxcn").css("display", "block");
 
-    if (path) {
-        bcoId = window.location.href.includes('localhost') ? `https://w3id.org/biocompute/examples/${path}.json` : `http://biocomputeobject.org/${path}`
-        // bcoId = `http://biocomputeobject.org/${path}`
-        setViewPage()
-        return
-    }
                    
     var inJson = {}
     var queryValue = $("#queryvalue").val().trim();
@@ -178,6 +172,13 @@ function setHomePage(){
                     $("#pagecn").html(getMessagePanel(msg));
                     return;
                 }
+                if (path) {
+                    bcoId = window.location.href.includes('localhost') ? `https://w3id.org/biocompute/examples/${path}.json` : `http://biocomputeobject.org/${path}`
+                    // bcoId = `http://biocomputeobject.org/${path}`
+                    setViewPage()
+                    return
+                }
+
                 var s1 = 'display:block;float:left;border-bottom:1px solid #ccc;padding:5px;margin-bottom:20px;';
                 var s2 = 'width:70%;'
                 var cn = '<div id=searchstatcn style="'+s1 + s2+'"></div>';
@@ -280,6 +281,7 @@ function setViewPage(){
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
                 resJson = JSON.parse(reqObj.responseText);
+                $("#loginmsg").html('Signed as ' + resJson["auth"]["email"]);
                 var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                 s += 'margin-bottom:20px;';
                 var links = '<a id=edit class="editlink">Edit Object</a>';
