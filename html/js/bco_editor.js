@@ -2,13 +2,18 @@ var resJson = {};
 var editorObj = {};
 var pageId = "";
 var bcoId = "";
-
+var path = ''
 ////////////////////////////////
 $(document ).ready(function() {
   $('html').animate({scrollTop:0}, 'fast');
   $('body').animate({scrollTop:0}, 'fast');
   handleBackBtn();
-
+  var paths = window.location.href.split('/')
+  if (paths.length === 5 && paths[4]) {
+    path = paths[4]
+  } else {
+    path  = ''
+  }
   $("#loginformcn").css("display", "none");
   $("#pagelinkcn").css("display", "block");
 
@@ -24,7 +29,8 @@ $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink,
     pageId = this.id.split("|")[0];
 
     if(pageId == 'home'){
-        setHomePage();
+        window.location.href='/bco_editor'
+        // setHomePage();
     } else if (pageId == 'import') {
         importBcos()
     } else if (pageId == 'search') {
@@ -138,6 +144,13 @@ function setHomePage(){
     $("#pagelinkcn").append('<div id=home class=menudiv>Home</div>');
 
     $("#searchboxcn").css("display", "block");
+
+    if (path) {
+        bcoId = `https://w3id.org/biocompute/examples/${path}.json`
+        // bcoId = `http://biocomputeobject.org/${path}`
+        setViewPage()
+        return
+    }
                    
     var inJson = {}
     var queryValue = $("#queryvalue").val().trim();
@@ -709,8 +722,11 @@ function handleRowSelection(row){
 
     $('html').animate({scrollTop:0}, 'fast');
     $('body').animate({scrollTop:0}, 'fast');
-    bcoId = row[0];
-    setViewPage();
+    var id = row[0].split('/').pop().split('.').shift()
+    var url = window.location.href
+    url = `${url}${url.slice(-1) == '/' ? '' : '/'}${id}`
+    window.location.href = url
+    // setViewPage();
     return;
 }
 
