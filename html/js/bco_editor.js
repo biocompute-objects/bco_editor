@@ -29,7 +29,7 @@ $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink,
     pageId = this.id.split("|")[0];
 
     if(pageId == 'home'){
-        window.location.href='/bco_editor'
+        window.location.href='/bco_editor_tst'
         // setHomePage();
     } else if (pageId == 'import') {
         importBcos()
