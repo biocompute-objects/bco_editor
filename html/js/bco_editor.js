@@ -146,7 +146,7 @@ function setHomePage(){
     $("#searchboxcn").css("display", "block");
 
     if (path) {
-        bcoId = `https://w3id.org/biocompute/examples/${path}.json`
+        bcoId = window.location.href.includes('localhost') ? `https://w3id.org/biocompute/examples/${path}.json` : `http://biocomputeobject.org/${path}`
         // bcoId = `http://biocomputeobject.org/${path}`
         setViewPage()
         return
