@@ -3,6 +3,8 @@ var editorObj = {};
 var pageId = "";
 var bcoId = "";
 var path = ''
+var rootUrl = '/bco_editor_tst';
+
 ////////////////////////////////
 $(document ).ready(function() {
   $('html').animate({scrollTop:0}, 'fast');
@@ -29,12 +31,13 @@ $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink,
     pageId = this.id.split("|")[0];
 
     if(pageId == 'home'){
-        window.location.href='/bco_editor_tst'
+        window.location.href=rootUrl
         // setHomePage();
     } else if (pageId == 'import') {
         importBcos()
     } else if (pageId == 'search') {
         setSearchPage()
+        history.pushState({}, null, rootUrl)
     } else if(pageId == 'view'){
         bcoId = this.id.split("|")[1];
         setViewPage();
@@ -45,8 +48,10 @@ $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink,
         setEditPage();
     } else if(pageId == 'profile'){
         setProfilePage();
+        history.pushState({}, null, rootUrl)
     } else if(["tutorial"].indexOf(pageId) != -1){
         fillStaticHtmlCn(pageId + ".html", "#pagecn")
+        history.pushState({}, null, rootUrl)
     }    
 });
 
@@ -151,7 +156,7 @@ function setHomePage(){
     inJson = {"svc":"search_objects",  "queryvalue":queryValue};
 
     $("#pagecn").append(getProgressIcon());
-    var url = cgiRoot + '/bco_editor';
+    var url = cgiRoot + rootUrl;
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -214,7 +219,7 @@ function setHomePage(){
 function setEditPage(){
         
     $("#pagecn").html(getProgressIcon());
-    var url = cgiRoot + '/bco_editor';
+    var url = cgiRoot + rootUrl;
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -273,7 +278,7 @@ function setEditPage(){
 function setViewPage(){
 
     $("#pagecn").html(getProgressIcon());
-    var url = cgiRoot + '/bco_editor';
+    var url = cgiRoot + rootUrl;
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -310,7 +315,7 @@ function importBcos() {
     inJson = {"svc":"importbcos"};
 
     $("#pagecn").append(getProgressIcon());
-    var url = cgiRoot + '/bco_editor';
+    var url = cgiRoot + rootUrl;
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -357,7 +362,7 @@ function setSearchPage(){
     inJson = {"svc":"search_objects_no_auth",  "queryvalue":queryValue};
 
     $("#pagecn").append(getProgressIcon());
-    var url = cgiRoot + '/bco_editor';
+    var url = cgiRoot + rootUrl;
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -406,7 +411,7 @@ function setSearchPage(){
 function setProfilePage(){
 
     $("#pagecn").html(getProgressIcon());
-    var url = cgiRoot + '/bco_editor';
+    var url = cgiRoot + rootUrl;
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -523,7 +528,7 @@ function loginUser(){
     }
 
     //$("#pagecn").html(getProgressIcon());
-    var url = cgiRoot + '/bco_editor';
+    var url = cgiRoot + rootUrl;
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -567,7 +572,7 @@ function registerUser(){
         inJson[f] = $("input[name="+paramList[i]+"]").val();
     }
 
-    var url = cgiRoot + '/bco_editor';
+    var url = cgiRoot + rootUrl;
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -609,7 +614,7 @@ function saveObject(){
     }
     var bcoJson = editorObj.getValue();
     $("#pagecn").append(getProgressIcon());
-    var url = cgiRoot + '/bco_editor';
+    var url = cgiRoot + rootUrl;
    
     //Force this!
     bcoJson["bco_id"] = bcoId;
@@ -762,7 +767,7 @@ function saveProfile(){
         inJson[o["field"]] = $("input[name="+o["field"]+"]").val();
     }
 
-    var url = cgiRoot + '/bco_editor';
+    var url = cgiRoot + rootUrl;
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -823,7 +828,7 @@ function resetPassword(){
         "svc":"reset_password", 
         "passwordone":passwordOne, "passwordtwo":passwordTwo,
         "passwordthree":passwordThree};
-    var url = cgiRoot + '/bco_editor';
+    var url = cgiRoot + rootUrl;
     var reqObj = new XMLHttpRequest();
     reqObj.open("POST", url, true);
     reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
