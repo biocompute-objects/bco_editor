@@ -28,7 +28,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 __version__="1.0"
 
 def make_correct_data(input_json):
-   ''' 
+    
     try:
         del input_json['name']
     except:
@@ -53,49 +53,59 @@ def make_correct_data(input_json):
         del input_json['modified']
     except:
         pass
-'''
 
-    for item in input_json['description_domain']['pipeline_steps']:
-        for iitem in item['input_list']:
+
+    for i in range(len(input_json['description_domain']['pipeline_steps'])):
+        for j in range(len(input_json['description_domain']['pipeline_steps'][i]['input_list'])):
             try:
-                if iitem['sha1_chksum']:
-                    iitem['sha1_checksum'] = iitem.pop(sha1_chksum)
-                else:
-                    del iitem['sha1_chksum']
+                del input_json['description_domain']['pipeline_steps'][i]['input_list'][j]['sha1_chksum']
             except:
                 pass
-
-    for item in input_json['execution_domain']['software_prerequisites']:
+        for j in range(len(input_json['description_domain']['pipeline_steps'][i]['output_list'])):
+            try:
+                del input_json['description_domain']['pipeline_steps'][i]['output_list'][j]['sha1_chksum']
+            except:
+                pass
         try:
-            if item['uri']['sha1_chksum']: 
-                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
-            else:
-                del item['uri']['sha1_chksum']
-        except:
-            pass
-    for item in input_json['execution_domain']['script']:
-        try:
-            if item['uri']['sha1_chksum']:
-                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
-            else:
-                del item['uri']['sha1_chksum']
+            for j in range(len(input_json['description_domain']['pipeline_steps'][i]['prerequisite'])):
+                try:
+                    del input_json['description_domain']['pipeline_steps'][i]['prerequisite'][j]['sha1_chksum']
+                except:
+                    pass
         except:
             pass
 
-    for item in input_json['io_domain']['input_subdomain']:
+    for i in range(len(input_json['execution_domain']['software_prerequisites'])):
         try:
-            if item['uri']['sha1_chksum']:
-                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
+            if input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_chksum']: 
+                input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_checksum'] = input_json['execution_domain']['software_prerequisites'][i]['uri'].pop('sha1_chksum')
             else:
-                del item['uri']['sha1_chksum']
+                del input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_chksum']
         except:
             pass
-    for item in input_json['io_domain']['output_subdomain']:
+    for i in range(len(input_json['execution_domain']['script'])):
         try:
-            if item['uri']['sha1_chksum']:
-                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
+            if input_json['execution_domain']['script'][i]['uri']['sha1_chksum']:
+                input_json['execution_domain']['script'][i]['uri']['sha1_checksum'] = input_json['execution_domain']['script'][i]['uri'].pop('sha1_chksum')
             else:
-                del item['uri']['sha1_chksum']
+                del input_json['execution_domain']['script'][i]['uri']['sha1_chksum']
+        except:
+            pass
+
+    for i in range(len(input_json['io_domain']['input_subdomain'])):
+        try:
+            if input_json['io_domain']['input_subdomain'][i]['uri']['sha1_chksum']:
+                input_json['io_domain']['input_subdomain'][i]['uri']['sha1_checksum'] = input_json['io_domain']['input_subdomain'][i]['uri'].pop('sha1_chksum')
+            else:
+                del input_json['io_domain']['input_subdomain'][i]['uri']['sha1_chksum']
+        except:
+            pass
+    for i in range(len(input_json['io_domain']['output_subdomain'])):
+        try:
+            if input_json['io_domain']['output_subdomain'][i]['uri']['sha1_chksum']:
+                input_json['io_domain']['output_subdomain'][i]['uri']['sha1_checksum'] = input_json['io_domain']['output_subdomain'][i]['uri'].pop('sha1_chksum')
+            else:
+                del input_json['io_domain']['output_subdomain'][i]['uri']['sha1_chksum']
         except:
             pass
     
@@ -120,10 +130,6 @@ def save_object(in_json, logged_email):
     # pdb.set_trace()
     try:
         data = bio_hash.hashed_object(in_json)
-	print data['checksum']
-	doc = mongo_cl_bco.find_one({"bco_id": "http://biocomputeobject.org/BCO_000012"})
-	print doc['checksum']
-	return ''
         if bco_id != "-1":
             doc = mongo_cl_bco.find_one({"bco_id":bco_id})
             creator_list = []
@@ -306,7 +312,18 @@ def get_schema(internal=False):
 
     schema_file = open(mainschema_file, "r")
     base_uri = 'file://{}/'.format(os.path.dirname(schema_file.name))
-    schema = jsonref.load(schema_file, base_uri=base_uri, jsonschema=True)  
+    schema = jsonref.load(schema_file, base_uri=base_uri, jsonschema=True)
+    schema['properties']['provenance_domain']['propertyOrder'] = 1  
+    schema['properties']['usability_domain']['propertyOrder'] = 2
+    schema['properties']['description_domain']['propertyOrder'] = 3
+    schema['properties']['execution_domain']['propertyOrder'] = 4
+    schema['properties']['parametric_domain']['propertyOrder'] = 5  
+    schema['properties']['io_domain']['propertyOrder'] = 6
+    schema['properties']['error_domain']['propertyOrder'] = 7
+    schema['properties']['bco_id']['propertyOrder'] = 8
+    schema['properties']['bco_spec_version']['propertyOrder'] = 9
+    schema['properties']['checksum']['propertyOrder'] = 10
+    schema['properties']['extension_domain']['propertyOrder'] = 11  
     return schema
 
 def get_object_edit_json(in_json):

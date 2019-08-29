@@ -142,3 +142,35 @@ div#editor_div ~ div {
 input#downloadbtn {
     margin-left: 5px;
 }
+
+.bco-board {
+    background-color: #E7E7E7;
+}
+
+.header-domain {
+    background-color: #E2D2F8;
+}
+
+.provenance-domain {
+    background-color: #F8F8C7;
+}
+
+.usability-domain {
+    background-color: #E2D2F8;
+}
+
+.description-domain {
+    background-color: #D9F8C1;
+}
+
+.parametric-domain {
+    background-color: #F8D8D8;
+}
+
+.error-domain {
+    background-color: #E7E7E7;
+}
+
+.io-domain {
+    background-color: #F8D6EE;
+}
