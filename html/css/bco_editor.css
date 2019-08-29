@@ -143,34 +143,80 @@ input#downloadbtn {
     margin-left: 5px;
 }
 
+div#editor_div div.well {
+    background-color: #e7e7e7;
+}
+
+div#editor_div div.row:has(label:contains("bco_id")) {
+    background-color: #e2d2f8;
+    margin: 0;
+}
+
 .bco-board {
     background-color: #E7E7E7;
+    margin: 0;
 }
 
-.header-domain {
-    background-color: #E2D2F8;
+.header-domain, 
+.header-domain > div, 
+.header-domain > div > h5, 
+.header-domain div.well {
+    background-color: #E2D2F8 !important;
+    margin: 0;
 }
 
-.provenance-domain {
-    background-color: #F8F8C7;
+.provenance-domain,
+.provenance-domain > div,
+.provenance-domain > div > h5,
+.provenance-domain div.well {
+    background-color: #F8F8C7 !important;
+    margin: 0;
 }
 
-.usability-domain {
-    background-color: #E2D2F8;
+.usability-domain,
+.usability-domain > div,
+.usability-domain > div > h5,
+.usability-domain div.well {
+    background-color: #E2D2F8 !important;
+    margin: 0;
 }
 
-.description-domain {
-    background-color: #D9F8C1;
+.description-domain,
+.description-domain > div,
+.description-domain > div > h5,
+.description-domain div.well {
+    background-color: #D9F8C1 !important;
+    margin: 0;
 }
 
-.parametric-domain {
-    background-color: #F8D8D8;
+.execution-domain,
+.execution-domain > div,
+.execution-domain > div > h5,
+.execution-domain div.well {
+    background-color: #CCDAF8 !important;
+    margin: 0;
 }
 
-.error-domain {
-    background-color: #E7E7E7;
+.parametric-domain,
+.parametric-domain > div,
+.parametric-domain > div > h5,
+.parametric-domain div.well {
+    background-color: #F8D6EE !important;
+    margin: 0;
 }
 
-.io-domain {
-    background-color: #F8D6EE;
+.error-domain,
+.error-domain > div ,
+.error-domain > div  > h5,
+.error-domain div.well {
+    background-color: #DAF8CC !important;
+    margin: 0;
+}
+
+.io-domain,
+.io-domain > div,
+.io-domain > div > h5,
+.io-domain div.well {
+    background-color: #C3F8DA !important;
+    margin: 0;
 }

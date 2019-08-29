@@ -3,7 +3,8 @@ var editorObj = {};
 var pageId = "";
 var bcoId = "";
 var path = ''
-var rootUrl = '/bco_editor_tst';
+var isDataEdited = false;
+var rootUrl = '/bco_editor';
 
 ////////////////////////////////
 $(document ).ready(function() {
@@ -30,6 +31,18 @@ $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink,
 
     pageId = this.id.split("|")[0];
 
+    if (isDataEdited) {
+        if (!['edit', 'create'].includes(pageId)) {
+            openModal(pageId)
+        }
+    } else {
+        gotoNavigate(pageId, this.id)
+
+    }
+});
+
+function gotoNavigate(pageId, secondId) {
+
     if(pageId == 'home'){
         window.location.href=rootUrl
         // setHomePage();
@@ -39,8 +52,12 @@ $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink,
         setSearchPage()
         history.pushState({}, null, rootUrl)
     } else if(pageId == 'view'){
-        bcoId = this.id.split("|")[1];
-        setViewPage();
+        if (!secondId) {
+            setHomePage()
+        } else {
+            bcoId = secondId.split("|")[1];
+            setViewPage();
+        }
     } else if(pageId == 'edit'){
         setEditPage();
     } else if(pageId == 'create'){
@@ -52,8 +69,10 @@ $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink,
     } else if(["tutorial"].indexOf(pageId) != -1){
         fillStaticHtmlCn(pageId + ".html", "#pagecn")
         history.pushState({}, null, rootUrl)
-    }    
-});
+    } else if ( pageId == 'logout' ) {
+        logoutUser()
+    }
+}
 
 $(document).on('click', '#savebco', function (event) {
     event.preventDefault();
@@ -78,7 +97,12 @@ $(document).on('click', '#resetpassword', function (event) {
 
 $(document).on('click', '#logout', function (event) {
     event.preventDefault();
-    logoutUser();
+    if (isDataEdited) {
+        openModal('logout')
+    } else {
+        logoutUser();
+
+    }
 });
 $(document).on('click', '#downloadbtn', function (event) {
     event.preventDefault();
@@ -89,10 +113,15 @@ $(document).on('click', '#searchbtn', function (event) {
     event.preventDefault();
     $('html').animate({scrollTop:0}, 'fast');
     $('body').animate({scrollTop:0}, 'fast');
-    if (checkCookie('sessionid'))
-        $("#pagecn").html(setHomePage());
-    else
-        $("#pagecn").html(setSearchPage());
+    if (isDataEdited) {
+        openModal('search')
+    } else {
+        if (checkCookie('sessionid'))
+            $("#pagecn").html(setHomePage());
+        else
+            $("#pagecn").html(setSearchPage());
+
+    }
 });
 
 $(document).on('click', '#login', function (event) {
@@ -165,6 +194,14 @@ function setHomePage(){
             try {
                 resJson = JSON.parse(reqObj.responseText);
                 $("#versioncn").html(resJson["editorversion"]);
+                // debugger
+                if (path) {
+                    bcoId = window.location.href.includes('localhost') ? `https://w3id.org/biocompute/examples/${path}.json` : `http://biocomputeobject.org/${path}`
+                    // bcoId = `http://biocomputeobject.org/${path}`
+                    setViewPage()
+                    return
+                }
+
                 if ("auth" in resJson){
                     if(resJson["auth"]["status"] != 1){
                         setUnSignedHomePage();
@@ -176,12 +213,6 @@ function setHomePage(){
                     var msg = resJson["errormsg"];
                     $("#pagecn").html(getMessagePanel(msg));
                     return;
-                }
-                if (path) {
-                    bcoId = window.location.href.includes('localhost') ? `https://w3id.org/biocompute/examples/${path}.json` : `http://biocomputeobject.org/${path}`
-                    // bcoId = `http://biocomputeobject.org/${path}`
-                    setViewPage()
-                    return
                 }
 
                 var s1 = 'display:block;float:left;border-bottom:1px solid #ccc;padding:5px;margin-bottom:20px;';
@@ -257,6 +288,16 @@ function setEditPage(){
                         schemaObj.show_errors = "interaction"
                         JSONEditor.defaults.options.theme = 'bootstrap3';
                         editorObj = new JSONEditor(document.getElementById('editor_div'),schemaObj);
+                        var isOnceCalled = false
+                        editorObj.on('change', function() {
+                            if (!isOnceCalled) {
+                                setStyles()
+                                isOnceCalled = true;
+                            } else {
+                                isDataEdited = true;
+                                console.log('123')
+                            }
+                        })
 
                     }
                 }
@@ -274,6 +315,28 @@ function setEditPage(){
     return;
 }
 
+function setStyles() {
+    console.log($('div.row:has(label:contains("bco_id"))'))
+    $('div.row:has(label:contains("bco_id"))').addClass('header-domain')
+    $('div.row:has(label:contains("bco_spec_version"))').addClass('header-domain')
+    $('div.row:has(label:contains("checksum"))').addClass('header-domain')
+    $('div.row:has(span:contains("extension_domain"))').addClass('header-domain')
+    $('div.row:has(span:contains("Provenance Domain"))').addClass('provenance-domain')
+    $('div.row:has(span:contains("Usability Domain"))').addClass('usability-domain')
+    $('div.row:has(span:contains("Description Domain"))').addClass('description-domain')
+    $('div.row:has(span:contains("Execution Domain"))').addClass('execution-domain')
+    $('div.row:has(span:contains("Parametric Domain"))').addClass('parametric-domain')
+    $('div.row:has(span:contains("Input and Output Domain"))').addClass('io-domain')
+    $('div.row:has(span:contains("Error Domain"))').addClass('error-domain')
+}
+
+function generateSpaces(number) {
+    return '&nbsp;'.repeat(number);
+}
+
+function stringify(json) {
+    return JSON.stringify(json, null, 4);
+}
 
 function setViewPage(){
 
@@ -381,7 +444,10 @@ function setSearchPage(){
                 var s2 = 'width:70%;'
                 var cn = '<div id=searchstatcn style="'+s1 + s2+'"></div>';
                 var s2 = 'width:30%;text-align:right;'
-                cn += '<div style="'+s1 + s2 +'"></div>';
+                if (checkCookie('sessionid'))
+                    cn += '<div style="'+s1 + s2 +'"><a id=create class="createlink">Create Object</a></div>';
+                else
+                   cn += '<div style="'+s1 + s2 +'"></div>';
                 cn += '<div id=searchresultscn></div>';
                 $("#pagecn").html(cn);
                 if (resJson["searchresults"].length > 2){
@@ -948,3 +1014,19 @@ function showError(message) {
   })
 }
 
+function openModal(pageId) {
+    $('#open_modal').modal({
+        showClose: false
+    });
+
+    $('#confirm_yes').click(function() {
+        isDataEdited = false
+        $.modal.close()
+        gotoNavigate(pageId)
+    })
+
+    $('#confirm_no').click(function() {
+        $.modal.close()
+
+    })
+}
