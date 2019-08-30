@@ -22,6 +22,21 @@ $(document ).ready(function() {
 
   $("#searchboxcn").html(getSearchForm());
   $("#pagecn").html(setHomePage());
+
+  $(window).on('popstate', function (e) {
+    var state = e.originalEvent.state;
+    if (state !== null) {
+        debugger
+    }
+  })
+  // window.history.pushState(null, "", window.location.href);
+  // window.onpopstate = function() {
+  //   if (isDataEdited){
+  //       window.history.pushState(null, "", window.location.href);
+  //   }
+  // }
+//  window.addEventListener('beforeunload', handleBackFunction)
+
 });
 
 $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink, .importlink', function (event) {
@@ -284,6 +299,22 @@ function setEditPage(){
                         cn += '<div style="'+style+'">'+saveBtn+'</div>';
                         $("#pagecn").html(cn);
                         var schemaObj = JSON.parse(reqObj.responseText);
+                        var properties = {}
+                        properties['bco_id'] = schemaObj.schema.properties.bco_id;
+                        properties['bco_spec_version'] = schemaObj.schema.properties.bco_spec_version;
+                        properties['checksum'] = schemaObj.schema.properties.checksum;
+                        properties['extension_domain'] = schemaObj.schema.properties.extension_domain;
+                        properties['provenance_domain'] = schemaObj.schema.properties.provenance_domain;
+                        properties['usability_domain'] = schemaObj.schema.properties.usability_domain;
+                        properties['description_domain'] = schemaObj.schema.properties.description_domain;
+                        properties['execution_domain'] = schemaObj.schema.properties.execution_domain;
+                        properties['parametric_domain'] = schemaObj.schema.properties.parametric_domain;
+                        properties['io_domain'] = schemaObj.schema.properties.io_domain;
+                        properties['error_domain'] = schemaObj.schema.properties.error_domain;
+
+                        delete schemaObj.schema.properties;
+                        schemaObj.schema.properties = properties;
+
                         schemaObj["ajax"] = true;
                         schemaObj.show_errors = "interaction"
                         JSONEditor.defaults.options.theme = 'bootstrap3';
@@ -1029,4 +1060,16 @@ function openModal(pageId) {
         $.modal.close()
 
     })
+}
+
+
+function handleBackFunction() {
+    if (isDataEdited) {
+        window.event.preventDefault()
+        event.preventDefault()
+        openModal('home')
+        event.returnValue = false;
+        window.history.forward(1)
+        return false;
+    } 
 }
