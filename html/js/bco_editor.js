@@ -703,8 +703,12 @@ function registerUser(){
 
 function saveObject(){
 
-    var errors = editorObj.validate();    
+    var errors = editorObj.validate();
+    // var tmp = editorObj.options.show_errors;   
     editorObj.root.showValidationErrors(errors);    
+    editorObj.options.show_errors = 'always';
+    editorObj.onChange();
+
     if (errors.length) {
       errors.map(error => showError(error.path + " : " + error.message));
       return
@@ -734,6 +738,7 @@ function saveObject(){
     //reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     reqObj.onreadystatechange = function() {
         if (reqObj.readyState == 4 && reqObj.status == 200) {
+            isDataEdited = false;
             try {
                 console.log(reqObj.responseText);
                 resJson = JSON.parse(reqObj.responseText);
@@ -747,7 +752,7 @@ function saveObject(){
                 }
                 else{
                     bcoId = resJson["bcoid"];
-                    showSuccess("Your bco "+ bcoJson['bco_spec_version'] + " has been successfully submitted.");
+                    showSuccess("Your biocompute object "+ getBcoId(bcoId) + " has been successfully submitted.");
                     setHomePage();
                 }
             }
@@ -1072,4 +1077,9 @@ function handleBackFunction() {
         window.history.forward(1)
         return false;
     } 
+}
+
+function getBcoId(url) {
+    let tempId = url.split('/').pop();
+    return window.location.href.includes('localhost') ? tempId.split('.')[0] : tempId;
 }

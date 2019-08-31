@@ -313,7 +313,7 @@ def get_schema(internal=False):
     schema_file = open(mainschema_file, "r")
     base_uri = 'file://{}/'.format(os.path.dirname(schema_file.name))
     schema = jsonref.load(schema_file, base_uri=base_uri, jsonschema=True)
-    schema['properties']['provenance_domain']['propertyOrder'] = 5  
+    schema['properties']['provenance_domain']['propertyOrder'] = 5
     schema['properties']['usability_domain']['propertyOrder'] = 6
     schema['properties']['description_domain']['propertyOrder'] = 7
     schema['properties']['execution_domain']['propertyOrder'] = 8
@@ -324,6 +324,15 @@ def get_schema(internal=False):
     schema['properties']['bco_spec_version']['propertyOrder'] = 2
     schema['properties']['checksum']['propertyOrder'] = 3
     schema['properties']['extension_domain']['propertyOrder'] = 4  
+    
+    schema['properties']['provenance_domain']['properties']['license']['propertyOrder'] = 1
+    schema['properties']['provenance_domain']['properties']['name']['propertyOrder'] = 2
+    schema['properties']['provenance_domain']['properties']['version']['propertyOrder'] = 3
+    schema['properties']['provenance_domain']['properties']['created']['propertyOrder'] = 4
+    schema['properties']['provenance_domain']['properties']['modified']['propertyOrder'] = 5
+    schema['properties']['provenance_domain']['properties']['contributors']['propertyOrder'] = 6
+    schema['properties']['provenance_domain']['properties']['review']['propertyOrder'] = 7
+
     return schema
 
 def get_object_edit_json(in_json):

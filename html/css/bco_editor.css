@@ -220,3 +220,7 @@ div#editor_div div.row:has(label:contains("bco_id")) {
     background-color: #C3F8DA !important;
     margin: 0;
 }
+
+.control-label {
+    font-weight: 100;
+}
