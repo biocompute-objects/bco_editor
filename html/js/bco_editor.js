@@ -5,6 +5,7 @@ var bcoId = "";
 var path = ''
 var isDataEdited = false;
 var rootUrl = '/bco_editor';
+var rootPath = '/bco_editor_tst';
 
 ////////////////////////////////
 $(document ).ready(function() {
@@ -59,13 +60,13 @@ $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink,
 function gotoNavigate(pageId, secondId) {
 
     if(pageId == 'home'){
-        window.location.href=rootUrl
+        window.location.href=rootPath
         // setHomePage();
     } else if (pageId == 'import') {
         importBcos()
     } else if (pageId == 'search') {
         setSearchPage()
-        history.pushState({}, null, rootUrl)
+        history.pushState({}, null, rootPath)
     } else if(pageId == 'view'){
         if (!secondId) {
             setHomePage()
@@ -80,10 +81,10 @@ function gotoNavigate(pageId, secondId) {
         setEditPage();
     } else if(pageId == 'profile'){
         setProfilePage();
-        history.pushState({}, null, rootUrl)
+        history.pushState({}, null, rootPath)
     } else if(["tutorial"].indexOf(pageId) != -1){
         fillStaticHtmlCn(pageId + ".html", "#pagecn")
-        history.pushState({}, null, rootUrl)
+        history.pushState({}, null, rootPath)
     } else if ( pageId == 'logout' ) {
         logoutUser()
     }
