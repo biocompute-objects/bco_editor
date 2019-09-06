@@ -5,8 +5,6 @@
     "title": "Error Domain",
     "description": "",
     "required": [
-        "empirical_error",
-        "algorithmic_error"
     ],
     "properties": {
         "empirical_error": {

@@ -332,6 +332,10 @@ def get_schema(internal=False):
     schema['properties']['provenance_domain']['properties']['modified']['propertyOrder'] = 5
     schema['properties']['provenance_domain']['properties']['contributors']['propertyOrder'] = 6
     schema['properties']['provenance_domain']['properties']['review']['propertyOrder'] = 7
+    schema['properties']['provenance_domain']['properties']['embargo']['propertyOrder'] = 8
+    schema['properties']['provenance_domain']['properties']['derived_from']['propertyOrder'] = 9
+    schema['properties']['provenance_domain']['properties']['obsolete_after']['propertyOrder'] = 10
+    
 
     return schema
 
