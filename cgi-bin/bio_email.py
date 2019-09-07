@@ -27,7 +27,7 @@ def registerSubject():
 def registerBody(email):
 	return '''
 		<p>A new user has requested acces to the BCO Editor. </p>
-		<p>Please review this request in /software/bco_editor/cgi-bin as soon as you are able to and activate via </p>
+		<p>Please review this request in /var/www/cgi-bin/bco_editor_tst/ as soon as you are able to and activate via </p>
 		<p><strong>python admin_util -a upsert_user -e {} -s 1 </strong></p>
 		<p>, or forward to keeneyjg@gwu.edu.</p>
 
