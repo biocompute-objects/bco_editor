@@ -33,7 +33,7 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.0.asc
         
 Then disconnect from the mongo shell (Ctrl+D).
 
-6. Disconnect from mongo shell and enable authentication in mongod configuration file and change "disabled" to "enabled"
+6) Disconnect from mongo shell and enable authentication in mongod configuration file and change "disabled" to "enabled"
         $ sudo vi /etc/mongod.conf
       
         #security:
@@ -54,4 +54,4 @@ Then disconnect from the mongo shell (Ctrl+D).
         > use bcodb_1_tst
         > db.createUser({user: "bcodbadmin", pwd: "bcodbpass", roles: [ { role: "readWrite", db: "bcodb_1_tst" } ]})
         
-```
+

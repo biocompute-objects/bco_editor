@@ -33,6 +33,84 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 # sys.stderr = sys.stdout
 __version__="1.0"
 
+def make_correct_data(input_json):
+    
+    try:
+        del input_json['name']
+    except:
+        pass
+    try:
+        del input_json['version']
+    except:
+        pass
+    try:
+        del input_json['license']
+    except:
+        pass
+    try:
+        del input_json['contributors']
+    except:
+        pass
+    try:
+        del input_json['created']
+    except:
+        pass
+    try:
+        del input_json['modified']
+    except:
+        pass
+
+
+    for item in input_json['description_domain']['pipeline_steps']:
+        for iitem in item['input_list']:
+            try:
+                if iitem['sha1_chksum']:
+                    iitem['sha1_checksum'] = iitem.pop(sha1_chksum)
+                else:
+                    del iitem['sha1_chksum']
+            except:
+                pass
+
+    for item in input_json['execution_domain']['software_prerequisites']:
+        try:
+            if item['uri']['sha1_chksum']: 
+                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
+            else:
+                del item['uri']['sha1_chksum']
+        except:
+            pass
+    # pdb.set_trace()
+    for item in input_json['execution_domain']['script']:
+        try:
+            if item['uri']['sha1_chksum']:
+                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
+            else:
+                del item['uri']['sha1_chksum']
+        except:
+            pass
+
+    for item in input_json['io_domain']['input_subdomain']:
+        try:
+            if item['uri']['sha1_chksum']:
+                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
+            else:
+                del item['uri']['sha1_chksum']
+        except:
+            pass
+    for item in input_json['io_domain']['output_subdomain']:
+        try:
+            if item['uri']['sha1_chksum']:
+                item['uri']['sha1_checksum'] = item['uri'].pop('sha1_chksum')
+            else:
+                del item['uri']['sha1_chksum']
+        except:
+            pass
+    
+    return input_json
+
+
+
+
 
 def save_object(in_json, logged_email):
     # validating json data with schema
@@ -345,9 +423,6 @@ def get_object_edit_json(in_json):
 
         out_json = {"schema":get_schema()}
 <<<<<<< HEAD
-
-=======
-<<<<<<< HEAD
 <<<<<<< HEAD
         
 =======
@@ -372,7 +447,6 @@ def get_object_edit_json(in_json):
 >>>>>>> parent of b64885f... "This version of the bco_editor includes (a) a notification once a successful submission is made and (b) an error notification in case of an error."
 =======
 >>>>>>> 4ed7633be354b95839b356fad18fbe31f67a7993
->>>>>>> Update bco_editor
         out_json["startval"]= {
             "bco_id":bco_json["bco_id"],
             "bco_spec_version":bco_json["bco_spec_version"],
@@ -392,8 +466,6 @@ def get_object_edit_json(in_json):
     return out_json
 
 <<<<<<< HEAD
-=======
-<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -405,7 +477,6 @@ def get_object_edit_json(in_json):
 =======
 #~~~~~~~~~~~~~~~~~~~~~
 >>>>>>> 4ed7633be354b95839b356fad18fbe31f67a7993
->>>>>>> Update bco_editor
 def main():
     
     usage = "\n%prog  [options]"
@@ -534,6 +605,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
 

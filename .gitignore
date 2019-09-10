@@ -1,12 +1,3 @@
 html/js/backup/*
-<<<<<<< HEAD
-<<<<<<< HEAD
 cgi-bin/*.pyc
-=======
->>>>>>> sychronized schemas
-=======
-cgi-bin/*.pyc
->>>>>>> Added password reset functionality
 .DS_Store
-html/log/*
-cgi-bin/tmp/

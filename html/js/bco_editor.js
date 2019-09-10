@@ -482,6 +482,12 @@ function registerUser(){
 
 function saveObject(){
 
+    var errors = editorObj.validate();    
+    editorObj.root.showValidationErrors(errors);    
+    if (errors.length) {
+      return
+    }
+
     var bcoJson = editorObj.getValue();
     $("#pagecn").append(getProgressIcon());
     var url = cgiRoot + '/bco_editor';
