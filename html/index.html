@@ -31,6 +31,7 @@
     <link href="./css/jquery.toast.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+      <link rel="stylesheet" href="./css/bootstrap-datetimepicker.min.css" />
 
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -47,7 +48,7 @@
 
 </head>
 
-  <body>
+  <body onbeforeunload="handleBackFunction()">
 
     <nav class="navbar navbar-inverse navbar-fixed-top" style="position:absolute;">
       <div class="container" style="width:99%;margin-left:1%;">
@@ -95,12 +96,16 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="./bootstrap/js/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="./bootstrap/js/jquery.min.js"><\/script>')</script>
+    <script type="text/javascript" src="./js/moment.min.js"></script>
+
     <script src="./bootstrap/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="./bootstrap/js/ie10-viewport-bug-workaround.js"></script>
     <script src="./js/jquery.toast.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
-    <script src="./js/jsoneditor-1.0.js"></script>
+    <!-- <script src="./js/jsoneditor-1.0.js"></script> -->
+    <script src="http://jeremydorn.com/json-editor/dist/jsoneditor.min.js.php"></script>
+    <script type="text/javascript" src="./js/bootstrap-datetimepicker.min.js"></script>
 
     <script src="./js/loader.js"></script>
      <script src="./js/bco_editor.js"></script>

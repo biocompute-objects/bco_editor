@@ -12,6 +12,7 @@ $(document ).ready(function() {
   $('html').animate({scrollTop:0}, 'fast');
   $('body').animate({scrollTop:0}, 'fast');
   handleBackBtn();
+  generateDateTimePicker();
   var paths = window.location.href.split('/')
   if (paths.length === 5 && paths[4]) {
     path = paths[4]
@@ -300,6 +301,12 @@ function setEditPage(){
                         cn += '<div style="'+style+'">'+saveBtn+'</div>';
                         $("#pagecn").html(cn);
                         var schemaObj = JSON.parse(reqObj.responseText);
+                        console.log(schemaObj)
+                        delete schemaObj.taskstatus;
+                        delete schemaObj.editorversion;
+                        delete schemaObj.auth;
+                        delete schemaObj.ajax;
+
                         var properties = {}
                         properties['bco_id'] = schemaObj.schema.properties.bco_id;
                         properties['bco_spec_version'] = schemaObj.schema.properties.bco_spec_version;
@@ -315,6 +322,18 @@ function setEditPage(){
 
                         delete schemaObj.schema.properties;
                         schemaObj.schema.properties = properties;
+
+                        var proveProperties = {}
+                        proveProperties['license'] = schemaObj.schema.properties.provenance_domain.properties.license;
+                        proveProperties['name'] = schemaObj.schema.properties.provenance_domain.properties.name;
+                        proveProperties['created'] = schemaObj.schema.properties.provenance_domain.properties.created;
+                        proveProperties['version'] = schemaObj.schema.properties.provenance_domain.properties.version;
+                        proveProperties['modified'] = schemaObj.schema.properties.provenance_domain.properties.modified;
+                        proveProperties['contributors'] = schemaObj.schema.properties.provenance_domain.properties.contributors;
+                        proveProperties['review'] = schemaObj.schema.properties.provenance_domain.properties.review;
+                        proveProperties['embargo'] = schemaObj.schema.properties.provenance_domain.properties.embargo || {};
+                        delete schemaObj.schema.properties.provenance_domain.properties;
+                        schemaObj.schema.properties.provenance_domain.properties = proveProperties;
 
                         schemaObj["ajax"] = true;
                         schemaObj.show_errors = "interaction"
@@ -1083,4 +1102,30 @@ function handleBackFunction() {
 function getBcoId(url) {
     let tempId = url.split('/').pop();
     return window.location.href.includes('localhost') ? tempId.split('.')[0] : tempId;
+}
+
+
+function generateDateTimePicker() {
+    const interval = setInterval(function() {        
+        if ($('input[type="datetime"]').length) {
+            $('input[type="datetime"]').datetimepicker();
+            $('input[name="root[provenance_domain][embargo][start_time]"]').datetimepicker({
+                useCurrent: false,
+            })
+            $('input[name="root[provenance_domain][embargo][end_time]"]').datetimepicker({
+                useCurrent: false
+            })
+            $('input[name="root[provenance_domain][embargo][start_time]"]').on("dp.change", function(e) {
+                // $('input[name="root[provenance_domain][embargo][start_time]"]').val(e.date.format());
+                $('input[name="root[provenance_domain][embargo][end_time]"]').data("DateTimePicker").minDate(e.date);  
+                editorObj.getEditor('root.provenance_domain.embargo.start_time').setValue(e.date.format())
+            })
+            $('input[name="root[provenance_domain][embargo][end_time]"]').on("dp.change", function(e) {
+                // $('input[name="root[provenance_domain][embargo][end_time]"]').val(e.date.format())
+                $('input[name="root[provenance_domain][embargo][start_time]"]').data("DateTimePicker").maxDate(e.date);  
+                editorObj.getEditor('root.provenance_domain.embargo.end_time').setValue(e.date.format())
+            })
+            clearInterval(interval)
+        }
+    }, 300)
 }
