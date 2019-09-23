@@ -280,7 +280,8 @@ function setEditPage(){
                         $("#pagecn").html(cn);
                         return;
                     }
-                    else{
+                    else
+                    {
                         var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                         s += 'margin-bottom:20px;';
                         var links = '<a id=view|'+bcoId+' class="viewlink">View Object</a>';
@@ -337,7 +338,6 @@ function setEditPage(){
                                 console.log('123')
                             }
                         })
-
                     }
                 }
             }
@@ -1099,18 +1099,19 @@ function generateDateTimePicker() {
             $('input[type="date-time"]').datetimepicker({format: 'YYYY-MM-DDTHH:mm:ssZ'});
             $('input[name="root[provenance_domain][embargo][start_time]"]').datetimepicker({
                 useCurrent: false,
-		format: 'YYYY-MM-DDTHH:mm:ssZ'
+		        format: 'YYYY-MM-DDTHH:mm:ssZ'
             })
             $('input[name="root[provenance_domain][embargo][end_time]"]').datetimepicker({
                 useCurrent: false,
-		format: 'YYYY-MM-DDTHH:mm:ssZ'
+		        format: 'YYYY-MM-DDTHH:mm:ssZ'
             })
             $('input[name="root[provenance_domain][embargo][start_time]"]').on("dp.change", function(e) {
                 // $('input[name="root[provenance_domain][embargo][start_time]"]').val(e.date.format());
                 $('input[name="root[provenance_domain][embargo][end_time]"]').data("DateTimePicker").minDate(e.date);  
                 editorObj.getEditor('root.provenance_domain.embargo.start_time').setValue(e.date.format())
             });
-            $('input[name="root[provenance_domain][embargo][end_time]"]').val(editorObj.getEditor('root.provenance_domain.embargo.start_time').getValue());
+            if (editorObj.getEditor('root.provenance_domain.embargo.start_time'))
+                $('input[name="root[provenance_domain][embargo][end_time]"]').val(editorObj.getEditor('root.provenance_domain.embargo.start_time').getValue());
             $('input[name="root[provenance_domain][embargo][end_time]"]').on("dp.change", function(e) {
                 // $('input[name="root[provenance_domain][embargo][end_time]"]').val(e.date.format())
                 $('input[name="root[provenance_domain][embargo][start_time]"]').data("DateTimePicker").maxDate(e.date);  
