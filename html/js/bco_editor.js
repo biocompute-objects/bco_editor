@@ -31,14 +31,6 @@ $(document ).ready(function() {
         debugger
     }
   })
-  // window.history.pushState(null, "", window.location.href);
-  // window.onpopstate = function() {
-  //   if (isDataEdited){
-  //       window.history.pushState(null, "", window.location.href);
-  //   }
-  // }
-//  window.addEventListener('beforeunload', handleBackFunction)
-
 });
 
 $(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink, .importlink', function (event) {
@@ -301,11 +293,7 @@ function setEditPage(){
                         cn += '<div style="'+style+'">'+saveBtn+'</div>';
                         $("#pagecn").html(cn);
                         var schemaObj = JSON.parse(reqObj.responseText);
-                        console.log(schemaObj)
-                        delete schemaObj.taskstatus;
-                        delete schemaObj.editorversion;
-                        delete schemaObj.auth;
-                        delete schemaObj.ajax;
+                        console.log(schemaObj);
 
                         var properties = {}
                         properties['bco_id'] = schemaObj.schema.properties.bco_id;
@@ -339,7 +327,7 @@ function setEditPage(){
                         schemaObj.show_errors = "interaction"
                         JSONEditor.defaults.options.theme = 'bootstrap3';
                         editorObj = new JSONEditor(document.getElementById('editor_div'),schemaObj);
-                        var isOnceCalled = false
+                        var isOnceCalled = false;
                         editorObj.on('change', function() {
                             if (!isOnceCalled) {
                                 setStyles()
