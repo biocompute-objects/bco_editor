@@ -1095,19 +1095,22 @@ function getBcoId(url) {
 
 function generateDateTimePicker() {
     const interval = setInterval(function() {        
-        if ($('input[type="datetime"]').length) {
-            $('input[type="datetime"]').datetimepicker();
+        if ($('input[type="date-time"]').length) {
+            $('input[type="date-time"]').datetimepicker({format: 'YYYY-MM-DDTHH:mm:ssZ'});
             $('input[name="root[provenance_domain][embargo][start_time]"]').datetimepicker({
                 useCurrent: false,
+		format: 'YYYY-MM-DDTHH:mm:ssZ'
             })
             $('input[name="root[provenance_domain][embargo][end_time]"]').datetimepicker({
-                useCurrent: false
+                useCurrent: false,
+		format: 'YYYY-MM-DDTHH:mm:ssZ'
             })
             $('input[name="root[provenance_domain][embargo][start_time]"]').on("dp.change", function(e) {
                 // $('input[name="root[provenance_domain][embargo][start_time]"]').val(e.date.format());
                 $('input[name="root[provenance_domain][embargo][end_time]"]').data("DateTimePicker").minDate(e.date);  
                 editorObj.getEditor('root.provenance_domain.embargo.start_time').setValue(e.date.format())
-            })
+            });
+            $('input[name="root[provenance_domain][embargo][end_time]"]').val(editorObj.getEditor('root.provenance_domain.embargo.start_time').getValue());
             $('input[name="root[provenance_domain][embargo][end_time]"]').on("dp.change", function(e) {
                 // $('input[name="root[provenance_domain][embargo][end_time]"]').val(e.date.format())
                 $('input[name="root[provenance_domain][embargo][start_time]"]').data("DateTimePicker").maxDate(e.date);  
@@ -1115,5 +1118,5 @@ function generateDateTimePicker() {
             })
             clearInterval(interval)
         }
-    }, 300)
+    }, 1000)
 }
