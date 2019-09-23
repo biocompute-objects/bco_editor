@@ -1095,7 +1095,7 @@ function getBcoId(url) {
 
 function generateDateTimePicker() {
     const interval = setInterval(function() {        
-        if ($('input[type="date-time"]').length) {
+        if ($('input[name="root[provenance_domain][embargo][end_time]"]').length) {
             $('input[type="date-time"]').datetimepicker({format: 'YYYY-MM-DDTHH:mm:ssZ'});
             $('input[name="root[provenance_domain][embargo][start_time]"]').datetimepicker({
                 useCurrent: false,
