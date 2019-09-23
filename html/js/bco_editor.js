@@ -284,7 +284,7 @@ function setEditPage(){
                     {
                         var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                         s += 'margin-bottom:20px;';
-                        var links = '<a id=view|'+bcoId+' class="viewlink">View Object</a>';
+                        var links = Number(bcoId) !== -1 ? '<a id=view|'+bcoId+' class="viewlink">View Object</a>' : "";
                         var cn = '<div style="'+s+'">'+links+'</div>';
                         var style = 'background:#fff;margin-top:20px;font-size:13px;';
                         cn += '<div id="editor_div" style="'+style+'"></div>';
