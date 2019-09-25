@@ -402,6 +402,12 @@ function stringify(json) {
     return JSON.stringify(json, null, 4);
 }
 
+function getValidName(user) {
+    if (!user.fname || !user.lname)
+        return user.email;
+    return user.fname + ' ' + user.lname;
+}
+
 function setSharePage() {
     $("#pagecn").html(getProgressIcon());
     var url = cgiRoot + rootUrl;
@@ -424,7 +430,7 @@ function setSharePage() {
                 cn += '<DIV style="padding:20px 0px 0px 20px;">';
                 cn += '<div class=sharepage>';
                 var userOpions = [];
-                resJson.users.map(user => userOpions.push('<option value="'+ user.email +'">'+ user.fname + ' ' + user.lname +'</option>'))
+                resJson.users.map(user => userOpions.push('<option value="'+ user.email +'">'+ getValidName(user) +'</option>'))
                 cn += `
                     <div class="form-group user-list">
                       <label for="shareUserSelect">User List:</label>
