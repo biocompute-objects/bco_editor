@@ -135,7 +135,7 @@ def save_object(in_json, logged_email):
             doc = mongo_cl_bco.find_one({"bco_id":bco_id})
             creator_list = []
             for o in doc["provenance_domain"]["contributors"]:
-                if "createdBy" in o["contribution"]:
+                if "createdBy" in o["contribution"] or "authoredBy" in o["contribution"]:
                     creator_list.append(o["email"])
             if logged_email not in creator_list:
                 return {"taskstatus":0, "errormsg":"You do not have privilege to change this object!"}
@@ -174,12 +174,40 @@ def save_object(in_json, logged_email):
                 result = mongo_cl_bco.insert_one(data)
                 out_json = {"bcoid":bco_url, "taskstatus":1}
     except Exception as e:
-        print "*"*100
-        print e
         util.add_id(mongo_cl_invalid, real_id)
         out_json = util.log_error(mongo_cl_log, traceback.format_exc(), str(e))
 
     return out_json
+
+def save_permit(in_json, logged_email):
+    bco_id = in_json['bcoId']
+    bco = mongo_cl_bco.find_one({"bco_id":bco_id})
+    contributors = bco['provenance_domain']['contributors']
+    selected_user = in_json['user']
+    selected_permit = in_json['permission']
+    existed = False
+    existed_index = -1
+    for index, contributor in enumerate(contributors):
+        if contributor['email'] == selected_user:
+            existed = True
+            existed_index = index
+            break
+
+    if existed:
+        contributors[existed_index]['contribution'] = [selected_permit]
+    else:
+        contributors.append({
+            "email": selected_user,
+            "contribution": [selected_permit],
+            "name": "",
+            "orcid": "", 
+            "affiliation": "", 
+            })
+    bco['provenance_domain']['contributors'] = contributors
+    bco.pop('_id')
+    bco.pop('bco_id')
+    mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': bco}, upsert=False)
+
 
 def read_file():
     result = []
@@ -202,7 +230,6 @@ def import_bcos(in_json, logged_email):
                 response = requests.get(bco_url, verify=False)            
                 if response.content.strip() != "":
                     bco_obj = json.loads(response.content)
-                    print response.content
                     file_obj.write(response.content)
                     file_obj.write(', \n')
         except Exception as e:
@@ -220,13 +247,10 @@ def import_bcos(in_json, logged_email):
                 response = requests.get(bco_url, verify=False)            
                 if response.content.strip() != "":
                     bco_obj = json.loads(response.content)
-                    print response.content
                     file_obj.write(response.content)
                     file_obj.write(', \n')
         except Exception as e:
             pdb.set_trace()
-            print "-"*100
-            print e
             util.log_error(mongo_cl_log, str(e), str(e))
 
     file_obj.write(']')
@@ -234,6 +258,12 @@ def import_bcos(in_json, logged_email):
     return {"result": True}
 
 def check_doc_embargo(provenance_domain, logged_email):
+    contributors = provenance_domain['contributors']
+    for user in contributors:
+        if user['email'] == logged_email:
+            return True
+
+
     if "start_time" in provenance_domain["embargo"] and "end_time" in provenance_domain["embargo"]:
         start_time = provenance_domain["embargo"]["start_time"]
         end_time = provenance_domain["embargo"]["end_time"]
@@ -309,7 +339,7 @@ def search_objects(in_json, logged_email):
     return out_json
 
 
-def get_object_view_json(in_json):
+def get_object_view_json(in_json, logged_email):
  
     out_json = {}
     try:
@@ -322,6 +352,10 @@ def get_object_view_json(in_json):
             for o in doc["provenance_domain"]["contributors"]:
                 if "createdBy" in o["contribution"]:
                     out_json["creators"].append(o["email"])
+                if logged_email == o["email"]:
+                    out_json["permission"] = o["contribution"][0]
+                    out_json["editflag"] = out_json["permission"] in ["createdBy", "authoredBy"]
+
             out_json["creators"] = sorted(set(out_json["creators"]))
         ordr_dict = json.loads(open("conf/field_order.json").read())
         out_json["bco"] = util.order_json_obj(out_json["bco"],ordr_dict)
@@ -361,6 +395,23 @@ def get_schema(internal=False):
     
 
     return schema
+
+def get_users_json(in_json, owner_email):
+    out_json={}
+    if in_json['bcoid'] == "-1":
+        out_json = {"taskstatus":0, "errormsg":"Object does not exist!"}
+    else:
+        bco_json = mongo_cl_bco.find_one({"bco_id":in_json["bcoid"]})
+        if not bco_json:
+            out_json = {"taskstatus":0, "errormsg":"Object does not exist!"}
+        else:
+            contributors = bco_json['provenance_domain']['contributors']
+            all_users = []
+            for doc in mongo_cl_users.find({ 'email': {'$ne': owner_email}, 'status': 1}, {'_id': 0, 'email': 1, 'lname': 1, 'fname': 1 }):
+                all_users.append(doc)
+            out_json['users'] = all_users
+    return out_json
+
 
 def get_object_edit_json(in_json):
     try:
@@ -482,7 +533,7 @@ def main():
             logged_email=''
             svc = in_json["svc"] if "svc" in in_json else ""
             auth_obj = {"status": 0}
-            if svc != "search_objects_no_auth":
+            if svc not in ["search_objects_no_auth", "login_user", "register_user"]:
                 auth_obj = auth.authenticate(mongo_cl_log)
                 logged_email = auth_obj["email"] if auth_obj["status"] == 1 else ""
 
@@ -499,16 +550,20 @@ def main():
             elif svc == "reset_password" and (auth_obj["status"] == 1 or local_flag):
                 current_pass, new_pass = in_json["passwordone"], in_json["passwordtwo"]
                 out_json = auth.reset_password(mongo_cl_users, logged_email, current_pass,new_pass, mongo_cl_log)
+            elif svc == "save_permit" and (auth_obj["status"] == 1 or local_flag):
+                save_permit(in_json, logged_email)
+                out_json = {"result": True}
             elif svc == "search_objects" or svc == "search_objects_no_auth":
                 out_json = search_objects(in_json, logged_email)
             elif svc == "importbcos"  and (auth_obj["status"] == 1 or local_flag):
                 import_bcos(in_json, logged_email)
                 out_json = {"result": True}
             elif svc == "get_object_view_json":
-                out_json = get_object_view_json(in_json)
-                out_json["editflag"] = logged_email in out_json["creators"]
+                out_json = get_object_view_json(in_json, logged_email)
             elif svc == "get_object_edit_json" and (auth_obj["status"] == 1 or local_flag):
                 out_json = get_object_edit_json(in_json)
+            elif svc == "get_users_json" and (auth_obj["status"] == 1 or local_flag):
+                out_json = get_users_json(in_json, logged_email)
             elif svc == "save_object" and (auth_obj["status"] == 1 or local_flag):
                 out_json = save_object(in_json["bco"], logged_email)
             else:

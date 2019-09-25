@@ -19,7 +19,8 @@ def sendEmail(subject, content, dest):
 		sg = SendGridAPIClient(config_json['email']['api_key'])
 		response = sg.send(message)
 	except Exception as e:
-		print(e.message)
+		# print(e.message)
+		pass
 
 def registerSubject():
 	return 'New user request for BCO Editor'
