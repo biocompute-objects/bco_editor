@@ -183,26 +183,27 @@ def save_permit(in_json, logged_email):
     bco_id = in_json['bcoId']
     bco = mongo_cl_bco.find_one({"bco_id":bco_id})
     contributors = bco['provenance_domain']['contributors']
-    selected_user = in_json['user']
+    selected_users = in_json['user']
     selected_permit = in_json['permission']
     existed = False
     existed_index = -1
-    for index, contributor in enumerate(contributors):
-        if contributor['email'] == selected_user:
-            existed = True
-            existed_index = index
-            break
+    for selected_user in selected_users:
+        for index, contributor in enumerate(contributors):
+            if contributor['email'] == selected_user:
+                existed = True
+                existed_index = index
+                break
 
-    if existed:
-        contributors[existed_index]['contribution'] = [selected_permit]
-    else:
-        contributors.append({
-            "email": selected_user,
-            "contribution": [selected_permit],
-            "name": "",
-            "orcid": "", 
-            "affiliation": "", 
-            })
+        if existed:
+            contributors[existed_index]['contribution'] = [selected_permit]
+        else:
+            contributors.append({
+                "email": selected_user,
+                "contribution": [selected_permit],
+                "name": "",
+                "orcid": "", 
+                "affiliation": "", 
+                })
     bco['provenance_domain']['contributors'] = contributors
     bco.pop('_id')
     bco.pop('bco_id')
@@ -407,9 +408,21 @@ def get_users_json(in_json, owner_email):
         else:
             contributors = bco_json['provenance_domain']['contributors']
             all_users = []
+            all_list = []
             for doc in mongo_cl_users.find({ 'email': {'$ne': owner_email}, 'status': 1}, {'_id': 0, 'email': 1, 'lname': 1, 'fname': 1 }):
                 all_users.append(doc)
+            for contributor in contributors:
+                for user in all_users:
+                    if user['email'] == contributor['email']:
+                        all_list.append({
+                            'permission': contributor['contribution'],
+                            'fname': user['fname'],
+                            'lname': user['lname'],
+                            'email': user['email']
+                            })
+
             out_json['users'] = all_users
+            out_json['list'] = all_list
     return out_json
 
 

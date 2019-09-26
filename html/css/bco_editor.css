@@ -227,3 +227,18 @@ div#editor_div div.row:has(label:contains("bco_id")) {
 .control-label {
     font-weight: 100;
 }
+
+.multiselect-container {
+    width: 100%;
+}
+
+.multiselect-native-select div.btn-group {
+    width: 100%;
+}
+
+select.multiselect,
+select.multiselect + div.btn-group,
+select.multiselect + div.btn-group button.multiselect,
+select.multiselect + div.btn-group.open .multiselect-container{
+    width:100% !important;
+}
