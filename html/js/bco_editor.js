@@ -168,7 +168,8 @@ $(document).on('change', '#sharePermission', function (event) {
 })
 
 $(document).on('change', '#shareUserSelect', function (event) {
-    window.shareUserSelect = event.target.value;
+    // console.log(event)
+    // window.shareUserSelect = event.target.value;
 })
 
 function logoutUser(){
@@ -402,10 +403,22 @@ function stringify(json) {
     return JSON.stringify(json, null, 4);
 }
 
-function getValidName(user) {
+function getValidName(user, isEmail=false) {
     if (!user.fname || !user.lname)
         return user.email;
+    if (isEmail)
+        return `${user.fname} ${user.lname} ( ${user.email} )`;
     return user.fname + ' ' + user.lname;
+}
+
+function getPermissionValue(permission) {
+    if (permission.includes('authoredBy')) {
+        return 'Read/Write'
+    }
+    if (permission.includes('sourceAccessedBy')) {
+        return 'Read Only'
+    }
+    return ''
 }
 
 function setSharePage() {
@@ -434,8 +447,7 @@ function setSharePage() {
                 cn += `
                     <div class="form-group user-list">
                       <label for="shareUserSelect">User List:</label>
-                      <select class="form-control" id="shareUserSelect">
-                        <option value=''>Select User</option>
+                      <select class="form-control" id="shareUserSelect" multiple="multiple">
                         ${userOpions.join('')}
                       </select>
                     </div>
@@ -450,18 +462,50 @@ function setSharePage() {
                       </select>
                     </div>
                 `;
-                cn +=`
-
-                `
                 cn += '</div>';
                 var style = 'background:#f1f1f1;padding:10px;';
                 style += 'text-align:right;';
                 var saveBtn = '<input class=submitbtn id=savepermit type=submit value="Save Changes">';
                 cn += '<div style="'+style+'">'+saveBtn+'</div>';
+                var table = resJson.list.map(function(item){
+                    return `
+                        <tr>
+                          <td>${getValidName(item, true)}</td>
+                          <td>${getPermissionValue(item.permission)}</td>
+                        </tr>
+                    `
+                })
+                cn += `
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Permission</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            ${table.join('')}
+                        </tbody>
+                      </table>
+                `
                 cn += '</DIV>';
                 $("#pagecn").html(cn);
-                window.shareUserSelect = ''
-                window.sharePermission = ''
+                window.shareUserSelect = []
+                window.sharePermission = []
+                setTimeout(function() {$('#shareUserSelect').multiselect({
+                    includeSelectAllOption: true,
+                    numberDisplayed: 8,
+                    buttonClass: 'form-control',
+                    onChange: function(element, checked) {
+                        if (checked) {
+                            window.shareUserSelect.push(element.val())
+                        } else {
+                            window.shareUserSelect = window.shareUserSelect.filter(function(item){
+                                return item !== element.val()
+                            })
+                        }
+                    }
+                })}, 1);
             }
             catch(e) {
                 $("#pagecn").html(getMessagePanel("setViewPage, please report this error!"));
@@ -810,8 +854,8 @@ function registerUser(){
 }
 
 function savePermit() {
-    if (!window.shareUserSelect) {
-        showError('Please select user');
+    if (!window.shareUserSelect.length) {
+        showError('Please select a user at least');
         return;
     }
 
@@ -843,8 +887,8 @@ function savePermit() {
                     return;
                 }
                 else{
-                    bcoId = resJson["bcoid"];
                     showSuccess("Permission has been successfully granted.");
+                    setSharePage()
                 }
             }
             catch(e) {
