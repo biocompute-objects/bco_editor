@@ -9,17 +9,19 @@ from sendgrid.helpers.mail import Mail
 def sendEmail(subject, content, dest):
 	config_json = json.loads(open("conf/config.json", "r").read())
 	
-	message = Mail(
-		from_email='no-reply@biocomputeobject.com',
-		to_emails=dest,
-		subject=subject,
-		html_content=content)
+	# message = Mail(
+	# 	from_email='no-reply@biocomputeobject.com',
+	# 	to_emails=dest,
+	# 	subject=subject,
+	# 	html_content=content)
 
 	try:
-		sg = SendGridAPIClient(config_json['email']['api_key'])
-		response = sg.send(message)
+		# sg = SendGridAPIClient(config_json['email']['api_key'])
+		# response = sg.send(message)
+		pass
 	except Exception as e:
-		print(e.message)
+		# print(e.message)
+		pass
 
 def registerSubject():
 	return 'New user request for BCO Editor'

@@ -31,9 +31,17 @@ $(document ).ready(function() {
         debugger
     }
   })
+  // window.history.pushState(null, "", window.location.href);
+  // window.onpopstate = function() {
+  //   if (isDataEdited){
+  //       window.history.pushState(null, "", window.location.href);
+  //   }
+  // }
+//  window.addEventListener('beforeunload', handleBackFunction)
+
 });
 
-$(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink, .importlink', function (event) {
+$(document).on('click', '.menudiv, .pagelink, .createlink, .editlink, .viewlink, .importlink, .sharelink', function (event) {
     event.preventDefault();
     $('html').animate({scrollTop:0}, 'fast');
     $('body').animate({scrollTop:0}, 'fast');
@@ -67,6 +75,8 @@ function gotoNavigate(pageId, secondId) {
             bcoId = secondId.split("|")[1];
             setViewPage();
         }
+    } else if(pageId == 'share'){
+        setSharePage();    
     } else if(pageId == 'edit'){
         setEditPage();
     } else if(pageId == 'create'){
@@ -82,6 +92,11 @@ function gotoNavigate(pageId, secondId) {
         logoutUser()
     }
 }
+
+$(document).on('click', '#savepermit', function (event) {
+    event.preventDefault()
+    savePermit()
+})
 
 $(document).on('click', '#savebco', function (event) {
     event.preventDefault();
@@ -148,10 +163,16 @@ $(document).on('click', '#register', function (event) {
     registerUser();
 });
 
+$(document).on('change', '#sharePermission', function (event) {
+    window.sharePermission = event.target.value;
+})
+
+$(document).on('change', '#shareUserSelect', function (event) {
+    window.shareUserSelect = event.target.value;
+})
 
 function logoutUser(){
-    
-    setCookie("sessionid","",-1);
+    document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
     $('html').animate({scrollTop:0}, 'fast');
     $('body').animate({scrollTop:0}, 'fast');
     window.location.href = htmlRoot;
@@ -280,11 +301,10 @@ function setEditPage(){
                         $("#pagecn").html(cn);
                         return;
                     }
-                    else
-                    {
+                    else{
                         var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                         s += 'margin-bottom:20px;';
-                        var links = Number(bcoId) !== -1 ? '<a id=view|'+bcoId+' class="viewlink">View Object</a>' : "";
+                        var links = '<a id=view|'+bcoId+' class="viewlink">View Object</a>';
                         var cn = '<div style="'+s+'">'+links+'</div>';
                         var style = 'background:#fff;margin-top:20px;font-size:13px;';
                         cn += '<div id="editor_div" style="'+style+'"></div>';
@@ -294,7 +314,11 @@ function setEditPage(){
                         cn += '<div style="'+style+'">'+saveBtn+'</div>';
                         $("#pagecn").html(cn);
                         var schemaObj = JSON.parse(reqObj.responseText);
-                        console.log(schemaObj);
+                        console.log(schemaObj)
+                        delete schemaObj.taskstatus;
+                        delete schemaObj.editorversion;
+                        delete schemaObj.auth;
+                        delete schemaObj.ajax;
 
                         var properties = {}
                         properties['bco_id'] = schemaObj.schema.properties.bco_id;
@@ -328,7 +352,7 @@ function setEditPage(){
                         schemaObj.show_errors = "interaction"
                         JSONEditor.defaults.options.theme = 'bootstrap3';
                         editorObj = new JSONEditor(document.getElementById('editor_div'),schemaObj);
-                        var isOnceCalled = false;
+                        var isOnceCalled = false
                         editorObj.on('change', function() {
                             if (!isOnceCalled) {
                                 setStyles()
@@ -338,6 +362,7 @@ function setEditPage(){
                                 console.log('123')
                             }
                         })
+
                     }
                 }
             }
@@ -377,6 +402,79 @@ function stringify(json) {
     return JSON.stringify(json, null, 4);
 }
 
+function getValidName(user) {
+    if (!user.fname || !user.lname)
+        return user.email;
+    return user.fname + ' ' + user.lname;
+}
+
+function setSharePage() {
+    $("#pagecn").html(getProgressIcon());
+    var url = cgiRoot + rootUrl;
+    var reqObj = new XMLHttpRequest();
+    reqObj.open("POST", url, true);
+    reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    reqObj.onreadystatechange = function() {
+        if (reqObj.readyState == 4 && reqObj.status == 200) {
+            try {
+                resJson = JSON.parse(reqObj.responseText);
+                $("#loginmsg").html('Signed as ' + resJson["auth"]["email"]);
+
+                var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
+                s += 'margin-bottom:20px;';
+                var links = '<a id=edit class="editlink">Edit Object</a> <a id=share class="sharelink">Share Object</a>';
+                var downloadButton = '<input type="button" id=downloadbtn value=Download></input>'
+                // links = (resJson["editflag"] == true ? links : "Read Only");
+                // localStorage.viewItem = JSON.stringify(resJson["bco"])
+                var cn = '<div style="'+s+'">'+ links + downloadButton + '</div>';
+                cn += '<DIV style="padding:20px 0px 0px 20px;">';
+                cn += '<div class=sharepage>';
+                var userOpions = [];
+                resJson.users.map(user => userOpions.push('<option value="'+ user.email +'">'+ getValidName(user) +'</option>'))
+                cn += `
+                    <div class="form-group user-list">
+                      <label for="shareUserSelect">User List:</label>
+                      <select class="form-control" id="shareUserSelect">
+                        <option value=''>Select User</option>
+                        ${userOpions.join('')}
+                      </select>
+                    </div>
+                `;
+                cn += `
+                    <div class="form-group permission">
+                      <label for="sharePermission">Permission:</label>
+                      <select class="form-control" id="sharePermission">
+                        <option value=''>Select...</option>
+                        <option value='authoredBy'>Read Write</option>
+                        <option value='sourceAccessedBy'>Read Only</option>
+                      </select>
+                    </div>
+                `;
+                cn +=`
+
+                `
+                cn += '</div>';
+                var style = 'background:#f1f1f1;padding:10px;';
+                style += 'text-align:right;';
+                var saveBtn = '<input class=submitbtn id=savepermit type=submit value="Save Changes">';
+                cn += '<div style="'+style+'">'+saveBtn+'</div>';
+                cn += '</DIV>';
+                $("#pagecn").html(cn);
+                window.shareUserSelect = ''
+                window.sharePermission = ''
+            }
+            catch(e) {
+                $("#pagecn").html(getMessagePanel("setViewPage, please report this error!"));
+                console.log(e);
+            }
+        }
+    };
+    var postData = 'injson='+JSON.stringify({"svc":"get_users_json", "bcoid":bcoId});
+    reqObj.send(postData);
+    console.log('request='+postData);
+    return;    
+}
+
 function setViewPage(){
 
     $("#pagecn").html(getProgressIcon());
@@ -391,7 +489,11 @@ function setViewPage(){
                 $("#loginmsg").html('Signed as ' + resJson["auth"]["email"]);
                 var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                 s += 'margin-bottom:20px;';
-                var links = '<a id=edit class="editlink">Edit Object</a> <a id=share class="sharelink">Share Object</a>';
+                var permission = resJson['permission']
+                var editLink = ['createdBy', 'authoredBy'].includes(permission) ? '<a id=edit class="editlink">Edit Object</a>' : '';
+                var shareLink = ['createdBy'].includes(permission) ? '<a id=share class="sharelink">Share Object</a>' : '';
+                var links = editLink + shareLink;
+
                 var downloadButton = '<input type="button" id=downloadbtn value=Download></input>'
                 links = (resJson["editflag"] == true ? links : "Read Only");
                 localStorage.viewItem = JSON.stringify(resJson["bco"])
@@ -707,7 +809,55 @@ function registerUser(){
     console.log('request='+postData);
 }
 
+function savePermit() {
+    if (!window.shareUserSelect) {
+        showError('Please select user');
+        return;
+    }
 
+    if (!window.sharePermission) {
+        showError('Please select permission');
+        return;
+    }
+    $("#pagecn").append(getProgressIcon());
+    var url = cgiRoot + rootUrl;
+    var body = { user: window.shareUserSelect, permission: window.sharePermission, bcoId: bcoId }
+    var inJson = {"svc":"save_permit", ...body}
+    var form = document.getElementById('bco_form');
+    var formData = new FormData(form);
+    formData.append("injson", JSON.stringify(inJson));
+
+    var reqObj = new XMLHttpRequest();
+    reqObj.open("POST", url, true);
+    //reqObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    reqObj.onreadystatechange = function() {
+        if (reqObj.readyState == 4 && reqObj.status == 200) {
+            try {
+                resJson = JSON.parse(reqObj.responseText);
+                $("#pagecn > div").last().remove()
+                if(resJson["taskstatus"] == 0){
+                    var msg = resJson["errormsg"];
+                    showError(msg)
+                    // $("#pagecn").html(getMessagePanel(msg));
+                    setEditPage()
+                    return;
+                }
+                else{
+                    bcoId = resJson["bcoid"];
+                    showSuccess("Permission has been successfully granted.");
+                }
+            }
+            catch(e) {
+                $("#pagecn").html(getMessagePanel("savePermission, please report this error!"));
+                console.log(e);
+            }
+        }
+    };
+    reqObj.send(formData);
+    //console.log('request='+postData);
+    return;
+
+}
 
 function saveObject(){
 
@@ -1095,29 +1245,23 @@ function getBcoId(url) {
 
 function generateDateTimePicker() {
     const interval = setInterval(function() {        
-        if ($('input[name="root[provenance_domain][embargo][end_time]"]').length) {
-            $('input[type="date-time"]').datetimepicker({format: 'YYYY-MM-DDTHH:mm:ssZ'});
+        if ($('input[type="datetime"]').length) {
+            $('input[type="datetime"]').datetimepicker();
             $('input[name="root[provenance_domain][embargo][start_time]"]').datetimepicker({
                 useCurrent: false,
-		        format: 'YYYY-MM-DDTHH:mm:ssZ'
             })
             $('input[name="root[provenance_domain][embargo][end_time]"]').datetimepicker({
-                useCurrent: false,
-		        format: 'YYYY-MM-DDTHH:mm:ssZ'
+                useCurrent: false
             })
             $('input[name="root[provenance_domain][embargo][start_time]"]').on("dp.change", function(e) {
-                // $('input[name="root[provenance_domain][embargo][start_time]"]').val(e.date.format());
                 $('input[name="root[provenance_domain][embargo][end_time]"]').data("DateTimePicker").minDate(e.date);  
                 editorObj.getEditor('root.provenance_domain.embargo.start_time').setValue(e.date.format())
-            });
-            if (editorObj.getEditor('root.provenance_domain.embargo.start_time'))
-                $('input[name="root[provenance_domain][embargo][end_time]"]').val(editorObj.getEditor('root.provenance_domain.embargo.start_time').getValue());
+            })
             $('input[name="root[provenance_domain][embargo][end_time]"]').on("dp.change", function(e) {
-                // $('input[name="root[provenance_domain][embargo][end_time]"]').val(e.date.format())
                 $('input[name="root[provenance_domain][embargo][start_time]"]').data("DateTimePicker").maxDate(e.date);  
                 editorObj.getEditor('root.provenance_domain.embargo.end_time').setValue(e.date.format())
             })
             clearInterval(interval)
         }
-    }, 1000)
+    }, 300)
 }
