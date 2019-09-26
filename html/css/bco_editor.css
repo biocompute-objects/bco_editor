@@ -76,8 +76,12 @@ body {
     margin:1px 10px 0px 10px;
 }
 
-.createlink, .editlink, .viewlink{
+.createlink, .editlink, .viewlink, .sharelink{
     cursor:pointer;
+}
+
+.editlink {
+    margin-right: 1em;
 }
 
 div.progresswrapper{

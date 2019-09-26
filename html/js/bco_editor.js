@@ -391,7 +391,7 @@ function setViewPage(){
                 $("#loginmsg").html('Signed as ' + resJson["auth"]["email"]);
                 var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                 s += 'margin-bottom:20px;';
-                var links = '<a id=edit class="editlink">Edit Object</a>';
+                var links = '<a id=edit class="editlink">Edit Object</a> <a id=share class="sharelink">Share Object</a>';
                 var downloadButton = '<input type="button" id=downloadbtn value=Download></input>'
                 links = (resJson["editflag"] == true ? links : "Read Only");
                 localStorage.viewItem = JSON.stringify(resJson["bco"])
