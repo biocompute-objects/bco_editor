@@ -317,13 +317,18 @@ def search_objects(in_json, logged_email):
             created_by = doc["provenance_domain"]["contributors"][0]["email"]
             bco_id = str(doc["bco_id"])
             creators = []
+            owner = ''
             for o in doc["provenance_domain"]["contributors"]:
-                val = o["name"] if o["name"].strip() != "" else o["email"]
-                creators.append(val)
+                if "createdBy" in o["contribution"]:
+                    owner = o["name"] if o["name"].strip() != "" else o["email"]
+                else:
+                    val = o["name"] if o["name"].strip() != "" else o["email"]
+                    creators.append(val)
             row = [
                 bco_id
                 ,doc["provenance_domain"]["name"]
                 ,doc["provenance_domain"]["created"]
+                ,owner
                 ,", ".join(creators)
             ]
             obj_list.append(row)

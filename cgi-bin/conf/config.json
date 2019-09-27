@@ -23,8 +23,8 @@
     }
     ,"tableheaders":{
         "searchresults":{
-            "labellist":["Object ID","Object Name","Created On", "Created By"]
-            ,"typelist":["string","string","string","string"]
+            "labellist":["Object ID","Object Name","Created On", "Created By", "Access List"]
+            ,"typelist":["string","string","string","string", "string"]
         }   
     }
     ,"profileinfo":[
