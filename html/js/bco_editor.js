@@ -100,7 +100,7 @@ $(document).on('click', '#savepermit', function (event) {
 
 $(document).on('click', '#samplejson', function (event) {
     event.preventDefault()
-    openExampleModal()
+    // openExampleModal()
 })
 
 $(document).on('click', '#savebco', function (event) {
@@ -311,7 +311,7 @@ function setEditPage(){
                         var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                         s += 'margin-bottom:20px;';
                         var links = Number(bcoId) !== -1 ? '<a id=view|'+bcoId+' class="viewlink">View Object</a>' : '';
-                        links += '<a id=samplejson class=samplebco>View Example</a>';
+                        // links += '<a id=samplejson class=samplebco>View Example</a>';
                         var cn = '<div style="'+s+'">'+links+'</div>';
                         var style = 'background:#fff;margin-top:20px;font-size:13px;';
                         cn += '<div id="editor_div" style="'+style+'"></div>';
@@ -359,6 +359,7 @@ function setEditPage(){
                         schemaObj.show_errors = "interaction"
                         JSONEditor.defaults.options.theme = 'bootstrap3';
                         editorObj = new JSONEditor(document.getElementById('editor_div'),schemaObj);
+                        openExampleModal();
                         var isOnceCalled = false
                         editorObj.on('change', function() {
                             if (!isOnceCalled) {
