@@ -76,10 +76,10 @@ body {
     margin:1px 10px 0px 10px;
 }
 
-.createlink, .editlink, .viewlink, .sharelink{
+.createlink, .editlink, .viewlink, .sharelink, .samplebco{
     cursor:pointer;
 }
-.editlink, .sharelink {
+.editlink, .sharelink, .viewlink {
     margin-right: 1em;
 }
 
@@ -245,4 +245,11 @@ select.multiselect + div.btn-group,
 select.multiselect + div.btn-group button.multiselect,
 select.multiselect + div.btn-group.open .multiselect-container{
     width:100% !important;
+}
+
+#viewexample {
+    width: 100%;
+    max-width: 800px;
+    top: 5em;
+    margin-bottom: 5em;
 }

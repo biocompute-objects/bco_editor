@@ -98,6 +98,11 @@ $(document).on('click', '#savepermit', function (event) {
     savePermit()
 })
 
+$(document).on('click', '#samplejson', function (event) {
+    event.preventDefault()
+    openExampleModal()
+})
+
 $(document).on('click', '#savebco', function (event) {
     event.preventDefault();
     $('html').animate({scrollTop:0}, 'fast');
@@ -305,7 +310,8 @@ function setEditPage(){
                     else{
                         var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                         s += 'margin-bottom:20px;';
-                        var links = '<a id=view|'+bcoId+' class="viewlink">View Object</a>';
+                        var links = Number(bcoId) !== -1 ? '<a id=view|'+bcoId+' class="viewlink">View Object</a>' : '';
+                        links += '<a id=samplejson class=samplebco>View Example</a>';
                         var cn = '<div style="'+s+'">'+links+'</div>';
                         var style = 'background:#fff;margin-top:20px;font-size:13px;';
                         cn += '<div id="editor_div" style="'+style+'"></div>';
@@ -505,7 +511,7 @@ function setSharePage() {
                             })
                         }
                     }
-                })}, 1);
+                })}, 10);
             }
             catch(e) {
                 $("#pagecn").html(getMessagePanel("setViewPage, please report this error!"));
@@ -1308,4 +1314,11 @@ function generateDateTimePicker() {
             clearInterval(interval)
         }
     }, 300)
+}
+
+function openExampleModal() {
+    $('#viewexample').html(`<pre>${window.samplebco}</pre>`);
+    $('#viewexample').modal({
+        showClose: false
+    });
 }
