@@ -14,6 +14,10 @@ $(document ).ready(function() {
   handleBackBtn();
   generateDateTimePicker();
   var paths = window.location.href.split('/')
+  if (window.location.href.includes('/view_example')) {
+      $("#pagecn").html(setExamplePage());    
+      return;
+  }
   if (paths.length === 5 && paths[4]) {
     path = paths[4]
   } else {
@@ -200,6 +204,10 @@ function setUnSignedHomePage(){
 
 }
 
+function setExamplePage() {
+    $("#pagecn").html(`<pre>${window.samplebco}</pre>`);
+}
+
 function setHomePage(){
 
     $("#pagelinkcn").html("");
@@ -359,8 +367,8 @@ function setEditPage(){
                         schemaObj.show_errors = "interaction"
                         JSONEditor.defaults.options.theme = 'bootstrap3';
                         editorObj = new JSONEditor(document.getElementById('editor_div'),schemaObj);
-                        openExampleModal();
-                        var isOnceCalled = false
+                        openNewWidget();
+                        var isOnceCalled = false;
                         editorObj.on('change', function() {
                             if (!isOnceCalled) {
                                 setStyles()
@@ -1322,4 +1330,13 @@ function openExampleModal() {
     $('#viewexample').modal({
         showClose: false
     });
+}
+
+var newWindow;
+function openNewWidget() {
+    newWindow = newWindow || window.open(`/${rootPath}/view_example`, '_blank', 'location=yes,height=768,width=1024,scrollbars=yes,status=yes');
+    newWindow.focus();
+    newWindow.onbeforeunload = function(){
+        newWindow = null;
+    };
 }
