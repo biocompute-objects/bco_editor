@@ -367,7 +367,8 @@ function setEditPage(){
                         schemaObj.show_errors = "interaction"
                         JSONEditor.defaults.options.theme = 'bootstrap3';
                         editorObj = new JSONEditor(document.getElementById('editor_div'),schemaObj);
-                        openNewWidget();
+                        if (Number(bcoId) == -1)
+                            openNewWidget();
                         var isOnceCalled = false;
                         editorObj.on('change', function() {
                             if (!isOnceCalled) {
@@ -1334,7 +1335,7 @@ function openExampleModal() {
 
 var newWindow;
 function openNewWidget() {
-    newWindow = newWindow || window.open(`/${rootPath}/view_example`, '_blank', 'location=yes,height=768,width=1024,scrollbars=yes,status=yes');
+    newWindow = newWindow || window.open(`${window.location.origin}/${rootPath}/view_example`, '_blank', 'location=yes,height=768,width=1024,scrollbars=yes,status=yes');
     newWindow.focus();
     newWindow.onbeforeunload = function(){
         newWindow = null;
