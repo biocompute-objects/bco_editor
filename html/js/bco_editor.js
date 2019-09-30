@@ -344,9 +344,9 @@ function setEditPage(){
                         properties['bco_id'] = schemaObj.schema.properties.bco_id;
                         properties['bco_spec_version'] = schemaObj.schema.properties.bco_spec_version;
                         properties['checksum'] = schemaObj.schema.properties.checksum;
-                        properties['extension_domain'] = schemaObj.schema.properties.extension_domain;
                         properties['provenance_domain'] = schemaObj.schema.properties.provenance_domain;
                         properties['usability_domain'] = schemaObj.schema.properties.usability_domain;
+                        properties['extension_domain'] = schemaObj.schema.properties.extension_domain;
                         properties['description_domain'] = schemaObj.schema.properties.description_domain;
                         properties['execution_domain'] = schemaObj.schema.properties.execution_domain;
                         properties['parametric_domain'] = schemaObj.schema.properties.parametric_domain;
@@ -406,9 +406,9 @@ function setStyles() {
     $('div.row:has(label:contains("bco_id"))').addClass('header-domain')
     $('div.row:has(label:contains("bco_spec_version"))').addClass('header-domain')
     $('div.row:has(label:contains("checksum"))').addClass('header-domain')
-    $('div.row:has(span:contains("Extension Domain"))').addClass('header-domain')
     $('div.row:has(span:contains("Provenance Domain"))').addClass('provenance-domain')
     $('div.row:has(span:contains("Usability Domain"))').addClass('usability-domain')
+    $('div.row:has(span:contains("Extension Domain"))').addClass('extension-domain')
     $('div.row:has(span:contains("Description Domain"))').addClass('description-domain')
     $('div.row:has(span:contains("Execution Domain"))').addClass('execution-domain')
     $('div.row:has(span:contains("Parametric Domain"))').addClass('parametric-domain')

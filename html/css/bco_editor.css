@@ -188,6 +188,15 @@ div#editor_div div.row:has(label:contains("bco_id")) {
     margin: 0;
 }
 
+.extension-domain,
+.extension-domain > div,
+.extension-domain > div > h5,
+.extension-domain div.well {
+    background-color: #F8D6EE !important;
+    margin: 0;
+}
+
+
 .description-domain,
 .description-domain > div,
 .description-domain > div > h5,
