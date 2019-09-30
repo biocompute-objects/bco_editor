@@ -153,7 +153,8 @@
                 "scm_extension": {
                     "$ref": "extension_domain/scm_extension.json"
                 }
-            }
+            },
+            "title": "Extension Domain"
         },
         "description_domain": {
             "$ref": "description_domain.json"

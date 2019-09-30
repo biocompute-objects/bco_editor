@@ -205,7 +205,12 @@ function setUnSignedHomePage(){
 }
 
 function setExamplePage() {
-    $("#pagecn").html(`<pre>${window.samplebco}</pre>`);
+    $("#pagecn").html(`
+    	<div>
+	    	<h5>This is an Example BCO for your reference.</h5>
+	    	<pre>${window.samplebco}</pre>
+    	</div>
+	`);
 }
 
 function setHomePage(){
@@ -401,7 +406,7 @@ function setStyles() {
     $('div.row:has(label:contains("bco_id"))').addClass('header-domain')
     $('div.row:has(label:contains("bco_spec_version"))').addClass('header-domain')
     $('div.row:has(label:contains("checksum"))').addClass('header-domain')
-    $('div.row:has(span:contains("extension_domain"))').addClass('header-domain')
+    $('div.row:has(span:contains("Extension Domain"))').addClass('header-domain')
     $('div.row:has(span:contains("Provenance Domain"))').addClass('provenance-domain')
     $('div.row:has(span:contains("Usability Domain"))').addClass('usability-domain')
     $('div.row:has(span:contains("Description Domain"))').addClass('description-domain')
