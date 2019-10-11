@@ -264,23 +264,27 @@ def check_doc_embargo(provenance_domain, logged_email):
         if user['email'] == logged_email:
             return True
 
+    if "embargo" in provenance_domain:
+        if "start_time" in provenance_domain["embargo"] and "end_time" in provenance_domain["embargo"]:
+            start_time = provenance_domain["embargo"]["start_time"]
+            end_time = provenance_domain["embargo"]["end_time"]
+            creators = [o["email"] for o in provenance_domain["contributors"]]
+            if logged_email:
+                if logged_email in creators:
+                    return True
+                else:
+                    return False
 
-    if "start_time" in provenance_domain["embargo"] and "end_time" in provenance_domain["embargo"]:
-        start_time = provenance_domain["embargo"]["start_time"]
-        end_time = provenance_domain["embargo"]["end_time"]
-        creators = [o["email"] for o in provenance_domain["contributors"]]
-        if logged_email:
-            if logged_email in creators:
-                return True
+            if start_time and end_time:
+                now = datetime.datetime.now()
+                start_time = parse(start_time, ignoretz=True)
+                end_time = parse(end_time, ignoretz=True)
+                if start_time < now and end_time > now:
+                    return False
+                else:
+                    return True
 
-        if start_time and end_time:
-            now = datetime.datetime.now()
-            start_time = parse(start_time, ignoretz=True)
-            end_time = parse(end_time, ignoretz=True)
-            if start_time < now and end_time > now:
-                return False 
-
-    return True
+    return False
 
 def search_objects(in_json, logged_email):
     try:
@@ -309,9 +313,9 @@ def search_objects(in_json, logged_email):
 
             if False in tv_list:
                 continue
-            if "embargo" in doc["provenance_domain"]:
-                if not check_doc_embargo(doc["provenance_domain"], logged_email):
-                    continue
+
+            if not check_doc_embargo(doc["provenance_domain"], logged_email):
+                continue
 
             doc.pop("_id")
             created_by = doc["provenance_domain"]["contributors"][0]["email"]
@@ -354,17 +358,20 @@ def get_object_view_json(in_json, logged_email):
             out_json = {"taskstatus":0, "errormsg":"Object does not exist!"}
         else:
             doc.pop("_id")
-            out_json = {"bco":doc, "creators":[]}
-            for o in doc["provenance_domain"]["contributors"]:
-                if "createdBy" in o["contribution"]:
-                    out_json["creators"].append(o["email"])
-                if logged_email == o["email"]:
-                    out_json["permission"] = o["contribution"][0]
-                    out_json["editflag"] = out_json["permission"] in ["createdBy", "authoredBy"]
+            if check_doc_embargo(doc["provenance_domain"], logged_email):
+                out_json = {"bco":doc, "creators":[]}
+                for o in doc["provenance_domain"]["contributors"]:
+                    if "createdBy" in o["contribution"]:
+                        out_json["creators"].append(o["email"])
+                    if logged_email == o["email"]:
+                        out_json["permission"] = o["contribution"][0]
+                        out_json["editflag"] = out_json["permission"] in ["createdBy", "authoredBy"]
 
-            out_json["creators"] = sorted(set(out_json["creators"]))
-        ordr_dict = json.loads(open("conf/field_order.json").read())
-        out_json["bco"] = util.order_json_obj(out_json["bco"],ordr_dict)
+                out_json["creators"] = sorted(set(out_json["creators"]))
+                ordr_dict = json.loads(open("conf/field_order.json").read())
+                out_json["bco"] = util.order_json_obj(out_json["bco"],ordr_dict)
+            else:
+                out_json = {"bco": -1}
     except Exception, e:
         out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 

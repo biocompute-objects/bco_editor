@@ -195,8 +195,6 @@ function setUnSignedHomePage(){
     $("#pagelinkcn").append('<div id=tutorial class=menudiv>Tutorial</div>');
     $("#pagelinkcn").append('<div class=divider>|</div>');
     $("#pagelinkcn").append('<div id=home class=menudiv>Home</div>');
-    $("#pagelinkcn").append('<div class=divider>|</div>');
-    $("#pagelinkcn").append('<div id=search class=menudiv>Search</div>');
  
     $("#searchboxcn").css("display", "none");
     fillStaticHtmlCn("home.html", "#pagecn");
@@ -551,6 +549,18 @@ function setViewPage(){
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
                 resJson = JSON.parse(reqObj.responseText);
+                if ("auth" in resJson){
+                    if(resJson["auth"]["status"] != 1){
+                        setUnSignedHomePage();
+                        return;
+                    }
+                }
+
+                if (resJson["bco"] === -1)  {
+                    var cn = getMessagePanel("You don't have permission to edit this object!");
+                    $("#pagecn").html(cn);
+                    return;
+                }
                 $("#loginmsg").html('Signed as ' + resJson["auth"]["email"]);
                 var s = 'border-bottom:1px solid #ccc;text-align:right;padding:5px;';
                 s += 'margin-bottom:20px;';
