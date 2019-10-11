@@ -562,7 +562,7 @@ function setViewPage(){
                     return;
                 }
                 if (resJson["bco"] === -1)  {
-                    cn = getMessagePanel("You don't have permission to edit this object!");
+                    cn = getMessagePanel("You don't have permission to view this object!");
                     $("#pagecn").html(cn);
                     return;
                 }
