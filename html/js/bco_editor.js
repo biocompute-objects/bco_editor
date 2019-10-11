@@ -548,6 +548,7 @@ function setViewPage(){
     reqObj.onreadystatechange = function() {
         if (reqObj.readyState == 4 && reqObj.status == 200) {
             try {
+                var cn;
                 resJson = JSON.parse(reqObj.responseText);
                 if ("auth" in resJson){
                     if(resJson["auth"]["status"] != 1){
@@ -555,9 +556,13 @@ function setViewPage(){
                         return;
                     }
                 }
-
+                if (resJson['errormsg']) {
+                    cn = getMessagePanel(resJson['errormsg']);
+                    $("#pagecn").html(cn);
+                    return;
+                }
                 if (resJson["bco"] === -1)  {
-                    var cn = getMessagePanel("You don't have permission to edit this object!");
+                    cn = getMessagePanel("You don't have permission to edit this object!");
                     $("#pagecn").html(cn);
                     return;
                 }
