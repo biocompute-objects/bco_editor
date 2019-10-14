@@ -87,12 +87,12 @@
                 "start_time": {
                     "type": "string",
                     "description": "Beginning date of embargo period.",
-                    "format": "date-time"
+                    "format": "datetime"
                 },
                 "end_time": {
                     "type": "string",
                     "description": "End date of embargo period.",
-                    "format": "date-time"
+                    "format": "datetime"
                 }
             }
         },

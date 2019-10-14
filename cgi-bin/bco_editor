@@ -260,31 +260,27 @@ def import_bcos(in_json, logged_email):
 
 def check_doc_embargo(provenance_domain, logged_email):
     contributors = provenance_domain['contributors']
-    for user in contributors:
-        if user['email'] == logged_email:
-            return True
-
     if "embargo" in provenance_domain:
         if "start_time" in provenance_domain["embargo"] and "end_time" in provenance_domain["embargo"]:
             start_time = provenance_domain["embargo"]["start_time"]
             end_time = provenance_domain["embargo"]["end_time"]
-            creators = [o["email"] for o in provenance_domain["contributors"]]
             if logged_email:
-                if logged_email in creators:
-                    return True
-                else:
-                    return False
+                for o in provenance_domain["contributors"]:
+                    if 'createdBy' in o['contribution'] and logged_email == o['email']:
+                        return True
+                    else:
+                        return False
 
             if start_time and end_time:
                 now = datetime.datetime.now()
                 start_time = parse(start_time, ignoretz=True)
                 end_time = parse(end_time, ignoretz=True)
                 if start_time < now and end_time > now:
-                    return False
-                else:
                     return True
+                else:
+                    return False
 
-    return False
+    return True
 
 def search_objects(in_json, logged_email):
     try:
