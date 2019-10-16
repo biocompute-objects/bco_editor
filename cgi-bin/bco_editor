@@ -357,11 +357,12 @@ def get_object_view_json(in_json, logged_email):
             if check_doc_embargo(doc["provenance_domain"], logged_email):
                 out_json = {"bco":doc, "creators":[]}
                 for o in doc["provenance_domain"]["contributors"]:
-                    if "createdBy" in o["contribution"]:
-                        out_json["creators"].append(o["email"])
-                    if logged_email == o["email"]:
-                        out_json["permission"] = o["contribution"][0]
-                        out_json["editflag"] = out_json["permission"] in ["createdBy", "authoredBy"]
+                    if "email" in o:
+                        if "createdBy" in o["contribution"]:
+                            out_json["creators"].append(o["email"])
+                        if logged_email == o["email"]:
+                            out_json["permission"] = o["contribution"][0]
+                            out_json["editflag"] = out_json["permission"] in ["createdBy", "authoredBy"]
 
                 out_json["creators"] = sorted(set(out_json["creators"]))
                 ordr_dict = json.loads(open("conf/field_order.json").read())
