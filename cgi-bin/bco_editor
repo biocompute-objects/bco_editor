@@ -136,7 +136,8 @@ def save_object(in_json, logged_email):
             creator_list = []
             for o in doc["provenance_domain"]["contributors"]:
                 if "createdBy" in o["contribution"] or "authoredBy" in o["contribution"]:
-                    creator_list.append(o["email"])
+                    if "email" in o:
+                        creator_list.append(o["email"])
             if logged_email not in creator_list:
                 return {"taskstatus":0, "errormsg":"You do not have privilege to change this object!"}
             else:
