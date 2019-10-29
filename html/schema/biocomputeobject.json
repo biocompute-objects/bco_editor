@@ -53,7 +53,8 @@
             "description": "Contributor identifier and type of contribution (determined according to PAV ontology) is required",
             "required": [
                 "contribution",
-                "name"
+                "name",
+                "email"
             ],
             "additionalProperties": false,
             "properties": {
