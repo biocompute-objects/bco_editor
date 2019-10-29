@@ -4,7 +4,7 @@ var pageId = "";
 var bcoId = "";
 var path = ''
 var isDataEdited = false;
-var rootUrl = '/dev';
+var rootUrl = '/bco_editor';
 var rootPath = '/dev';
 
 ////////////////////////////////
