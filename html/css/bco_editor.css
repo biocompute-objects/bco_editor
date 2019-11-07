@@ -4,6 +4,11 @@ body {
   padding-bottom: 20px;
 }
 
+footer {
+    display: flex;
+    justify-content: space-between;
+}
+
 .searchboxcn{
     min-height:50px;
     width:90%;
