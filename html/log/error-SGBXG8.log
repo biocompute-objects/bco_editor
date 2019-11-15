@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Library/WebServer/CGI-Executables/bco_editor/bco_editor", line 160, in get_object_edit_json
+    created_by = bco_json["provenance_domain"]["contributors"][0]["email"]
+TypeError: 'NoneType' object has no attribute '__getitem__'

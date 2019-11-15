@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "bco_editor", line 45, in save_object
+    bco_id = int(in_json["bco_id"])
+ValueError: invalid literal for int() with base 10: 'https://w3id.org/biocompute/examples/HCV1a.json'

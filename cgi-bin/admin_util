@@ -1,0 +1,151 @@
+#!/usr/bin/env python
+import os,sys
+import string
+import cgi
+import commands
+
+from optparse import OptionParser, OptionGroup
+import json
+import time
+import datetime
+import bcrypt
+import util
+
+import pymongo
+from pymongo import MongoClient
+
+
+
+
+__version__="1.0"
+__status__ = "Dev"
+
+
+
+
+
+#################################
+def main():
+
+    usage = "\n%prog  [options]"
+    parser = OptionParser(usage,version="%prog " + __version__)
+    msg = "list_users|upsert_user|delete_user|reset_bcocounter|delete_bco|list_bco|list_log"
+    parser.add_option("-a","--action",action="store",dest="action",help=msg)
+
+    group_1 = OptionGroup(parser, "Additional options for upsert_user and delete_user actions")
+    group_1.add_option("-e","--email",action="store",dest="email",help="")
+    group_1.add_option("-f","--fname",action="store",dest="fname",help="")
+    group_1.add_option("-l","--lname",action="store",dest="lname",help="")
+    group_1.add_option("-p","--password",action="store",dest="password",help="")
+    group_1.add_option("-s","--status",action="store",dest="status",help="")
+    parser.add_option_group(group_1)
+
+
+    group_2 = OptionGroup(parser, "Additional options for delete_bco action")
+    group_2.add_option("-o","--bcoid",action="store",dest="bcoid",help="")
+    parser.add_option_group(group_2)
+
+
+    (options,args) = parser.parse_args()
+    for key in ([options.action]):
+        if not (key):
+            parser.print_help()
+            sys.exit(0)
+
+
+    config_json = json.loads(open("./conf/config.json", "r").read())
+    if os.path.exists("conf/config.custom.json"):
+        custom_config_json = json.loads(open("conf/config.custom.json", "r").read())
+        for k_one in custom_config_json:
+            for k_two in custom_config_json[k_one]:
+                if k_one in config_json:
+                    if k_two in config_json[k_one]:
+                        config_json[k_one][k_two] = custom_config_json[k_one][k_two]
+ 
+    
+    
+        
+    client = MongoClient('mongodb://localhost:27017', 
+        username=config_json["dbinfo"]["mongodbuser"],
+        password=config_json["dbinfo"]["mongodbpassword"],
+        authSource=config_json["dbinfo"]["mongodbname"],
+        authMechanism='SCRAM-SHA-1'
+    )
+        
+    mongo_dbh = client[config_json["dbinfo"]["mongodbname"]]
+    mongo_cl_bco = mongo_dbh[config_json["dbinfo"]["collections"]["bco"]]
+    mongo_cl_counters = mongo_dbh[config_json["dbinfo"]["collections"]["counters"]]
+    mongo_cl_users = mongo_dbh[config_json["dbinfo"]["collections"]["users"]]
+    mongo_cl_log = mongo_dbh[config_json["dbinfo"]["collections"]["log"]]
+
+
+
+
+
+    if options.action == "list_users":
+        print "#status,fname,lname,email"
+        for doc in mongo_cl_users.find({}):
+            for f in ["fname", "lname", "status", "email"]:
+                doc[f] = doc[f] if f in doc else ""
+            print "%s,%s,%s,%s" % (doc["status"],doc["fname"],doc["lname"],doc["email"])
+    elif options.action == "list_bco":
+        print "#bco_id|name|createdby"
+        for doc in mongo_cl_bco.find({}):
+            name = doc["provenance_domain"]["name"]
+            createdby = ""
+            for obj in doc["provenance_domain"]["contributors"]:
+                if "createdBy" in obj["contribution"]:
+                    createdby = obj["email"]
+                    break
+            print "%s|%s|%s" % (doc["bco_id"], name, createdby)
+    elif options.action == "list_log":
+        for doc in mongo_cl_log.find({}):
+            doc.pop("_id")
+            print json.dumps(doc, indent=4)
+    elif options.action == "delete_user":
+        if not (options.email):
+            parser.print_help()
+            sys.exit(0)
+        query_obj = {"email":options.email}
+        res = mongo_cl_users.delete_one(query_obj)
+    elif options.action == "upsert_user":
+        for key in ([options.email]):
+            if not (key):
+                parser.print_help()
+                sys.exit(0)
+        query_obj = {'email': options.email}
+        update_obj = {}
+        if options.fname != None:
+            update_obj["fname"] = options.fname
+        if options.lname != None:
+            update_obj["lname"] = options.lname
+        if options.password != None:
+            update_obj["password"] = bcrypt.hashpw(options.password.encode('utf-8'), bcrypt.gensalt())
+        if options.status != None:
+            update_obj["status"] = int(options.status)
+        if len(update_obj.keys()) == 0:
+            print "Atleast one field must change"
+            sys.exit()
+        res = mongo_cl_users.update_one(query_obj, {'$set': update_obj}, upsert=True)
+    elif options.action == "reset_bcocounter":
+        if mongo_cl_bco.find({}).count() == 0:
+            util.reset_sequence_value(mongo_cl_counters, "bcoid")
+        else:
+            print "collection c_bco is not empty"
+    elif options.action == "delete_bco":
+        if not (options.bcoid):
+            parser.print_help()
+            sys.exit(0)
+        query_obj = {"bco_id":options.bcoid}
+        res = mongo_cl_bco.delete_one(query_obj)
+
+
+
+
+
+
+if __name__ == '__main__':
+        main()
+
+
+

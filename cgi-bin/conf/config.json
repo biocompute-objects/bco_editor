@@ -1,0 +1,40 @@
+{
+    "editorversion":"1.4",
+    "specversion":"1.3.0",
+    "dbinfo":{
+        "mongodbname":"bcodb_1_tst"
+        ,"mongodbuser":"bcodbadmin"
+        ,"mongodbpassword":"bcodbpass"
+        ,"sessionlife":3600
+        ,"collections":{
+            "bco":"c_bco"
+            ,"counters":"c_counters"
+            ,"users":"c_users"
+            ,"log":"c_log"
+        }
+    }
+    ,"pathinfo":{
+        "htmlroot":"/bco_editor/",
+        "schemaroot":"/bco_editor/schema/",
+        "htmlpath":"/Users/robelkahsay/work-projects/bco_editor/html/",
+        "schemapath":"/Users/robelkahsay/work-projects/bco_editor/html/schema/",
+        "bcoprefix":"https://w3id.org/biocompute/examples/bco_%s.json"
+    }
+    ,"tableheaders":{
+        "searchresults":{
+            "labellist":["Object ID","Object Name","Created On", "Created By"]
+            ,"typelist":["string","string","string","string"]
+        }   
+    }
+    ,"profileinfo":[
+        {"field":"fname" , "label":"First Name"},
+        {"field":"lname" , "label":"Last Name"}
+    ]
+}
+
+
+
+
+
+
+

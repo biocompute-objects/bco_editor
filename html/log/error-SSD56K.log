@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Library/WebServer/CGI-Executables/bco_editor/bco_editor", line 235, in get_profile_view_json
+    o["value"] = doc[o["name"]]
+KeyError: 'name'

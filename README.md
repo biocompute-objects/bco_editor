@@ -37,7 +37,7 @@ Assuming you have followed [MongoDB installation instructions steps](mongodb_ins
             ,"counters":"c_counters"
             ,"users":"c_users"
         }
-    }    
+    }
     ,"pathinfo":{
         "htmlroot":"http://example.com/bco_editor/"
         ,"htmlpath":"/myrepositories/bco_editor/html/"
@@ -76,9 +76,10 @@ Finally, you need to make sure the htmlRoot and cgiRoot javascript variables in 
 
 ### Admin Utility
 The script admin_util under cgi-bin/ subdirectory is used to manage the BioCompute Editor portal. Given below are commands (issued from the cgi-bin subdirectory) that can be used to perform various tasks.
- 
+
 ```
 Listing registered users 
+>>>>>>> f64e10311128c9f5839e40dbf0c29e10f207c930
   $ python admin_util -a list_users
 
 Registration is public but users cannot login before they are activated using this admin_util tool (read below on how to activate pending registerations).
@@ -107,6 +108,7 @@ BioCompute Partnership: http://biocomputeobject.org
 
 GitHub repository for BioCompute Objects:
 https://github.com/biocompute-objects/bco_editor
+
 
 
 
