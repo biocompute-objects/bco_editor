@@ -92,7 +92,7 @@ def main():
     
     
         
-    client = MongoClient('mongodb://localhost:27017', 
+    client = MongoClient(config_json["dbinfo"]["mongodburl"], 
         username=config_json["dbinfo"]["mongodbuser"],
         password=config_json["dbinfo"]["mongodbpassword"],
         authSource=config_json["dbinfo"]["mongodbname"],
