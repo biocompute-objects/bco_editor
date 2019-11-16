@@ -1,4 +1,3 @@
 html/js/backup/*
-gi-bin/*.pyc
 .DS_Store
-**/**/*.pyc
+*.pyc
