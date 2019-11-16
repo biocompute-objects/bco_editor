@@ -24,7 +24,7 @@ __status__ = "Dev"
 def regenerate_checksum():
     all_bcos = mongo_cl_bco.find()
     for bco in all_bcos:
-	bco = bio_editor.make_correct_data(bco)
+        bco = bio_editor.make_correct_data(bco)
         bco.pop('_id')
         data = bio_hash.hashed_object(bco)
         bco_id = data['bco_id']
