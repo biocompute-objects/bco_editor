@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import os,sys
 import string
 import cgi
@@ -488,26 +488,26 @@ def get_object_edit_json(in_json):
 #~~~~~~~~~~~~~~~~~~~~~
 def main():
     
-    usage = "\n%prog  [options]"
-    parser = OptionParser(usage,version="%prog " + __version__)
-    msg = "Input JSON text"
-    parser.add_option("-j","--injson",action="store",dest="injson",help=msg)
+    #usage = "\n%prog  [options]"
+    #parser = OptionParser(usage,version="%prog " + __version__)
+    #msg = "Input JSON text"
+    #parser.add_option("-j","--injson",action="store",dest="injson",help=msg)
 
 
     form_dict = cgi.FieldStorage()
-    (options,args) = parser.parse_args()
+    #(options,args) = parser.parse_args()
 
     local_flag = False
     in_json = {}
     if len(form_dict.keys()) > 0:
         in_json = json.loads(form_dict["injson"].value) if "injson" in form_dict else {}
-    else:
-        local_flag = True
-        for key in ([options.injson]):
-            if not (key):
-                parser.print_help()
-                sys.exit(0)
-        in_json = json.loads(options.injson)
+    #else:
+    #    local_flag = True
+    #    for key in ([options.injson]):
+    #        if not (key):
+    #            parser.print_help()
+    #            sys.exit(0)
+    #    in_json = json.loads(options.injson)
 
     global config_json
     global mongo_cl
