@@ -9,7 +9,7 @@ RUN sed -i \
   -e 's|#LoadModule cgid_module modules/mod_cgid.so|LoadModule cgid_module modules/mod_cgid.so|' \
   -e 's|/usr/local/apache2/htdocs|/var/www/html|g' \
   -e 's|/usr/local/apache2/cgi-bin|/var/www/cgi-bin|g' \
-  /usr/local/apache2/conf/httpd.conf && echo "$0 FOOBAR" && cat /usr/local/apache2/conf/httpd.conf
+  /usr/local/apache2/conf/httpd.conf
 
 COPY requirements.txt .
 

@@ -1,0 +1,31 @@
+name: test-integration
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v1
+      - name: Configure mongo URI
+        run: sed -i 's|mongodb://localhost:27017|mongodb://mongo:27017|' cgi-bin/conf/config.json
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - run: docker-compose up -d
+      - name: Wait until mongo is ready
+        run: docker-compose exec -T mongo bash -c 'until mongo --eval "printjson(db.serverStatus())"; do sleep 5; done'
+        timeout-minutes: 5
+      - run: curl localhost:8080/bco_editor
+      - name: Register test user using headless Chrome Browser
+        run: |
+          npm install puppeteer
+          node example.js
+      - name: Approve test user registration
+        run: |
+          docker-compose exec -T httpd bash -c \
+            "cd /var/www/cgi-bin \
+            && python admin_util -a list_users \
+            && python admin_util -a upsert_user -e test@example.com -s 1 \
+            && python admin_util -a list_users"
+      - name: Login test user using headless Chrome Browser
+        run: node example2.js
