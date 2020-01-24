@@ -89,13 +89,13 @@ function Header({ project, className, ...rest }) {
         <Grid item>
           { isOwn ? 
             <>
-              <Button
+              {/*<Button
                 className={classes.shareButton}
                 variant="contained"
               >
                 <ShareIcon className={classes.shareIcon} />
                 Share
-              </Button> 
+              </Button> */}
               <Button
                 className={classes.shareButton}
                 variant="contained"

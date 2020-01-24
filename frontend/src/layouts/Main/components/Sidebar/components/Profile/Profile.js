@@ -30,7 +30,7 @@ const Profile = props => {
 
   const user = {
     name: `${userInfo.first_name} ${userInfo.last_name}`,
-    avatar: 'https://ibb.co/kDF8mPg',
+    avatar: 'https://i.ibb.co/R6W0jJp/avatar-7.png',
     bio: ''
   };
 

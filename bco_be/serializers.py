@@ -22,7 +22,7 @@ class UserSerializer(origin_serializers.HyperlinkedModelSerializer):
 
 	class Meta:
 		model = User
-		fields = ('email', 'first_name', 'last_name', 'profile', 'id')
+		fields = ('email', 'first_name', 'last_name', 'password', 'profile', 'id')
 		extra_kwargs = {'password': {'write_only': True}}
 
 	def create(self, validated_data):
@@ -35,6 +35,7 @@ class UserSerializer(origin_serializers.HyperlinkedModelSerializer):
 		return user
 
 	def update(self, instance, validated_data):
+		print(validated_data)
 		profile_data = validated_data.pop('profile')
 		try:
 			profile = instance.profile

@@ -10,10 +10,16 @@ import {
   TextField,
   Link,
   FormHelperText,
-  Typography
+  Typography,
+  Snackbar
 } from '@material-ui/core';
-import { } from 'service/user';
+import MuiAlert from '@material-ui/lab/Alert';
+import { signUp } from 'service/user';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const schema = {
   firstName: {
@@ -145,6 +151,9 @@ const SignUp = props => {
 
   const classes = useStyles();
 
+  const [toastOpen, setToastOpen] = useState(false);
+  const [message, setMessage] = useState('');
+
   const [formState, setFormState] = useState({
     isValid: false,
     values: {},
@@ -185,16 +194,36 @@ const SignUp = props => {
     history.goBack();
   };
 
-  const handleSignUp = event => {
+  const handleSignUp = async event => {
     event.preventDefault();
-    history.push('/');
+    // let { email, password } = formState.values;
+    try {
+      let result = await signUp(formState.values);
+      if (result.status > 300) {
+        setMessage('Something went wrong. Please try again!');
+        setToastOpen(true);
+      } else {
+        setMessage('Successfully created. Please sign in.');
+        setToastOpen(true);
+        history.push('/sign-in');
+      }
+    } catch(err) {
+      console.log(err);
+    }
   };
 
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
 
+  const handleClose = () => setToastOpen(false);
+
   return (
     <div className={classes.root}>
+      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={toastOpen} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          {message}
+        </Alert>
+      </Snackbar>
       <Grid
         className={classes.grid}
         container

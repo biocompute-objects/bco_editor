@@ -31,8 +31,14 @@ export const signUp = async (user) => {
     let result = await apiCall({
         url,
         method: 'POST',
-        body: {...user, profile:{}},
-        isAuth: false
+        body: {...user,
+            first_name: user.firstName,
+            last_name: user.last_name, 
+            profile:{}},
+        isAuth: false,
+        headers: {
+            'Authorization': 'Token fa4353623da5987e3d143ad3cb5c5836caa84a58'
+        }
     });
     return result;
 }
@@ -51,7 +57,7 @@ export const updateAccount = async(data, id) => {
     let result = await apiCall({
         url,
         method: 'PUT',
-        body: data
+        body: {...data, password: '123' }
     });
     return result;
 }
