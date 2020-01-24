@@ -7,6 +7,7 @@ import MuiForm from 'rjsf-material-ui';
 import Form from "react-jsonschema-form";
 import schema from './schema';
 import { getBcoById, updateBcoById, createBco } from 'service/bco';
+import { getUserInfo } from 'service/user'
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -90,11 +91,32 @@ const FormView = (props) => {
   }, []);
 
   const onSave = async (event, value) => {
+    let user = getUserInfo();
     let { formData } = event;
     props.updateLoading(true);
     if(id !== 'new') {
       await updateBcoById(formData, id);
     } else {
+      let contributors = formData.provenance_domain.contributors.filter(item => item.email === user.email)
+
+      if (!contributors.length) {
+         formData.provenance_domain.contributors.push({
+            "affiliation": "Creator",
+            "contribution": [
+                "createdBy"
+            ],
+            "email": user.email,
+            "name": `${user.first_name} ${user.last_name}`,
+            "orcid": ""
+        })        
+      } else {
+        formData.provenance_domain.contributors.map(item => {
+          if (item.email === user.email) {
+            return {...item, "contribution": ["createdBy"]}
+          }
+          return item
+        })
+      }
       await createBco(formData);
     }
     props.updateLoading(false);
