@@ -37,7 +37,7 @@ export const signUp = async (user) => {
             profile:{}},
         isAuth: false,
         headers: {
-            'Authorization': 'Token fa4353623da5987e3d143ad3cb5c5836caa84a58'
+            'Authorization': 'Token 439e944ee3406c075b5ab1b6bcb9c50e7e4f3841'
         }
     });
     return result;
