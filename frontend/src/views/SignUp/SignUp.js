@@ -196,20 +196,20 @@ const SignUp = props => {
 
   const handleSignUp = async event => {
     event.preventDefault();
-    // let { email, password } = formState.values;
-    try {
-      let result = await signUp(formState.values);
-      if (result.status > 300) {
-        setMessage('Something went wrong. Please try again!');
-        setToastOpen(true);
-      } else {
-        setMessage('Successfully created. Please sign in.');
-        setToastOpen(true);
-        history.push('/sign-in');
-      }
-    } catch(err) {
-      console.log(err);
-    }
+    console.log(formState);
+    // try {
+    //   let result = await signUp(formState.values);
+    //   if (result.status > 300) {
+    //     setMessage('Something went wrong. Please try again!');
+    //     setToastOpen(true);
+    //   } else {
+    //     setMessage('Successfully created. Please sign in.');
+    //     setToastOpen(true);
+    //     history.push('/sign-in');
+    //   }
+    // } catch(err) {
+    //   console.log(err);
+    // }
   };
 
   const hasError = field =>

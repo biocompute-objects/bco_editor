@@ -94,7 +94,7 @@ const LatestOrders = props => {
             variant="outlined"
             onClick={props.onGotoNewBco}
           >
-            New Object
+            New BioCompute Object
           </Button>
         }
         title="Bco Object List"

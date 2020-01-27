@@ -6,6 +6,7 @@ import { useParams} from "react-router";
 import MuiForm from 'rjsf-material-ui';
 import Form from "react-jsonschema-form";
 import schema from './schema';
+import uiSchema from './uiSchema'
 import { getBcoById, updateBcoById, createBco } from 'service/bco';
 import { getUserInfo } from 'service/user'
 
@@ -165,6 +166,7 @@ const FormView = (props) => {
         </div>
       </Modal>
 			<MuiForm schema={schema}
+        uiSchema={uiSchema}
         formData={data}
 				onChange={log("changed")}
 				onSubmit={onSave}

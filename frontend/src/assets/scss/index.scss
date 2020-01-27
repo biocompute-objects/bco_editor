@@ -30,73 +30,79 @@ a {
   }
 
   .rjsf > div > div.MuiGrid-root.MuiGrid-container {
-    > .MuiGrid-root.MuiGrid-item:nth-child(1) {
-      background-color: #E2D2F8;
-      margin-bottom: 0 !important;
-    }
-    > .MuiGrid-root.MuiGrid-item:nth-child(2) {
-      background-color: #E2D2F8;
-      margin-bottom: 0 !important;
-    }
-    > .MuiGrid-root.MuiGrid-item:nth-child(3) {
-      background-color: #E2D2F8;
-      margin-bottom: 0 !important;
-    }
-    > .MuiGrid-root.MuiGrid-item:nth-child(4) {
-      background-color: #F8F8C7;
+    > .MuiGrid-root.MuiGrid-item:nth-child(odd) {
+      background-color: #FFFFFF;
       margin-bottom: 0 !important;
       .MuiBox-root {
-        background-color: #F8F8C7;
+        background-color: #FFFFFF;
       }
     }
-    > .MuiGrid-root.MuiGrid-item:nth-child(5) {
-      background-color: #E2D2F8;
+    > .MuiGrid-root.MuiGrid-item:nth-child(even) {
+      background-color: #E4E4E4;
       margin-bottom: 0 !important;
       .MuiBox-root {
-        background-color: #E2D2F8;
+        background-color: #E4E4E4;
       }
     }
-    > .MuiGrid-root.MuiGrid-item:nth-child(6) {
-      background-color: #F8D6EE;
-      margin-bottom: 0 !important;
-      .MuiBox-root {
-        background-color: #F8D6EE;
-      }
-    }
-    > .MuiGrid-root.MuiGrid-item:nth-child(7) {
-      background-color: #D9F8C1;
-      margin-bottom: 0 !important;
-      .MuiBox-root {
-        background-color: #D9F8C1;
-      }
-    }
-    > .MuiGrid-root.MuiGrid-item:nth-child(8) {
-      background-color: #CCDAF8;
-      margin-bottom: 0 !important;
-      .MuiBox-root {
-        background-color: #CCDAF8;
-      }
-    }
-    > .MuiGrid-root.MuiGrid-item:nth-child(9) {
-      background-color: #F8D6EE;
-      margin-bottom: 0 !important;
-      .MuiBox-root {
-        background-color: #F8D6EE;
-      }
-    }
-    > .MuiGrid-root.MuiGrid-item:nth-child(10) {
-      background-color: #C3F8DA;
-      margin-bottom: 0 !important;
-      .MuiBox-root {
-        background-color: #C3F8DA;
-      }
-    }
-    > .MuiGrid-root.MuiGrid-item:nth-child(11) {
-      background-color: #DAF8CC;
-      margin-bottom: 0 !important;
-      .MuiBox-root {
-        background-color: #DAF8CC;
-      }
-    }
+    // > .MuiGrid-root.MuiGrid-item:nth-child(3) {
+    //   background-color: #E2D2F8;
+    //   margin-bottom: 0 !important;
+    // }
+    // > .MuiGrid-root.MuiGrid-item:nth-child(4) {
+    //   background-color: #F8F8C7;
+    //   margin-bottom: 0 !important;
+    //   .MuiBox-root {
+    //     background-color: #F8F8C7;
+    //   }
+    // }
+    // > .MuiGrid-root.MuiGrid-item:nth-child(5) {
+    //   background-color: #E2D2F8;
+    //   margin-bottom: 0 !important;
+    //   .MuiBox-root {
+    //     background-color: #E2D2F8;
+    //   }
+    // }
+    // > .MuiGrid-root.MuiGrid-item:nth-child(6) {
+    //   background-color: #F8D6EE;
+    //   margin-bottom: 0 !important;
+    //   .MuiBox-root {
+    //     background-color: #F8D6EE;
+    //   }
+    // }
+    // > .MuiGrid-root.MuiGrid-item:nth-child(7) {
+    //   background-color: #D9F8C1;
+    //   margin-bottom: 0 !important;
+    //   .MuiBox-root {
+    //     background-color: #D9F8C1;
+    //   }
+    // }
+    // > .MuiGrid-root.MuiGrid-item:nth-child(8) {
+    //   background-color: #CCDAF8;
+    //   margin-bottom: 0 !important;
+    //   .MuiBox-root {
+    //     background-color: #CCDAF8;
+    //   }
+    // }
+    // > .MuiGrid-root.MuiGrid-item:nth-child(9) {
+    //   background-color: #F8D6EE;
+    //   margin-bottom: 0 !important;
+    //   .MuiBox-root {
+    //     background-color: #F8D6EE;
+    //   }
+    // }
+    // > .MuiGrid-root.MuiGrid-item:nth-child(10) {
+    //   background-color: #C3F8DA;
+    //   margin-bottom: 0 !important;
+    //   .MuiBox-root {
+    //     background-color: #C3F8DA;
+    //   }
+    // }
+    // > .MuiGrid-root.MuiGrid-item:nth-child(11) {
+    //   background-color: #DAF8CC;
+    //   margin-bottom: 0 !important;
+    //   .MuiBox-root {
+    //     background-color: #DAF8CC;
+    //   }
+    // }
   }
 }

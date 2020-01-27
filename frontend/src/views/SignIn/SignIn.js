@@ -255,9 +255,6 @@ const SignIn = props => {
         >
           <div className={classes.content}>
             <div className={classes.contentHeader}>
-              <IconButton onClick={handleBack}>
-                <ArrowBackIcon />
-              </IconButton>
             </div>
             <div className={classes.contentBody}>
               <form
