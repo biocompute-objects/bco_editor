@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, UserProfile
+from .models import User, UserProfile, BcoObject
+from mongoadmin import site, DocumentAdmin
 
 class UserProfileInline(admin.StackedInline):
 	model = UserProfile
@@ -26,3 +27,7 @@ class UserAdmin(BaseUserAdmin):
 	search_fields = ('email', 'first_name', 'last_name')
 	ordering = ('email',)
 	inlines = (UserProfileInline, )
+
+class BcoObjectAdmin(DocumentAdmin):
+    pass
+site.register(BcoObject, BcoObjectAdmin)
