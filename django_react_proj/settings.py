@@ -139,8 +139,17 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-    ]
+    ],
+    'EXCEPTION_HANDLER': 'bco_be.exception_handler.custom_exception_handler'
 }
+
+# rest auth registration custom serializer
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'bco_be.serializers.RegisterSerializer',
+}
+
+# disable email verification
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 AUTH_USER_MODEL = 'bco_be.User'
 

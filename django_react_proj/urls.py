@@ -21,7 +21,6 @@ from . import views
 
 schema_view = get_swagger_view(title='API')
 
-
 urlpatterns = [
     path('api/', include('bco_be.urls')),
     url(r'^explorer/$', schema_view),

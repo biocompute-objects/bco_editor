@@ -159,8 +159,7 @@ export default {
             "additionalProperties": false,
             "$schema": "http://json-schema.org/draft-07/schema#",
             "type": "object",
-            "properties": {
-                
+            "properties": {                
                 "license": {
                     "propertyOrder": 1,
                     "type": "string",
@@ -180,6 +179,7 @@ export default {
                 "contributors": {
                     "items": {
                         "additionalProperties": false,
+                        "title": "Contributor",
                         "required": [
                             "contribution",
                             "name",
@@ -247,6 +247,7 @@ export default {
                     "propertyOrder": 6
                 },
                 "created": {
+                    "title": "Created Timestamp",
                     "propertyOrder": 4,
                     "readOnly": true,
                     "type": "string",
@@ -254,6 +255,7 @@ export default {
                     "format": "datetime"
                 },
                 "modified": {
+                    "title": "Updated Timestamp",
                     "propertyOrder": 5,
                     "readOnly": true,
                     "type": "string",
@@ -261,6 +263,7 @@ export default {
                     "format": "datetime"
                 },
                 "obsolete_after": {
+                    "title": "Obsolete Timestamp",
                     "propertyOrder": 10,
                     "type": "string",
                     "description": "If the object has an expiration date, this optional field will specify that using the \u2018datetime\u2019 type described in ISO-8601 format, as clarified by W3C https://www.w3.org/TR/NOTE-datetime.",

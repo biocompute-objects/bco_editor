@@ -27,18 +27,18 @@ export const login = async(username, password) => {
 }
 
 export const signUp = async (user) => {
-    let url = '/api/user/'
+    let url = '/api/auth/signup/'
     let result = await apiCall({
         url,
         method: 'POST',
-        body: {...user,
+        body: {
+            email: user.email,
+            password1: user.password,
+            password2: user.password,
             first_name: user.firstName,
-            last_name: user.last_name, 
-            profile:{}},
-        isAuth: false,
-        headers: {
-            'Authorization': 'Token 439e944ee3406c075b5ab1b6bcb9c50e7e4f3841'
-        }
+            last_name: user.lastName
+        },
+        isAuth: false
     });
     return result;
 }

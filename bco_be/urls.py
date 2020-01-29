@@ -12,7 +12,8 @@ merouter.register(r'bco', BcoObjectViewSet)
 
 urlpatterns = [
 	path(r'', include(router.urls)),
-	path(r'auth/', include('rest_auth.urls'))	
+	path(r'auth/', include('rest_auth.urls')),
+	url(r'auth/signup/', include('rest_auth.registration.urls'))
 ]
  
 urlpatterns += merouter.urls

@@ -20,7 +20,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-
+/**/
 const schema = {
   firstName: {
     presence: { allowEmpty: false, message: 'is required' },
@@ -44,12 +44,17 @@ const schema = {
   password: {
     presence: { allowEmpty: false, message: 'is required' },
     length: {
-      maximum: 128
+      maximum: 128,
+      minimum: 6,
+      message: "must be at least 6 characters"
     }
   },
-  policy: {
+  confirmPassword: {
     presence: { allowEmpty: false, message: 'is required' },
-    checked: true
+    length: {
+      maximum: 128
+    },
+    equality: "password"
   }
 };
 
@@ -67,6 +72,8 @@ const useStyles = makeStyles(theme => ({
     }
   },
   quote: {
+    position: 'fixed',
+    width: '41%',
     backgroundColor: theme.palette.neutral,
     height: '100%',
     display: 'flex',
@@ -196,11 +203,16 @@ const SignUp = props => {
 
   const handleSignUp = async event => {
     event.preventDefault();
-    console.log(formState);
+    if (!formState.isValid) {
+      return;
+    }
     try {
       let result = await signUp(formState.values);
       if (result.status > 300) {
-        setMessage('Something went wrong. Please try again!');
+        if (result.result.message === 'duplication error')
+          setMessage('Email is already existed.');
+        else
+          setMessage('Something went wrong. Please try again!');
         setToastOpen(true);
       } else {
         setMessage('Successfully created. Please sign in.');
@@ -338,6 +350,20 @@ const SignUp = props => {
                   onChange={handleChange}
                   type="password"
                   value={formState.values.password || ''}
+                  variant="outlined"
+                />
+                <TextField
+                  className={classes.textField}
+                  error={hasError('confirmPassword')}
+                  fullWidth
+                  helperText={
+                    hasError('confirmPassword') ? formState.errors.confirmPassword[0] : null
+                  }
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  onChange={handleChange}
+                  type="password"
+                  value={formState.values.confirmPassword || ''}
                   variant="outlined"
                 />
                 <Button

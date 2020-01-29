@@ -20,6 +20,13 @@ export const getBcoFormById = async () => {
 
 }
 
+// get new bcoId form schema with bco data
+export const getNewBcoId = async () => {
+	let url = `/api/bco/new_id/`;
+	let result = await apiCall({url});
+	return result;
+}
+
 // create new bco data
 export const createBco = async (data) => {
 	let url = `/api/bco/`;

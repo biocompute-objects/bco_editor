@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Button, colors, Modal } from '@material-ui/core';
+import { Button, colors, Modal, Collapse, 
+  ListItem, ListItemIcon, ListItemText, Tooltip,
+  InputLabel, Input, FormHelperText, FormControl  } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { useParams} from "react-router";
-import MuiForm from 'rjsf-material-ui';
+import MuiForm, { FieldTemplate } from 'rjsf-material-ui';
 import Form from "react-jsonschema-form";
 import schema from './schema';
 import uiSchema from './uiSchema'
-import { getBcoById, updateBcoById, createBco } from 'service/bco';
+import { getBcoById, updateBcoById, createBco, getNewBcoId } from 'service/bco';
 import { getUserInfo } from 'service/user'
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import InfoIcon from '@material-ui/icons/Info';
+import ArrayFieldTemplate from './ArrayFieldTemplate';
+import { KeyboardDateTimePicker } from '@material-ui/pickers'
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -59,10 +66,109 @@ const useStyles = makeStyles(theme => ({
   },
   editor: {
     width: '100%'
+  },
+  itemTitle: {
+    '&> span': {
+      display: 'flex',
+      '&> h2': {
+        marginRight: theme.spacing(1),
+        fontWeight: 500
+      },
+      '&> h4': {
+        marginRight: theme.spacing(1),
+        fontWeight: 500
+      }
+    }
+  },
+  titleBar: {
+    padding: '1em 0'
+  },
+  objectField: {
+    border: '1px solid #e3e3e3',
+    padding: '1em',
+    margin: '1em 0'
+  },
+  fieldWrapper: {
+    margin: '1em 0'
   }
 }));
 
 const log = (type) => console.log.bind(console, type);
+
+function CustomFieldTemplate(props) {
+  const classes = useStyles();
+  // console.log(props);
+  // if (props.schema.format === 'datetime') {
+  //   let data = props.children[0].props;
+  //   return (
+  //     <div className={classes.fieldWrapper}>
+  //       <FormControl disabled={props.disabled} fullWidth={true} required={props.required}>
+  //         <KeyboardDateTimePicker
+  //           {...data}
+  //           disableToolbar
+  //           variant="inline"
+  //           margin="normal"
+  //           id={props.id}
+  //           label={data.name}
+  //           value={data.formData}            
+  //           KeyboardButtonProps={{
+  //             'aria-label': 'change date',
+  //           }}
+  //         />
+  //         <FormHelperText id={`${props.id}-helper`}>{props.schema.description}</FormHelperText>
+  //       </FormControl>
+  //     </div>
+  //   )
+  // }
+  // if (props.schema.format === 'email') {
+  //   let data = props.children[0].props;
+
+  //   return (
+  //     <div className={classes.fieldWrapper}>
+  //       <FormControl disabled={data.disabled} fullWidth={true} required={data.required}>
+  //         <InputLabel htmlFor={props.id}>{data.name}</InputLabel>
+  //         <Input {...data} type={'email'} id={props.id} aria-describedby={`${props.id}-helper`} value={data.formData} />
+  //         <FormHelperText id={`${props.id}-helper`}>{props.schema.description}</FormHelperText>
+  //       </FormControl>
+  //     </div>
+  //   )
+  // }
+
+  return (
+    <div className={classes.fieldWrapper}>
+      <FieldTemplate {...props} />
+    </div>
+  )
+}
+
+/**/
+function ObjectFieldTemplate(props) {
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(true);
+
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
+  return (
+    <div className={classes.objectField}>
+      <ListItem button onClick={handleClick} className={classes.titleBar}>
+        <ListItemText className={classes.itemTitle}>
+          {props.title && props.title.includes('BioCompute') ? <h1>{props.title}</h1> :
+            props.title && props.title.includes('Domain') ? <h2>{props.title}</h2> : <h4>{props.title}</h4>}
+          { props.title && <Tooltip title={props.description} placement="right-start">
+            <InfoIcon />
+          </Tooltip> }
+        </ListItemText>
+        {open ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        {props.properties.map(element => <div className="property-wrapper">{element.content}</div>)}
+      </Collapse>
+    </div>
+  );
+}
 
 const FormView = (props) => {
   const [ data, setData ] = useState({});
@@ -86,6 +192,11 @@ const FormView = (props) => {
           setText(JSON.stringify(_data,null, 4));
         }
         props.updateLoading(false);
+      } else {
+        let newId = await getNewBcoId();
+        let _data = { bco_id: newId.result.bco_id };
+        setData(_data);
+        setText(JSON.stringify(_data,null, 4));
       }
     }
     fetchData();
@@ -109,7 +220,7 @@ const FormView = (props) => {
             "email": user.email,
             "name": `${user.first_name} ${user.last_name}`,
             "orcid": ""
-        })        
+        })
       } else {
         formData.provenance_domain.contributors.map(item => {
           if (item.email === user.email) {
@@ -136,7 +247,9 @@ const FormView = (props) => {
     try {
       JSON.parse(text)
       handleClose();
-      setData(JSON.parse(text));
+      let data = JSON.parse(text);
+      delete data['id'];
+      setData(data);
     } catch (err) {
       props.setAlertData({ type: 'error', message: 'Error in parsing JSON.'});
       props.setOpenAlert(true);
@@ -170,7 +283,10 @@ const FormView = (props) => {
         formData={data}
 				onChange={log("changed")}
 				onSubmit={onSave}
-				onError={onError}>
+				onError={onError}
+        FieldTemplate={CustomFieldTemplate}
+        ObjectFieldTemplate={ObjectFieldTemplate}
+        ArrayFieldTemplate={ArrayFieldTemplate}>
         <Button
           className={classes.applyButton}
           variant="contained"

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import *
 from .serializers import *
-
+from .utils import *
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -18,10 +18,15 @@ class ToolViewSet(meviewsets.ModelViewSet):
 
 class BcoObjectViewSet(meviewsets.ModelViewSet):
 	authentication_classes = (TokenAuthentication, )
-	# permission_classes = [IsAuthenticated]
+	permission_classes = [IsAuthenticated]
 	lookup_field = 'id'
 	queryset = BcoObject.objects.all()
 	serializer_class = BcoObjectSerializer
+
+	@action(detail=False)
+	def new_id(self, request):
+		bco_id = new_bco_id();
+		return Response({ 'bco_id': bco_id })
 
 
 class UserViewSet(viewsets.ModelViewSet):
