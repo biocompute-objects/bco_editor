@@ -12,7 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
-import Button from '@material-ui/core/Collapse';
+import Button from '@material-ui/core/Button';
 
 import AddButton from './AddButton';
 import IconButton from './IconButton';
