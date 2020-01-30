@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "bco_editor", line 267, in main
-    logged_email = auth_json["email"] if out_json["status"] == 1 else ""
-UnboundLocalError: local variable 'out_json' referenced before assignment

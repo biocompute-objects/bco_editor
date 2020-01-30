@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+
+  httpd:
+    build: .
+    image: biocompute-objects/bco-editor:latest
+    ports:
+      - 8080:80
+    volumes:
+      #- ./cgi-bin/:/usr/local/apache2/cgi-bin/dev/
+      #- ./html/:/usr/local/apache2/htdocs/bco_editor/dev/
+      #- ./cgi-bin/:/var/www/cgi-bin/dev/
+      #- ./html/:/var/www/html/bco_editor/dev/
+      - ./cgi-bin/:/var/www/cgi-bin/
+      - ./html/:/var/www/html/bco_editor/
+
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: bcodb_1_tst
+    volumes:
+      # Initialize a fresh mongo instance
+      # When a container is started for the first time it will execute files with
+      # extensions .sh and .js that are found in /docker-entrypoint-initdb.d. Files
+      # will be executed in alphabetical order. .js files will be executed by mongo
+      # using the database specified by the MONGO_INITDB_DATABASE variable, if it
+      # is present, or test otherwise. You may also switch databases within the
+      # .js script.
+      - ./initdb.d/:/docker-entrypoint-initdb.d/
+      # Persist mongo data
+      #- /my/own/datadir:/data/db

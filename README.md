@@ -10,6 +10,7 @@ Software requirement
 * MongoDB Community or Enterprise version
 
 
+
 ### MongoDB Installation Example
 If you do not have MongoDB installed on your server, here is an example of [MongoDB installation instruction steps](mongodb_installation.md) steps for CentOs server. 
 
@@ -37,7 +38,7 @@ Assuming you have followed [MongoDB installation instructions steps](mongodb_ins
             ,"counters":"c_counters"
             ,"users":"c_users"
         }
-    }
+    }    
     ,"pathinfo":{
         "htmlroot":"http://example.com/bco_editor/"
         ,"htmlpath":"/myrepositories/bco_editor/html/"
@@ -59,7 +60,7 @@ Or you can copy the folders physically.
   $ sudo cp -r /myrepositories/bco_editor/html /var/www/html/bco_editor
 ```
 
-You also need to make sure that apache has write access to /var/www/html/bco_editor/log/.
+You need also to make sure that apache has write access to /var/www/html/bco_editor/log/.
 
 ```
   $ sudo chown -R apache:apache /var/www/html/bco_editor/log/
@@ -76,10 +77,9 @@ Finally, you need to make sure the htmlRoot and cgiRoot javascript variables in 
 
 ### Admin Utility
 The script admin_util under cgi-bin/ subdirectory is used to manage the BioCompute Editor portal. Given below are commands (issued from the cgi-bin subdirectory) that can be used to perform various tasks.
-
+ 
 ```
 Listing registered users 
->>>>>>> f64e10311128c9f5839e40dbf0c29e10f207c930
   $ python admin_util -a list_users
 
 Registration is public but users cannot login before they are activated using this admin_util tool (read below on how to activate pending registerations).
@@ -100,6 +100,7 @@ Deleting BioCompute object
   $ python admin_util -a delete_bco -o 2
 
 ```
+
 
 
 

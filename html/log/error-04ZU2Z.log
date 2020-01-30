@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "bco_editor", line 276, in main
-    out_json["readonly"] = auth_json["email"]
-KeyError: 'email'

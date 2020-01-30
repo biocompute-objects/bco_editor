@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/Library/WebServer/CGI-Executables/bco_editor/bco_editor", line 181, in get_object_edit_json
-    out_json["schema"]["properties"][domain] = ref_obj
-KeyError: 'schema'

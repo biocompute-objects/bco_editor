@@ -4,6 +4,11 @@ body {
   padding-bottom: 20px;
 }
 
+footer {
+    display: flex;
+    justify-content: space-between;
+}
+
 .searchboxcn{
     min-height:50px;
     width:90%;
@@ -76,8 +81,15 @@ body {
     margin:1px 10px 0px 10px;
 }
 
-.createlink, .editlink, .viewlink{
+.createlink, .editlink, .viewlink, .sharelink, .samplebco{
     cursor:pointer;
+}
+.editlink, .sharelink, .viewlink {
+    margin-right: 1em;
+}
+
+.editlink {
+    margin-right: 1em;
 }
 
 div.progresswrapper{
@@ -120,3 +132,138 @@ div.progresscn{
     width:80%;
 }
 
+.jq-toast-wrap {
+  width: 340px !important;
+}
+
+div[data-schematype="object"] h5 {
+    margin: 0px !important;
+    width: 100% !important;
+}
+
+div[data-schematype="object"] p {
+    margin: 0px !important;
+    margin-bottom: 5px !important;
+}
+
+div#editor_div ~ div {
+    width: 100% !important;
+    margin: 0 !important    ;
+}
+
+input#downloadbtn {
+    margin-left: 5px;
+}
+
+div#editor_div div.well {
+    background-color: #e7e7e7;
+}
+
+div#editor_div div.row:has(label:contains("bco_id")) {
+    background-color: #e2d2f8;
+    margin: 0;
+}
+
+.bco-board {
+    background-color: #E7E7E7;
+    margin: 0;
+}
+
+.header-domain, 
+.header-domain > div, 
+.header-domain > div > h5, 
+.header-domain div.well {
+    background-color: #E2D2F8 !important;
+    margin: 0;
+}
+
+.provenance-domain,
+.provenance-domain > div,
+.provenance-domain > div > h5,
+.provenance-domain div.well {
+    background-color: #F8F8C7 !important;
+    margin: 0;
+}
+
+.usability-domain,
+.usability-domain > div,
+.usability-domain > div > h5,
+.usability-domain div.well {
+    background-color: #E2D2F8 !important;
+    margin: 0;
+}
+
+.extension-domain,
+.extension-domain > div,
+.extension-domain > div > h5,
+.extension-domain div.well {
+    background-color: #F8D6EE !important;
+    margin: 0;
+}
+
+
+.description-domain,
+.description-domain > div,
+.description-domain > div > h5,
+.description-domain div.well {
+    background-color: #D9F8C1 !important;
+    margin: 0;
+}
+
+.execution-domain,
+.execution-domain > div,
+.execution-domain > div > h5,
+.execution-domain div.well {
+    background-color: #CCDAF8 !important;
+    margin: 0;
+}
+
+.parametric-domain,
+.parametric-domain > div,
+.parametric-domain > div > h5,
+.parametric-domain div.well {
+    background-color: #F8D6EE !important;
+    margin: 0;
+}
+
+.error-domain,
+.error-domain > div ,
+.error-domain > div  > h5,
+.error-domain div.well {
+    background-color: #DAF8CC !important;
+    margin: 0;
+}
+
+.io-domain,
+.io-domain > div,
+.io-domain > div > h5,
+.io-domain div.well {
+    background-color: #C3F8DA !important;
+    margin: 0;
+}
+
+.control-label {
+    font-weight: 100;
+}
+
+.multiselect-container {
+    width: 100%;
+}
+
+.multiselect-native-select div.btn-group {
+    width: 100%;
+}
+
+select.multiselect,
+select.multiselect + div.btn-group,
+select.multiselect + div.btn-group button.multiselect,
+select.multiselect + div.btn-group.open .multiselect-container{
+    width:100% !important;
+}
+
+#viewexample {
+    width: 100%;
+    max-width: 800px;
+    top: 5em;
+    margin-bottom: 5em;
+}

@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "bco_editor", line 277, in main
-    out_json["bco"], creator_list = get_object_view_json(in_json)
-ValueError: too many values to unpack
