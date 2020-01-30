@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 import os,sys
 import string
 import cgi
@@ -16,7 +16,6 @@ import bcrypt
 import hashlib
 import requests
 import pdb
-from dateutil.parser import parse
 
 import pymongo
 from pymongo import MongoClient
@@ -29,48 +28,27 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 __version__="1.0"
 
 def make_correct_data(input_json):
-    
-    try:
-        del input_json['name']
-    except:
-        pass
-    try:
-        del input_json['version']
-    except:
-        pass
-    try:
-        del input_json['license']
-    except:
-        pass
-    try:
-        del input_json['contributors']
-    except:
-        pass
-    try:
-        del input_json['created']
-    except:
-        pass
-    try:
-        del input_json['modified']
-    except:
-        pass
-
-
     for i in range(len(input_json['description_domain']['pipeline_steps'])):
         for j in range(len(input_json['description_domain']['pipeline_steps'][i]['input_list'])):
             try:
+                if input_json['description_domain']['pipeline_steps'][i]['input_list'][j]['sha1_chksum'] != None:
+                    input_json['description_domain']['pipeline_steps'][i]['input_list'][j]['sha1_checksum'] = input_json['description_domain']['pipeline_steps'][i]['input_list'][j]['sha1_chksum']
                 del input_json['description_domain']['pipeline_steps'][i]['input_list'][j]['sha1_chksum']
             except:
                 pass
         for j in range(len(input_json['description_domain']['pipeline_steps'][i]['output_list'])):
             try:
+                if input_json['description_domain']['pipeline_steps'][i]['output_list'][j]['sha1_chksum'] != None:
+                    input_json['description_domain']['pipeline_steps'][i]['output_list'][j]['sha1_checksum'] = input_json['description_domain']['pipeline_steps'][i]['output_list'][j]['sha1_chksum']
                 del input_json['description_domain']['pipeline_steps'][i]['output_list'][j]['sha1_chksum']
             except:
                 pass
         try:
             for j in range(len(input_json['description_domain']['pipeline_steps'][i]['prerequisite'])):
                 try:
-                    del input_json['description_domain']['pipeline_steps'][i]['prerequisite'][j]['sha1_chksum']
+                    if input_json['description_domain']['pipeline_steps'][i]['prerequisite'][j]['uri']['sha1_chksum'] != None:
+                        input_json['description_domain']['pipeline_steps'][i]['prerequisite'][j]['uri']['sha1_checksum'] = input_json['description_domain']['pipeline_steps'][i]['prerequisite'][j]['uri']['sha1_chksum']
+                    del input_json['description_domain']['pipeline_steps'][i]['prerequisite'][j]['uri']['sha1_chksum']
                 except:
                     pass
         except:
@@ -78,40 +56,35 @@ def make_correct_data(input_json):
 
     for i in range(len(input_json['execution_domain']['software_prerequisites'])):
         try:
-            if input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_chksum']: 
+            if input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_chksum'] != None: 
                 input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_checksum'] = input_json['execution_domain']['software_prerequisites'][i]['uri'].pop('sha1_chksum')
-            else:
-                del input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_chksum']
+            del input_json['execution_domain']['software_prerequisites'][i]['uri']['sha1_chksum']
         except:
             pass
     for i in range(len(input_json['execution_domain']['script'])):
         try:
-            if input_json['execution_domain']['script'][i]['uri']['sha1_chksum']:
+            if input_json['execution_domain']['script'][i]['uri']['sha1_chksum'] != None:
                 input_json['execution_domain']['script'][i]['uri']['sha1_checksum'] = input_json['execution_domain']['script'][i]['uri'].pop('sha1_chksum')
-            else:
-                del input_json['execution_domain']['script'][i]['uri']['sha1_chksum']
+            del input_json['execution_domain']['script'][i]['uri']['sha1_chksum']
         except:
             pass
 
     for i in range(len(input_json['io_domain']['input_subdomain'])):
         try:
-            if input_json['io_domain']['input_subdomain'][i]['uri']['sha1_chksum']:
+            if input_json['io_domain']['input_subdomain'][i]['uri']['sha1_chksum'] != None:
                 input_json['io_domain']['input_subdomain'][i]['uri']['sha1_checksum'] = input_json['io_domain']['input_subdomain'][i]['uri'].pop('sha1_chksum')
-            else:
-                del input_json['io_domain']['input_subdomain'][i]['uri']['sha1_chksum']
+            del input_json['io_domain']['input_subdomain'][i]['uri']['sha1_chksum']
         except:
             pass
     for i in range(len(input_json['io_domain']['output_subdomain'])):
         try:
-            if input_json['io_domain']['output_subdomain'][i]['uri']['sha1_chksum']:
+            if input_json['io_domain']['output_subdomain'][i]['uri']['sha1_chksum'] != None:
                 input_json['io_domain']['output_subdomain'][i]['uri']['sha1_checksum'] = input_json['io_domain']['output_subdomain'][i]['uri'].pop('sha1_chksum')
-            else:
-                del input_json['io_domain']['output_subdomain'][i]['uri']['sha1_chksum']
+            del input_json['io_domain']['output_subdomain'][i]['uri']['sha1_chksum']
         except:
             pass
-    
-    return input_json
 
+    return input_json
 def save_object(in_json, logged_email):
     # validating json data with schema
     
@@ -131,13 +104,16 @@ def save_object(in_json, logged_email):
     # pdb.set_trace()
     try:
         data = bio_hash.hashed_object(in_json)
+	print data['checksum']
+	doc = mongo_cl_bco.find_one({"bco_id": "http://biocomputeobject.org/BCO_000012"})
+	print doc['checksum']
+	return ''
         if bco_id != "-1":
             doc = mongo_cl_bco.find_one({"bco_id":bco_id})
             creator_list = []
             for o in doc["provenance_domain"]["contributors"]:
-                if "createdBy" in o["contribution"] or "authoredBy" in o["contribution"]:
-                    if "email" in o:
-                        creator_list.append(o["email"])
+                if "createdBy" in o["contribution"]:
+                    creator_list.append(o["email"])
             if logged_email not in creator_list:
                 return {"taskstatus":0, "errormsg":"You do not have privilege to change this object!"}
             else:
@@ -175,41 +151,12 @@ def save_object(in_json, logged_email):
                 result = mongo_cl_bco.insert_one(data)
                 out_json = {"bcoid":bco_url, "taskstatus":1}
     except Exception as e:
+        print "*"*100
+        print e
         util.add_id(mongo_cl_invalid, real_id)
         out_json = util.log_error(mongo_cl_log, traceback.format_exc(), str(e))
 
     return out_json
-
-def save_permit(in_json, logged_email):
-    bco_id = in_json['bcoId']
-    bco = mongo_cl_bco.find_one({"bco_id":bco_id})
-    contributors = bco['provenance_domain']['contributors']
-    selected_users = in_json['user']
-    selected_permit = in_json['permission']
-    existed = False
-    existed_index = -1
-    for selected_user in selected_users:
-        for index, contributor in enumerate(contributors):
-            if contributor['email'] == selected_user:
-                existed = True
-                existed_index = index
-                break
-
-        if existed:
-            contributors[existed_index]['contribution'] = [selected_permit]
-        else:
-            contributors.append({
-                "email": selected_user,
-                "contribution": [selected_permit],
-                "name": "",
-                "orcid": "", 
-                "affiliation": "", 
-                })
-    bco['provenance_domain']['contributors'] = contributors
-    bco.pop('_id')
-    bco.pop('bco_id')
-    mongo_cl_bco.update_one({"bco_id":bco_id}, {'$set': bco}, upsert=False)
-
 
 def read_file():
     result = []
@@ -232,6 +179,7 @@ def import_bcos(in_json, logged_email):
                 response = requests.get(bco_url, verify=False)            
                 if response.content.strip() != "":
                     bco_obj = json.loads(response.content)
+                    print response.content
                     file_obj.write(response.content)
                     file_obj.write(', \n')
         except Exception as e:
@@ -249,41 +197,20 @@ def import_bcos(in_json, logged_email):
                 response = requests.get(bco_url, verify=False)            
                 if response.content.strip() != "":
                     bco_obj = json.loads(response.content)
+                    print response.content
                     file_obj.write(response.content)
                     file_obj.write(', \n')
         except Exception as e:
             pdb.set_trace()
+            print "-"*100
+            print e
             util.log_error(mongo_cl_log, str(e), str(e))
 
     file_obj.write(']')
     file_obj.close()
     return {"result": True}
 
-def check_doc_embargo(provenance_domain, logged_email):
-    contributors = provenance_domain['contributors']
-    if "embargo" in provenance_domain:
-        if "start_time" in provenance_domain["embargo"] and "end_time" in provenance_domain["embargo"]:
-            start_time = provenance_domain["embargo"]["start_time"]
-            end_time = provenance_domain["embargo"]["end_time"]
-            if logged_email:
-                for o in provenance_domain["contributors"]:
-                    if 'createdBy' in o['contribution'] and logged_email == o['email']:
-                        return True
-                    else:
-                        return False
-
-            if start_time and end_time:
-                now = datetime.datetime.now()
-                start_time = parse(start_time, ignoretz=True)
-                end_time = parse(end_time, ignoretz=True)
-                if start_time < now and end_time > now:
-                    return True
-                else:
-                    return False
-
-    return True
-
-def search_objects(in_json, logged_email):
+def search_objects(in_json):
     try:
         query_obj = {}
         if in_json["queryvalue"] != "":
@@ -310,26 +237,17 @@ def search_objects(in_json, logged_email):
 
             if False in tv_list:
                 continue
-
-            if not check_doc_embargo(doc["provenance_domain"], logged_email):
-                continue
-
             doc.pop("_id")
             created_by = doc["provenance_domain"]["contributors"][0]["email"]
             bco_id = str(doc["bco_id"])
             creators = []
-            owner = ''
             for o in doc["provenance_domain"]["contributors"]:
-                if "createdBy" in o["contribution"]:
-                    owner = o["name"] if o["name"].strip() != "" else o["email"]
-                else:
-                    val = o["name"] if o["name"].strip() != "" else o["email"]
-                    creators.append(val)
+                val = o["name"] if o["name"].strip() != "" else o["email"]
+                creators.append(val)
             row = [
                 bco_id
                 ,doc["provenance_domain"]["name"]
                 ,doc["provenance_domain"]["created"]
-                ,owner
                 ,", ".join(creators)
             ]
             obj_list.append(row)
@@ -346,7 +264,7 @@ def search_objects(in_json, logged_email):
     return out_json
 
 
-def get_object_view_json(in_json, logged_email):
+def get_object_view_json(in_json):
  
     out_json = {}
     try:
@@ -355,21 +273,13 @@ def get_object_view_json(in_json, logged_email):
             out_json = {"taskstatus":0, "errormsg":"Object does not exist!"}
         else:
             doc.pop("_id")
-            if check_doc_embargo(doc["provenance_domain"], logged_email):
-                out_json = {"bco":doc, "creators":[]}
-                for o in doc["provenance_domain"]["contributors"]:
-                    if "email" in o:
-                        if "createdBy" in o["contribution"]:
-                            out_json["creators"].append(o["email"])
-                        if logged_email == o["email"]:
-                            out_json["permission"] = o["contribution"][0]
-                            out_json["editflag"] = out_json["permission"] in ["createdBy", "authoredBy"]
-
-                out_json["creators"] = sorted(set(out_json["creators"]))
-                ordr_dict = json.loads(open("conf/field_order.json").read())
-                out_json["bco"] = util.order_json_obj(out_json["bco"],ordr_dict)
-            else:
-                out_json = {"bco": -1}
+            out_json = {"bco":doc, "creators":[]}
+            for o in doc["provenance_domain"]["contributors"]:
+                if "createdBy" in o["contribution"]:
+                    out_json["creators"].append(o["email"])
+            out_json["creators"] = sorted(set(out_json["creators"]))
+        ordr_dict = json.loads(open("conf/field_order.json").read())
+        out_json["bco"] = util.order_json_obj(out_json["bco"],ordr_dict)
     except Exception, e:
         out_json = util.log_error(mongo_cl_log, traceback.format_exc())
 
@@ -380,61 +290,8 @@ def get_schema(internal=False):
 
     schema_file = open(mainschema_file, "r")
     base_uri = 'file://{}/'.format(os.path.dirname(schema_file.name))
-    schema = jsonref.load(schema_file, base_uri=base_uri, jsonschema=True)
-    schema['properties']['provenance_domain']['propertyOrder'] = 4
-    schema['properties']['usability_domain']['propertyOrder'] = 5
-    schema['properties']['description_domain']['propertyOrder'] = 7
-    schema['properties']['execution_domain']['propertyOrder'] = 8
-    schema['properties']['parametric_domain']['propertyOrder'] = 9  
-    schema['properties']['io_domain']['propertyOrder'] = 10
-    schema['properties']['error_domain']['propertyOrder'] = 11
-    schema['properties']['bco_id']['propertyOrder'] = 1
-    schema['properties']['bco_spec_version']['propertyOrder'] = 2
-    schema['properties']['checksum']['propertyOrder'] = 3
-    schema['properties']['extension_domain']['propertyOrder'] = 6  
-    
-    schema['properties']['provenance_domain']['properties']['license']['propertyOrder'] = 1
-    schema['properties']['provenance_domain']['properties']['name']['propertyOrder'] = 2
-    schema['properties']['provenance_domain']['properties']['version']['propertyOrder'] = 3
-    schema['properties']['provenance_domain']['properties']['created']['propertyOrder'] = 4
-    schema['properties']['provenance_domain']['properties']['modified']['propertyOrder'] = 5
-    schema['properties']['provenance_domain']['properties']['contributors']['propertyOrder'] = 6
-    schema['properties']['provenance_domain']['properties']['review']['propertyOrder'] = 7
-    schema['properties']['provenance_domain']['properties']['embargo']['propertyOrder'] = 8
-    schema['properties']['provenance_domain']['properties']['derived_from']['propertyOrder'] = 9
-    schema['properties']['provenance_domain']['properties']['obsolete_after']['propertyOrder'] = 10
-    
-
+    schema = jsonref.load(schema_file, base_uri=base_uri, jsonschema=True)  
     return schema
-
-def get_users_json(in_json, owner_email):
-    out_json={}
-    if in_json['bcoid'] == "-1":
-        out_json = {"taskstatus":0, "errormsg":"Object does not exist!"}
-    else:
-        bco_json = mongo_cl_bco.find_one({"bco_id":in_json["bcoid"]})
-        if not bco_json:
-            out_json = {"taskstatus":0, "errormsg":"Object does not exist!"}
-        else:
-            contributors = bco_json['provenance_domain']['contributors']
-            all_users = []
-            all_list = []
-            for doc in mongo_cl_users.find({ 'email': {'$ne': owner_email}, 'status': 1}, {'_id': 0, 'email': 1, 'lname': 1, 'fname': 1 }):
-                all_users.append(doc)
-            for contributor in contributors:
-                for user in all_users:
-                    if user['email'] == contributor['email']:
-                        all_list.append({
-                            'permission': contributor['contribution'],
-                            'fname': user['fname'],
-                            'lname': user['lname'],
-                            'email': user['email']
-                            })
-
-            out_json['users'] = all_users
-            out_json['list'] = all_list
-    return out_json
-
 
 def get_object_edit_json(in_json):
     try:
@@ -478,8 +335,8 @@ def get_object_edit_json(in_json):
         for domain in domain_list + ["extension_domain"]:
             out_json["startval"][domain] = bco_json[domain] if domain in bco_json else {}
         
-        # ordr_dict = json.loads(open("conf/field_order.json").read())
-        # out_json["startval"] = util.order_json_obj(out_json["startval"],ordr_dict) 
+        ordr_dict = json.loads(open("conf/field_order.json").read())
+        out_json["startval"] = util.order_json_obj(out_json["startval"],ordr_dict) 
         out_json["taskstatus"] = 1
     except Exception, e:
         out_json = util.log_error(mongo_cl_log, traceback.format_exc())
@@ -488,26 +345,27 @@ def get_object_edit_json(in_json):
 #~~~~~~~~~~~~~~~~~~~~~
 def main():
     
-    #usage = "\n%prog  [options]"
-    #parser = OptionParser(usage,version="%prog " + __version__)
-    #msg = "Input JSON text"
-    #parser.add_option("-j","--injson",action="store",dest="injson",help=msg)
+    usage = "\n%prog  [options]"
+    parser = OptionParser(usage,version="%prog " + __version__)
+    msg = "Input JSON text"
+    parser.add_option("-j","--injson",action="store",dest="injson",help=msg)
 
 
     form_dict = cgi.FieldStorage()
-    #(options,args) = parser.parse_args()
+    (options,args) = parser.parse_args()
 
     local_flag = False
     in_json = {}
     if len(form_dict.keys()) > 0:
         in_json = json.loads(form_dict["injson"].value) if "injson" in form_dict else {}
-    #else:
-    #    local_flag = True
-    #    for key in ([options.injson]):
-    #        if not (key):
-    #            parser.print_help()
-    #            sys.exit(0)
-    #    in_json = json.loads(options.injson)
+    else:
+        local_flag = True
+        for key in ([options.injson]):
+            if not (key):
+                parser.print_help()
+                sys.exit(0)
+        in_json = json.loads(options.injson)
+    # in_json = {"svc":"save_object","bco":{'bco_spec_version':'1.3.0','checksum':'57cbf5de8052cb15cf2f26561d4b244554849fe4881c44b810f2f1170873cf3e','extension_domain':{'fhir_extension':[],'scm_extension':{'scm_repository':'','scm_path':'','scm_type':'git','scm_commit':''}},'provenance_domain':{'license':'Data - Attribution 4.0 International CC BY 4.0 [https://creativecommons.org/licenses/by/4.0/]','name':'FDA Breast Cancer Biomarkers','contributors':[{'orcid':'','affiliation':'','contribution':['createdBy'],'name':'','email':''}],'created':'2019-07-26T06:36:06.634890','modified':'2019-04-27T10:31:09.359044','version':'1.0.6'},'description_domain':{'keywords':['cancer','breast cancer','biomarker','biomarker test','FDA'],'pipeline_steps':[{'name':'','step_number':1,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':'FDA-approved tests were downloaded a list of FDA-approved or cleared nucleic acid based tests from https://www.fda.gov/MedicalDevices/ProductsandMedicalProcedures/InVitroDiagnostics/ucm330711.htm'},{'name':'','step_number':2,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':'Potential headers were added for manual annotation'},{'name':'','step_number':3,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':'Manual annotation of breast cancer tests - search tools included PubMed, UniProt, EDRN, HGNC, Google'},{'name':'','step_number':4,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':'Added UniProtID column and EDRN values from biomarkers-joined.xlsx into FDA tests dataset'},{'name':'','step_number':5,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':' Hyperlinks added clinical use in AdoptionEvidence'},{'name':'','step_number':6,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':'Incorporated GTR terms https://www.ncbi.nlm.nih.gov/gtr/'},{'name':'','step_number':7,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':' Modified header definitions and variable descriptions'},{'name':'','step_number':8,'version':'','input_list':[],'output_list':[],'prerequisite':[],'description':'Manual population of chart based on database searches and review of literature'}]},'execution_domain':{'external_data_endpoints':[],'environment_variables':{},'script_driver':'','software_prerequisites':[],'script':[]},'error_domain':{'empirical_error':{},'algorithmic_error':{}},'parametric_domain':[{'step':'','param':'','value':''}],'usability_domain':['FDA-approved or cleared nucleic acid-based human biomarker tests for breast cancer - This file contains FDA-approved human biomarker tests for breast cancer. Each row represents one gene linked to its respective test. Genes are labeled by relevant identifiers/accessions from UniProtKB, HGNC, and EDRN. Tests are distinguished by manufacturer, FDA submission ID(s), clinical trial ID(s), and PubMed ID(s).'],'bco_id':'-1','io_domain':{'input_subdomain':[],'output_subdomain':[{'mediatype':'csv','uri':{'access_time':'','uri':'http://data.oncomx.org/ln2wwwdata/reviewed/human_cancer_biomarkers_breast.csv','filename':' human_cancer_biomarkers_breast.csv'}},{'mediatype':'csv','uri':{'access_time':'','uri':'http://data.oncomx.org/ln2wwwdata/reviewed/human_cancer_biomarkers_breast.stat.csv','filename':'human_cancer_biomarkers_breast.stat.csv'}}]}}}
 
     global config_json
     global mongo_cl
@@ -537,7 +395,7 @@ def main():
         sys.exit()
 
     try:
-        client = MongoClient(config_json["dbinfo"]["mongodburl"],
+        client = MongoClient('mongodb://localhost:27017',
             username=config_json["dbinfo"]["mongodbuser"],
             password=config_json["dbinfo"]["mongodbpassword"],
             authSource=config_json["dbinfo"]["mongodbname"],
@@ -553,10 +411,9 @@ def main():
         mongo_cl_invalid = mongo_dbh[config_json["dbinfo"]["collections"]["invalid_id"]]
         # pdb.set_trace()
         try:
-            logged_email=''
             svc = in_json["svc"] if "svc" in in_json else ""
             auth_obj = {"status": 0}
-            if svc not in ["search_objects_no_auth", "login_user", "register_user"]:
+            if svc != "search_objects_no_auth":
                 auth_obj = auth.authenticate(mongo_cl_log)
                 logged_email = auth_obj["email"] if auth_obj["status"] == 1 else ""
 
@@ -573,20 +430,16 @@ def main():
             elif svc == "reset_password" and (auth_obj["status"] == 1 or local_flag):
                 current_pass, new_pass = in_json["passwordone"], in_json["passwordtwo"]
                 out_json = auth.reset_password(mongo_cl_users, logged_email, current_pass,new_pass, mongo_cl_log)
-            elif svc == "save_permit" and (auth_obj["status"] == 1 or local_flag):
-                save_permit(in_json, logged_email)
-                out_json = {"result": True}
             elif svc == "search_objects" or svc == "search_objects_no_auth":
-                out_json = search_objects(in_json, logged_email)
+                out_json = search_objects(in_json)
             elif svc == "importbcos"  and (auth_obj["status"] == 1 or local_flag):
                 import_bcos(in_json, logged_email)
                 out_json = {"result": True}
             elif svc == "get_object_view_json":
-                out_json = get_object_view_json(in_json, logged_email)
+                out_json = get_object_view_json(in_json)
+                out_json["editflag"] = logged_email in out_json["creators"]
             elif svc == "get_object_edit_json" and (auth_obj["status"] == 1 or local_flag):
                 out_json = get_object_edit_json(in_json)
-            elif svc == "get_users_json" and (auth_obj["status"] == 1 or local_flag):
-                out_json = get_users_json(in_json, logged_email)
             elif svc == "save_object" and (auth_obj["status"] == 1 or local_flag):
                 out_json = save_object(in_json["bco"], logged_email)
             else:

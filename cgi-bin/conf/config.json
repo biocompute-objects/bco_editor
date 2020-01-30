@@ -2,7 +2,8 @@
     "editorversion":"1.4",
     "specversion":"1.3.0",
     "dbinfo":{
-        "mongodbname":"bcodb_1_tst"
+	"mongodburl": "mongodb://localhost:27017"
+        ,"mongodbname":"bcodb_1_tst"
         ,"mongodbuser":"bcodbadmin"
         ,"mongodbpassword":"bcodbpass"
         ,"sessionlife":3600
@@ -11,30 +12,30 @@
             ,"counters":"c_counters"
             ,"users":"c_users"
             ,"log":"c_log"
+            ,"invalid_id": "c_invalid_ids"
         }
     }
     ,"pathinfo":{
         "htmlroot":"/bco_editor/",
         "schemaroot":"/bco_editor/schema/",
-        "htmlpath":"/Users/robelkahsay/work-projects/bco_editor/html/",
-        "schemapath":"/Users/robelkahsay/work-projects/bco_editor/html/schema/",
+        "htmlpath":"/var/www/html/bco_editor/",
+        "schemapath":"/var/www/html/bco_editor/schema/",
         "bcoprefix":"https://w3id.org/biocompute/examples/bco_%s.json"
     }
     ,"tableheaders":{
         "searchresults":{
-            "labellist":["Object ID","Object Name","Created On", "Created By"]
-            ,"typelist":["string","string","string","string"]
+            "labellist":["Object ID","Object Name","Created On", "Created By", "Access List"]
+            ,"typelist":["string","string","string","string", "string"]
         }   
     }
     ,"profileinfo":[
         {"field":"fname" , "label":"First Name"},
         {"field":"lname" , "label":"Last Name"}
     ]
+    ,"email": {
+        "dest": "object.biocompute@gmail.com",
+        "api_key": "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"
+    }
 }
-
-
-
-
-
 
 

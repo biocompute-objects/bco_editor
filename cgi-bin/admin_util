@@ -10,26 +10,52 @@ import time
 import datetime
 import bcrypt
 import util
-
+import bio_hash
+import bio_editor
 import pymongo
 from pymongo import MongoClient
-
-
-
-
+import bio_email
+import yaml
 __version__="1.0"
 __status__ = "Dev"
 
 
 
+def regenerate_checksum():
+    all_bcos = mongo_cl_bco.find()
+    for bco in all_bcos:
+        bco = bio_editor.make_correct_data(bco)
+        bco.pop('_id')
+        data = bio_hash.hashed_object(bco)
+        bco_id = data['bco_id']
+        data.pop('bco_id')
+        print bco_id
+        mongo_cl_bco.update_one({ 'bco_id': bco_id }, {'$set': data})
 
+    return True
 
-#################################
+def import_bcos():
+    with open('input.json', 'r') as f:
+        data = json.load(f)
+        for index in range(len(data)):
+            # save_object(item, '')
+            item = data[index]
+            original_id = item['bco_id']
+            bco_id = util.get_next_sequence_value(mongo_cl_counters, "bcoid")
+            bco_str_id = "000000"[0:6-len(str(bco_id))] + str(bco_id)
+            bco_url = config_json["pathinfo"]["bcoprefix"] % (bco_str_id)
+            item["bco_id"] = bco_url
+            item['original_id'] = original_id
+            item["provenance_domain"]["created"] = datetime.datetime.now().isoformat()
+            item = bio_editor.make_correct_data(item)
+            mongo_cl_bco.insert_one(item)
+
+################################a
 def main():
 
     usage = "\n%prog  [options]"
     parser = OptionParser(usage,version="%prog " + __version__)
-    msg = "list_users|upsert_user|delete_user|reset_bcocounter|delete_bco|list_bco|list_log"
+    msg = "list_users|upsert_user|delete_user|reset_bcocounter|delete_bco|list_bco|list_log|regenerate_checksum|import_bcos"
     parser.add_option("-a","--action",action="store",dest="action",help=msg)
 
     group_1 = OptionGroup(parser, "Additional options for upsert_user and delete_user actions")
@@ -50,8 +76,9 @@ def main():
     for key in ([options.action]):
         if not (key):
             parser.print_help()
-            sys.exit(0)
+            # sys.exit(0)
 
+    global config_json
 
     config_json = json.loads(open("./conf/config.json", "r").read())
     if os.path.exists("conf/config.custom.json"):
@@ -65,12 +92,18 @@ def main():
     
     
         
-    client = MongoClient('mongodb://localhost:27017', 
+    client = MongoClient(config_json["dbinfo"]["mongodburl"], 
         username=config_json["dbinfo"]["mongodbuser"],
         password=config_json["dbinfo"]["mongodbpassword"],
         authSource=config_json["dbinfo"]["mongodbname"],
         authMechanism='SCRAM-SHA-1'
     )
+
+    global mongo_dbh
+    global mongo_cl_bco
+    global mongo_cl_counters
+    global mongo_cl_users
+    global mongo_cl_log
         
     mongo_dbh = client[config_json["dbinfo"]["mongodbname"]]
     mongo_cl_bco = mongo_dbh[config_json["dbinfo"]["collections"]["bco"]]
@@ -79,15 +112,19 @@ def main():
     mongo_cl_log = mongo_dbh[config_json["dbinfo"]["collections"]["log"]]
 
 
-
-
-
     if options.action == "list_users":
         print "#status,fname,lname,email"
         for doc in mongo_cl_users.find({}):
             for f in ["fname", "lname", "status", "email"]:
                 doc[f] = doc[f] if f in doc else ""
             print "%s,%s,%s,%s" % (doc["status"],doc["fname"],doc["lname"],doc["email"])
+    if options.action == 'regenerate_checksum':
+        regenerate_checksum()
+        print "success"
+    if options.action == 'import_bcos':
+        import_bcos()
+        print 'success'
+    
     elif options.action == "list_bco":
         print "#bco_id|name|createdby"
         for doc in mongo_cl_bco.find({}):
@@ -126,6 +163,20 @@ def main():
         if len(update_obj.keys()) == 0:
             print "Atleast one field must change"
             sys.exit()
+
+        c_user = mongo_cl_users.find_one({ 'email': options.email })
+        if c_user:
+            if int(options.status) == 1:
+                # confirm approval to user
+                bio_email.sendEmail(bio_email.confirmSubject(), bio_email.approvalBody(), options.email)
+            else:
+                # confirm denial to user
+                bio_email.sendEmail(bio_email.confirmSubject(), bio_email.denialBody(), options.email)
+        else:
+            # register to admin
+            bio_email.sendEmail(bio_email.registerSubject(), bio_email.registerBody(options.email), config_json['email']['dest'])
+            if int(options.status) == 1:
+                bio_email.sendEmail(bio_email.confirmSubject(), bio_email.approvalBody(), options.email)
         res = mongo_cl_users.update_one(query_obj, {'$set': update_obj}, upsert=True)
     elif options.action == "reset_bcocounter":
         if mongo_cl_bco.find({}).count() == 0:
