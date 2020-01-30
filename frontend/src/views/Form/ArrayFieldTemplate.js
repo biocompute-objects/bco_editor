@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
+import Button from '@material-ui/core/Collapse';
 
 import AddButton from './AddButton';
 import IconButton from './IconButton';
@@ -127,13 +128,12 @@ const DefaultArrayItem = (props) => {
           )}
 
           {props.hasRemove && (
-            <IconButton
-              icon="remove"
+            <Button 
               tabIndex={-1}
-              style={btnStyle}
               disabled={props.disabled || props.readonly}
               onClick={props.onDropIndexClick(props.index)}
-            />
+              variant="outlined"
+            >Delete</Button>
           )}
         </Grid>
       )}

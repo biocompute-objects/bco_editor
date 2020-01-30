@@ -194,7 +194,36 @@ const FormView = (props) => {
       }
     }
     fetchData();
+    window.onpopstate = onBackButtonEvent;
+    router.listen((newLocation, action) => {
+      debugger
+      if (action === "PUSH") {
+        if (
+          newLocation.pathname !== this.currentPathname ||
+          newLocation.search !== this.currentSearch
+        ) {
+          // Save new location
+          this.currentPathname = newLocation.pathname;
+          this.currentSearch = newLocation.search;
+
+          // Clone location object and push it to history
+          router.push({
+            pathname: newLocation.pathname,
+            search: newLocation.search
+          });
+        }
+      } else {
+        // Send user back if they try to navigate back
+        router.go(1);
+      }
+    });
   }, []);
+
+  const onBackButtonEvent = (e) => {
+    e.preventDefault();
+    router.go(1);
+    // alert('~~~~~~~~~~')
+  }
 
   const onSave = async (event, value) => {
     let user = getUserInfo();
@@ -230,6 +259,11 @@ const FormView = (props) => {
     }
     props.updateLoading(false);
     router.push('/dashboard');
+
+    window.onbeforeunload = function() {
+      alert();
+      return "Dude, are you sure you want to refresh? Think of the kittens!";
+    }
   }
 
   const onError = error => {
