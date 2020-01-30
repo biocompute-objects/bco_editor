@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { useParams} from "react-router";
+import { useParams } from "react-router";
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -7,7 +7,7 @@ import {
     CardContent,
     Grid
 } from '@material-ui/core';
-// import { useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   JsonView
 } from './components';
@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 const Detail = (props) => {
   const [ data, setData ] = useState(_data);
   let { id } = useParams();
-  console.log(id);
+  const history = useHistory();
   const classes = useStyles();
 
   useEffect(() => {
@@ -35,6 +35,9 @@ const Detail = (props) => {
       let result = await getBcoById(id);
       if (result.status === 200) {
         setData(result.result);
+      } else {
+        // history.goBack();
+        history.push('/dashboard');
       }
       props.updateLoading(false);
     }

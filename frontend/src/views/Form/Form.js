@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Button, colors, Modal, Collapse, 
-  ListItem, ListItemIcon, ListItemText, Tooltip,
-  InputLabel, Input, FormHelperText, FormControl  } from '@material-ui/core';
+  ListItem, ListItemText, Tooltip } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { useParams} from "react-router";
 import MuiForm, { FieldTemplate } from 'rjsf-material-ui';
-import Form from "react-jsonschema-form";
 import schema from './schema';
 import uiSchema from './uiSchema'
 import { getBcoById, updateBcoById, createBco, getNewBcoId } from 'service/bco';
@@ -15,11 +13,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import InfoIcon from '@material-ui/icons/Info';
 import ArrayFieldTemplate from './ArrayFieldTemplate';
-import { KeyboardDateTimePicker } from '@material-ui/pickers'
-
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
+// import { KeyboardDateTimePicker } from '@material-ui/pickers'
 
 function getModalStyle() {
   const top = 50;
@@ -169,12 +163,12 @@ function ObjectFieldTemplate(props) {
     </div>
   );
 }
-
+/**/
 const FormView = (props) => {
   const [ data, setData ] = useState({});
   const [ text, setText ] = useState('');
-  const [modalStyle] = React.useState(getModalStyle);
-  const [open, setOpen] = React.useState(false);
+  const [ modalStyle ] = useState(getModalStyle);
+  const [ open, setOpen ] = useState(false);
   const router = useHistory();
   let { id } = useParams();
 
@@ -207,19 +201,22 @@ const FormView = (props) => {
     let { formData } = event;
     props.updateLoading(true);
     if(id !== 'new') {
+      formData.provenance_domain.modified = new Date().toISOString();
       await updateBcoById(formData, id);
     } else {
+      formData.provenance_domain.created = new Date().toISOString();
+      formData.provenance_domain.modified = new Date().toISOString();
       let contributors = formData.provenance_domain.contributors.filter(item => item.email === user.email)
 
       if (!contributors.length) {
          formData.provenance_domain.contributors.push({
-            "affiliation": "Creator",
-            "contribution": [
+            affiliation: "Creator",
+            contribution: [
                 "createdBy"
             ],
-            "email": user.email,
-            "name": `${user.first_name} ${user.last_name}`,
-            "orcid": ""
+            email: user.email,
+            name: `${user.first_name} ${user.last_name}`,
+            orcid: ""
         })
       } else {
         formData.provenance_domain.contributors.map(item => {

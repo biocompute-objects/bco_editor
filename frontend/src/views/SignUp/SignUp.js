@@ -9,7 +9,6 @@ import {
   IconButton,
   TextField,
   Link,
-  FormHelperText,
   Typography,
   Snackbar
 } from '@material-ui/core';

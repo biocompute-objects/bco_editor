@@ -11,7 +11,6 @@ import {
   Typography,
   Divider,
   Button,
-  LinearProgress
 } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({

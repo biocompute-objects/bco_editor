@@ -13,8 +13,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
 
-import { ArrayFieldTemplateProps, IdSchema } from 'react-jsonschema-form';
-
 import AddButton from './AddButton';
 import IconButton from './IconButton';
 import InfoIcon from '@material-ui/icons/Info';
@@ -86,18 +84,6 @@ const ArrayFieldTitle = ({
   </div> )
 };
 
-const ArrayFieldDescription = ({
-  DescriptionField,
-  idSchema,
-  description,
-}) => {
-  if (!description) {
-    return <div />;
-  }
-
-  const id = `${idSchema.$id}__description`;
-  return <DescriptionField id={id} description={description} />;
-};
 
 // Used in the two templates
 const DefaultArrayItem = (props) => {
@@ -156,7 +142,6 @@ const DefaultArrayItem = (props) => {
 };
 
 const DefaultFixedArrayFieldTemplate = (props) => {
-  const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
   const handleClick = () => {
@@ -198,7 +183,6 @@ const DefaultFixedArrayFieldTemplate = (props) => {
 };
 
 const DefaultNormalArrayFieldTemplate = (props) => {
-  const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
   const handleClick = () => {

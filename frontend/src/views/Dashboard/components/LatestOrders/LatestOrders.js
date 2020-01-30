@@ -64,7 +64,6 @@ const LatestOrders = props => {
     province.contributors.forEach(item => {
       if (item.contribution.includes('createdBy')) {
         users.push(item.email);
-        console.log(orders)
       }
     });
     return users.join(', ');

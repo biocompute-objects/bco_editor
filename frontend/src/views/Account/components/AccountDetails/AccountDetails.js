@@ -57,21 +57,6 @@ const AccountDetails = props => {
     });
   };
 
-  const states = [
-    {
-      value: 'alabama',
-      label: 'Alabama'
-    },
-    {
-      value: 'new-york',
-      label: 'New York'
-    },
-    {
-      value: 'san-francisco',
-      label: 'San Francisco'
-    }
-  ];
-
   const onSave = () => {
     let data = {...values, profile: { address: values.address, city: values.city, phone_number: values.phone_number, state: values.state }};
     props.update(data);
