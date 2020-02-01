@@ -26,5 +26,5 @@ urlpatterns = [
     url(r'^explorer/$', schema_view),
     path('admin/', admin.site.urls),
     path(r'auth/', include('django.contrib.auth.urls')),
-    url(r'^', views.FrontendAppView.as_view())
+    # url(r'^', views.FrontendAppView.as_view())
 ]

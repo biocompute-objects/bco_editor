@@ -166,6 +166,7 @@ const SignUp = props => {
     touched: {},
     errors: {}
   });
+  const [isSubmitted, setSubmit] = useState(true);
 
   useEffect(() => {
     const errors = validate(formState.values, schema);
@@ -216,7 +217,8 @@ const SignUp = props => {
       } else {
         setMessage('Successfully created. Please sign in.');
         setToastOpen(true);
-        history.push('/sign-in');
+        // history.push('/sign-in');
+        setSubmit(true);
       }
     } catch(err) {
       console.log(err);
@@ -235,6 +237,44 @@ const SignUp = props => {
           {message}
         </Alert>
       </Snackbar>
+      {isSubmitted ? 
+        <Grid
+          className={classes.grid}
+          container
+        >
+          <Grid
+            className={classes.quoteContainer}
+            item
+            lg={5}
+          >
+            <div className={classes.quote}></div>
+          </Grid>
+          <Grid
+            className={classes.content}
+            item
+            lg={7}
+            xs={12}
+          >
+            <div className={classes.content}>
+              <div className={classes.contentHeader}>
+                <IconButton onClick={handleBack}>
+                  <ArrowBackIcon />
+                </IconButton>
+              </div>
+              <div className={classes.contentBody}>
+                <form
+                  className={classes.form}
+                >
+                  <Typography
+                  >
+                    Please contact Admin to activate your account
+                  </Typography>
+                </form>
+              </div>
+            </div>
+          </Grid>
+        </Grid>
+        : 
       <Grid
         className={classes.grid}
         container
@@ -393,6 +433,8 @@ const SignUp = props => {
           </div>
         </Grid>
       </Grid>
+
+      }
     </div>
   );
 };

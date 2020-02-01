@@ -43,6 +43,9 @@ const useStyles = makeStyles(theme => ({
     border: '1px solid #e3e3e3',
     padding: '1em',
     margin: '1em 0'
+  },
+  deleteBtn: {
+    marginLeft: theme.spacing(1)
   }
 }))
 
@@ -88,6 +91,10 @@ const ArrayFieldTitle = ({
 
 // Used in the two templates
 const DefaultArrayItem = (props) => {
+  const deleteBtn = {
+    marginLeft: '1em'
+  }
+
   const btnStyle = {
     flex: 1,
     paddingLeft: 6,
@@ -129,7 +136,9 @@ const DefaultArrayItem = (props) => {
 
           {props.hasRemove && (
             <Button 
+              size="small"
               tabIndex={-1}
+              style={(props.hasMoveUp || props.hasMoveDown) ? {} : deleteBtn}
               disabled={props.disabled || props.readonly}
               onClick={props.onDropIndexClick(props.index)}
               variant="outlined"

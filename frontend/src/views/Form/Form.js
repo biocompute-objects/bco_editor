@@ -167,6 +167,7 @@ function ObjectFieldTemplate(props) {
 const FormView = (props) => {
   const [ data, setData ] = useState({});
   const [ text, setText ] = useState('');
+  const [ bcoId, setBcoId ] = useState('');
   const [ modalStyle ] = useState(getModalStyle);
   const [ open, setOpen ] = useState(false);
   const router = useHistory();
@@ -182,6 +183,7 @@ const FormView = (props) => {
         if (result.status === 200) {
           let _data = result.result;
           delete _data.id;
+          setBcoId(_data.bco_id);
           setData(_data);
           setText(JSON.stringify(_data,null, 4));
         }
@@ -189,34 +191,35 @@ const FormView = (props) => {
       } else {
         let newId = await getNewBcoId();
         let _data = { bco_id: newId.result.bco_id };
+        setBcoId(_data.bco_id);
         setData(_data);
         setText(JSON.stringify(_data,null, 4));
       }
     }
     fetchData();
     window.onpopstate = onBackButtonEvent;
-    router.listen((newLocation, action) => {
-      debugger
-      if (action === "PUSH") {
-        if (
-          newLocation.pathname !== this.currentPathname ||
-          newLocation.search !== this.currentSearch
-        ) {
-          // Save new location
-          this.currentPathname = newLocation.pathname;
-          this.currentSearch = newLocation.search;
+    // router.listen((newLocation, action) => {
+    //   debugger
+    //   if (action === "PUSH") {
+    //     if (
+    //       newLocation.pathname !== this.currentPathname ||
+    //       newLocation.search !== this.currentSearch
+    //     ) {
+    //       // Save new location
+    //       this.currentPathname = newLocation.pathname;
+    //       this.currentSearch = newLocation.search;
 
-          // Clone location object and push it to history
-          router.push({
-            pathname: newLocation.pathname,
-            search: newLocation.search
-          });
-        }
-      } else {
-        // Send user back if they try to navigate back
-        router.go(1);
-      }
-    });
+    //       // Clone location object and push it to history
+    //       router.push({
+    //         pathname: newLocation.pathname,
+    //         search: newLocation.search
+    //       });
+    //     }
+    //   } else {
+    //     // Send user back if they try to navigate back
+    //     router.go(1);
+    //   }
+    // });
   }, []);
 
   const onBackButtonEvent = (e) => {
@@ -229,6 +232,8 @@ const FormView = (props) => {
     let user = getUserInfo();
     let { formData } = event;
     props.updateLoading(true);
+
+    formData.bco_id = bcoId;
     if(id !== 'new') {
       formData.provenance_domain.modified = new Date().toISOString();
       await updateBcoById(formData, id);

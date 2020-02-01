@@ -4,6 +4,7 @@ import sys, json, ast
 import bencode
 import pdb
 import yaml
+import uuid
 
 def checksum_valid(checksum):
 	bcos = BcoObject.objects.filter(checksum=checksum)
@@ -20,8 +21,8 @@ def new_bco_id():
 	return bco_id
 
 def get_valid_number(length):
-	num_str = '00000{}'.format(length)
-	return num_str[-5:]
+	num_str = '00000{}'.format(str(uuid.uuid4().fields[-1])[:5])
+	return num_str[-8:]
 
 def json_parse( filename ):
     """removes top level fields from BCO and returns a string"""

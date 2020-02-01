@@ -143,9 +143,15 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'bco_be.exception_handler.custom_exception_handler'
 }
 
+# rest auth custom serializer
+REST_AUTH_SERIALIZERS = {
+    'LOGIN_SERIALIZER': 'bco_be.serializers.LoginSerializer'
+}
+
 # rest auth registration custom serializer
 REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'bco_be.serializers.RegisterSerializer',
+    
 }
 
 # disable email verification
