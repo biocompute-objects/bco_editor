@@ -166,7 +166,7 @@ const SignUp = props => {
     touched: {},
     errors: {}
   });
-  const [isSubmitted, setSubmit] = useState(true);
+  const [isSubmitted, setSubmit] = useState(false);
 
   useEffect(() => {
     const errors = validate(formState.values, schema);
