@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid, Typography } from '@material-ui/core';
+import { setInitial } from 'service/utils';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,7 +21,9 @@ const useStyles = makeStyles(theme => ({
 
 const NotFound = () => {
   const classes = useStyles();
-
+  useEffect(() => { 
+    setInitial();
+  }, [])
   return (
     <div className={classes.root}>
       <Grid

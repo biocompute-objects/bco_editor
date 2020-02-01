@@ -5,7 +5,8 @@ import { Grid } from '@material-ui/core';
 import { AccountProfile, AccountDetails, Password } from './components';
 import {
   getUserDetail, updateAccount, updatePassword
-} from '../../service/user';
+} from 'service/user';
+import { setInitial } from 'service/utils';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,6 +20,7 @@ const Account = (props) => {
   const [dataId, setDataId] = useState('');
 
   useEffect(() => {
+    setInitial();
     async function fetchData() {
       props.updateLoading(true);
       let user = await getUserDetail();

@@ -18,6 +18,7 @@ import {
     getUserDetail,
     setUserInfo
 } from 'service/user';
+import { setInitial } from 'service/utils';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -161,6 +162,10 @@ const SignIn = props => {
   // const handleBack = () => {
   //   history.goBack();
   // };
+
+  useEffect(() => { 
+    setInitial()
+  }, [])
 
   const handleChange = event => {
     event.persist();

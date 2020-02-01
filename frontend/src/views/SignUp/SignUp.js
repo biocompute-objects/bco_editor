@@ -15,6 +15,7 @@ import {
 import MuiAlert from '@material-ui/lab/Alert';
 import { signUp } from 'service/user';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { setInitial } from 'service/utils';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -169,6 +170,7 @@ const SignUp = props => {
   const [isSubmitted, setSubmit] = useState(false);
 
   useEffect(() => {
+    setInitial();
     const errors = validate(formState.values, schema);
 
     setFormState(formState => ({
@@ -177,6 +179,11 @@ const SignUp = props => {
       errors: errors || {}
     }));
   }, [formState.values]);
+
+  useEffect(() => { 
+    window.onbeforeunload = null;
+    window.onhashchange = null;
+  }, [])
 
   const handleChange = event => {
     event.persist();

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { getUserInfo } from 'service/user';
 import { Avatar, Typography } from '@material-ui/core';
+import { onLink } from 'service/utils';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,6 +28,7 @@ const Profile = props => {
 
   const classes = useStyles();
   const userInfo = getUserInfo();
+  const router = useHistory();
 
   const user = {
     name: `${userInfo.first_name} ${userInfo.last_name}`,
@@ -44,7 +46,7 @@ const Profile = props => {
         className={classes.avatar}
         component={RouterLink}
         src={user.avatar}
-        to="/settings"
+        onClick={onLink(router, '/settings')}
       />
       <Typography
         className={classes.name}

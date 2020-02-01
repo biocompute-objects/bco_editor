@@ -9,6 +9,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
 import { logout } from 'service/user';
+import { onLink } from 'service/utils';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,7 +37,7 @@ const Topbar = props => {
   const onLogout = () => {
     logout();
     router.push('/sign-in');
-  }
+  }  
 
   return (
     <AppBar
@@ -44,14 +45,13 @@ const Topbar = props => {
       className={clsx(classes.root, className)}
     >
       <Toolbar>
-        <RouterLink to="/">
-          <Typography
-            className={classes.quoteText}
-            variant="h4"
-          >
-            BioCompute Editor
-          </Typography>
-        </RouterLink>
+        <Typography
+          className={classes.quoteText}
+          variant="h4"
+          onClick={onLink(router)}
+        >
+          BioCompute Editor
+        </Typography>
         <div className={classes.flexGrow} />
         <Hidden mdDown>
           <IconButton color="inherit">

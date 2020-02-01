@@ -3,10 +3,11 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import {
-  LatestOrders
+  LatestOrders, List
 } from './components';
 import { SearchInput } from 'components';
 import { getBcoList } from '../../service/bco';
+import { setInitial } from 'service/utils';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,6 +26,8 @@ const Dashboard = (props) => {
   }
 
   useEffect(() => {
+    setInitial();
+
     async function fetchData() {
       props.updateLoading(true);
       let result = await getBcoList(); 
@@ -34,7 +37,6 @@ const Dashboard = (props) => {
         props.updateLoading(false);
       }      
     }
-
     fetchData();
   }, []);
 
@@ -51,6 +53,17 @@ const Dashboard = (props) => {
         return true
       return false
     }))
+  }
+
+  const onDownload = (selected) => () => {
+    console.log(selected);
+    let _list = data.filter(item => selected.includes(item.id));
+    const element = document.createElement("a");
+    const file = new Blob([JSON.stringify(_list, null, 4)], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = `bcoObjects.txt`;
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
   }
 
   return (
@@ -78,7 +91,7 @@ const Dashboard = (props) => {
           xl={12}
           xs={12}
         >
-          <LatestOrders data={data} onGotoNewBco={onGotoNewBco} />
+          <List data={data} onGotoNewBco={onGotoNewBco} onDownload={onDownload} />
         </Grid>
       </Grid>
     </div>

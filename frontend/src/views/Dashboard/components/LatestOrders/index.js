@@ -1,1 +1,1 @@
-export { default } from './LatestOrders';
+export { default as List } from './List';

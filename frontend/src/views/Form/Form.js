@@ -6,13 +6,14 @@ import { useHistory } from 'react-router-dom';
 import { useParams} from "react-router";
 import MuiForm, { FieldTemplate } from 'rjsf-material-ui';
 import schema from './schema';
-import uiSchema from './uiSchema'
+import uiSchema from './uiSchema';
 import { getBcoById, updateBcoById, createBco, getNewBcoId } from 'service/bco';
 import { getUserInfo } from 'service/user'
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import InfoIcon from '@material-ui/icons/Info';
 import ArrayFieldTemplate from './ArrayFieldTemplate';
+import { setFormChanged, getFormChanged, setInitial } from 'service/utils';
 // import { KeyboardDateTimePicker } from '@material-ui/pickers'
 
 function getModalStyle() {
@@ -150,7 +151,7 @@ function ObjectFieldTemplate(props) {
         <ListItemText className={classes.itemTitle}>
           {props.title && props.title.includes('BioCompute') ? <h1>{props.title}</h1> :
             props.title && props.title.includes('Domain') ? <h2>{props.title}</h2> : <h4>{props.title}</h4>}
-          { props.title && <Tooltip title={props.description} placement="right-start">
+          { props.title && <Tooltip title={props.description || ''} placement="right-start">
             <InfoIcon />
           </Tooltip> }
         </ListItemText>
@@ -170,12 +171,23 @@ const FormView = (props) => {
   const [ bcoId, setBcoId ] = useState('');
   const [ modalStyle ] = useState(getModalStyle);
   const [ open, setOpen ] = useState(false);
+  const [ loaded, setLoaded ] = useState(false);
   const router = useHistory();
   let { id } = useParams();
 
   const classes = useStyles();
 
+  const onGotoBackUrl = () => {
+    setFormChanged(1)
+    if (id && id !== 'new') {
+      router.push('/detail/'+id)
+    } else {
+      router.push('/dashboard');
+    }
+  }
+
   useEffect(() => {
+    setInitial()
     async function fetchData() {
       if (id && id !== 'new') {
         props.updateLoading(true);
@@ -189,44 +201,65 @@ const FormView = (props) => {
         }
         props.updateLoading(false);
       } else {
+        // window.open('/sample/bco', "_blank", 'location=yes,height=768,width=1024,scrollbars=yes,status=yes');
         let newId = await getNewBcoId();
         let _data = { bco_id: newId.result.bco_id };
         setBcoId(_data.bco_id);
         setData(_data);
         setText(JSON.stringify(_data,null, 4));
       }
-    }
-    fetchData();
-    window.onpopstate = onBackButtonEvent;
-    // router.listen((newLocation, action) => {
-    //   debugger
-    //   if (action === "PUSH") {
-    //     if (
-    //       newLocation.pathname !== this.currentPathname ||
-    //       newLocation.search !== this.currentSearch
-    //     ) {
-    //       // Save new location
-    //       this.currentPathname = newLocation.pathname;
-    //       this.currentSearch = newLocation.search;
 
-    //       // Clone location object and push it to history
-    //       router.push({
-    //         pathname: newLocation.pathname,
-    //         search: newLocation.search
-    //       });
-    //     }
-    //   } else {
-    //     // Send user back if they try to navigate back
-    //     router.go(1);
-    //   }
-    // });
+      setTimeout(() => setLoaded(true), 2000);
+    }
+    fetchData();    
   }, []);
 
-  const onBackButtonEvent = (e) => {
-    e.preventDefault();
-    router.go(1);
-    // alert('~~~~~~~~~~')
-  }
+  useEffect(() => {
+    (function(global) {
+      var _hash = "!", loaded=false;
+
+      if (typeof (global) === "undefined") {
+        throw new Error("window is undefined");
+      }
+
+      var noBackPlease = function() {
+        if (!global.location.href.includes('#')) {
+          global.location.href += "#";
+          // making sure we have the fruit available for juice....
+          // 50 milliseconds for just once do not cost much (^__^)          
+        } else {
+          global.location.href = global.location.href.split('#')[0] + '#';          
+        }
+        global.setTimeout(function() {
+          if (!global.location.href.includes('!')) {
+            global.location.href += "!";
+            loaded=true
+          }
+        }, 50);
+      };
+
+      setTimeout(() => {
+        // Earlier we had setInerval here....
+        global.onhashchange = function() {
+          if (getFormChanged() === '0' && loaded) {
+            return onGotoBackUrl();
+          }
+          if (getFormChanged() === '1' && loaded && (!global.location.hash || (global.location.hash.split('!').length / 2) === 0)) {
+            // console.log(global.location.hash)
+            if (global.location.hash !== _hash) {
+              let result = window.confirm("You will be lost data. Please confirm.");
+              if (result) {                
+                return onGotoBackUrl();
+              } 
+              global.location.hash = _hash;
+            } 
+          }
+        };        
+      }, 2000)
+
+      noBackPlease();      
+    })(window);
+  }, [])
 
   const onSave = async (event, value) => {
     let user = getUserInfo();
@@ -264,18 +297,13 @@ const FormView = (props) => {
     }
     props.updateLoading(false);
     router.push('/dashboard');
-
-    window.onbeforeunload = function() {
-      alert();
-      return "Dude, are you sure you want to refresh? Think of the kittens!";
-    }
   }
 
   const onError = error => {
     console.log(error);
   }
 
-  const onDataChange = (event) => {
+  const onDataChange = (event) => {    
     setText(event.target.value);
   }
 
@@ -290,6 +318,22 @@ const FormView = (props) => {
       props.setAlertData({ type: 'error', message: 'Error in parsing JSON.'});
       props.setOpenAlert(true);
     }
+  }
+
+  const onFormChange = (event) => {
+    if (!loaded) return;
+
+    let newFormData = JSON.parse(JSON.stringify(event.formData));
+    let newData = JSON.parse(JSON.stringify(data));
+    delete newFormData['bco_id'];
+    delete newData['bco_id'];
+    if (newFormData === newData)
+      return
+
+    setData(event.formData);
+    setFormChanged(1);
+    if (getFormChanged() === '1')
+        window.onbeforeunload = function() { return "Your work will be lost."; };
   }
 
   const openModal = () => {setOpen(true); setText(JSON.stringify(data, null, 4))}
@@ -317,7 +361,7 @@ const FormView = (props) => {
 			<MuiForm schema={schema}
         uiSchema={uiSchema}
         formData={data}
-				onChange={log("changed")}
+				onChange={onFormChange}
 				onSubmit={onSave}
 				onError={onError}
         FieldTemplate={CustomFieldTemplate}

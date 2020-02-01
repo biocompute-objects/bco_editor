@@ -1,1 +1,1 @@
-export { default as LatestOrders } from './LatestOrders';
+export { List } from './LatestOrders';

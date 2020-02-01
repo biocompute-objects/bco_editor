@@ -13,6 +13,7 @@ import {
 } from './components';
 import _data from './data';
 import { getBcoById } from 'service/bco';
+import { setInitial } from 'service/utils';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,6 +31,8 @@ const Detail = (props) => {
   const classes = useStyles();
 
   useEffect(() => {
+    setInitial();
+    
     async function fetchData() {
       props.updateLoading(true);
       let result = await getBcoById(id);

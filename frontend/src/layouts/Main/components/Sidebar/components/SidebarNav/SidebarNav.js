@@ -1,11 +1,12 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/display-name */
 import React, { forwardRef } from 'react';
-import { NavLink as RouterLink } from 'react-router-dom';
+import { NavLink as RouterLink, useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { List, ListItem, Button, colors } from '@material-ui/core';
+import { onLink } from 'service/utils';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -51,7 +52,7 @@ const CustomRouterLink = forwardRef((props, ref) => (
 
 const SidebarNav = props => {
   const { pages, className, ...rest } = props;
-
+  const router = useHistory();
   const classes = useStyles();
 
   return (
@@ -68,8 +69,7 @@ const SidebarNav = props => {
           <Button
             activeClassName={classes.active}
             className={classes.button}
-            component={CustomRouterLink}
-            to={page.href}
+            onClick={onLink(router, page.href)}            
           >
             <div className={classes.icon}>{page.icon}</div>
             {page.title}

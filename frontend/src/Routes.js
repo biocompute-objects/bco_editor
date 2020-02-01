@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Switch, Redirect } from 'react-router-dom';
+import { Switch, Redirect, Route } from 'react-router-dom';
 
 import { RouteWithLayout, RouteAuthorized } from './components';
 import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
@@ -16,7 +16,8 @@ import {
   SignIn as SignInView,
   NotFound as NotFoundView,
   Detail as DetailView,
-  Form as FormView
+  Form as FormView,
+  SampleBCO as SampleBCOView
 } from './views';
 import LoadingOverlay from 'react-loading-overlay';
 
@@ -75,6 +76,15 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/detail/:id"
+          updateLoading={(val)=>setImportLoading(val)}
+          setAlertData={setAlertData}
+          setOpenAlert={setOpenAlert}
+        />
+        <Route
+          component={SampleBCOView}
+          exact
+          layout={MainLayout}
+          path="/sample/bco"
           updateLoading={(val)=>setImportLoading(val)}
           setAlertData={setAlertData}
           setOpenAlert={setOpenAlert}
