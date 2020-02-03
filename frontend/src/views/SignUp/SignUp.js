@@ -222,7 +222,7 @@ const SignUp = props => {
           setMessage('Something went wrong. Please try again!');
         setToastOpen(true);
       } else {
-        setMessage('Successfully created. Please sign in.');
+        setMessage('Successfully created user account. We will activate your account shortly.');
         setToastOpen(true);
         // history.push('/sign-in');
         setSubmit(true);
@@ -274,7 +274,7 @@ const SignUp = props => {
                 >
                   <Typography
                   >
-                    Please contact Admin to activate your account
+                    Successfully created user account. We will activate your account shortly.
                   </Typography>
                 </form>
               </div>
