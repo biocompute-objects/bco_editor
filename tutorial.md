@@ -11,7 +11,7 @@ To use the BCO editor, a user must <strong>login</strong> to the portal using th
 <p><img src="imglib/3_bco_editor_login.PNG" width=40% /></p>
 
 
-## Creating a new BCOs
+## Creating a new BCO
 <p>To create a new BCO click on the link &ldquo;<strong>Create Object</strong>&rdquo;. By clicking the link, the page navigates to the BCO editor interface page where a new BCO can be created.
 <p><img src="imglib/4_bco_editor_create-object.png" width=40%/></p>
 <p>The BCO editor page displays the editable domains a BCO should have, based on the defined schema.
