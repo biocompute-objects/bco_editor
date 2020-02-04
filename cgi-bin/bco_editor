@@ -501,6 +501,7 @@ def main():
     in_json = {}
     if len(form_dict.keys()) > 0:
         in_json = json.loads(form_dict["injson"].value) if "injson" in form_dict else {}
+
     #else:
     #    local_flag = True
     #    for key in ([options.injson]):
