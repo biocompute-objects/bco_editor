@@ -203,7 +203,28 @@ const FormView = (props) => {
       } else {
         // window.open('/sample/bco', "_blank", 'location=yes,height=768,width=1024,scrollbars=yes,status=yes');
         let newId = await getNewBcoId();
-        let _data = { bco_id: newId.result.bco_id };
+        let _data = {
+          bco_id: newId.result.bco_id,
+          bco_spec_version: '1.3.0',
+          provenance_domain: {
+            embargo: {},
+            created: new Date().toISOString(),
+            modified: new Date().toISOString(),
+          },
+          extension_domain: {
+            scm_extension: {}
+          },
+          description_domain: {},
+          execution_domain: {
+            environment_variables: {}
+          },
+          io_domain: {},
+          error_domain: {
+            empirical_error: '',
+            algorithmic_error: ''
+          },
+        };
+
         setBcoId(_data.bco_id);
         setData(_data);
         setText(JSON.stringify(_data,null, 4));

@@ -59,7 +59,7 @@ export default {
                         "type": "string"
                     },
                     "type": "array",
-                    "description": "type of contribution determined according to PAV ontology",
+                    "description": "Type of contribution determined according to PAV ontology",
                     "reference": "https://doi.org/10.1186/2041-1480-4-37"
                 },
                 "name": {
@@ -74,7 +74,7 @@ export default {
                         "hadley_king@gwu.edu"
                     ],
                     "type": "string",
-                    "description": "electronic means for identification and communication purposes",
+                    "description": "Electronic means for identification and communication purposes",
                     "format": "email"
                 }
             }
@@ -98,7 +98,7 @@ export default {
                 "sha1_checksum": {
                     "pattern": "[A-Za-z0-9]+",
                     "type": "string",
-                    "description": "value of sha1 checksum of file"
+                    "description": "Value of sha1 checksum of file"
                 },
                 "filename": {
                     "type": "string"
@@ -222,7 +222,7 @@ export default {
                                     "type": "string"
                                 },
                                 "type": "array",
-                                "description": "type of contribution determined according to PAV ontology",
+                                "description": "Type of contribution determined according to PAV ontology",
                                 "reference": "https://doi.org/10.1186/2041-1480-4-37"
                             },
                             "name": {
@@ -237,7 +237,7 @@ export default {
                                     "hadley_king@gwu.edu"
                                 ],
                                 "type": "string",
-                                "description": "electronic means for identification and communication purposes",
+                                "description": "Electronic means for identification and communication purposes",
                                 "format": "email"
                             }
                         }
@@ -335,7 +335,7 @@ export default {
                                             "type": "string"
                                         },
                                         "type": "array",
-                                        "description": "type of contribution determined according to PAV ontology",
+                                        "description": "Type of contribution determined according to PAV ontology",
                                         "reference": "https://doi.org/10.1186/2041-1480-4-37"
                                     },
                                     "name": {
@@ -350,7 +350,7 @@ export default {
                                             "hadley_king@gwu.edu"
                                         ],
                                         "type": "string",
-                                        "description": "electronic means for identification and communication purposes",
+                                        "description": "Electronic means for identification and communication purposes",
                                         "format": "email"
                                     }
                                 }
@@ -558,7 +558,7 @@ export default {
                         ]
                     },
                     "type": "array",
-                    "description": "reference to a particular deployment of an existing platform where this BCO can be reproduced."
+                    "description": "Reference to a particular deployment of an existing platform where this BCO can be reproduced."
                 },
                 "xref": {
                     "items": {
@@ -657,7 +657,7 @@ export default {
                                         "sha1_checksum": {
                                             "pattern": "[A-Za-z0-9]+",
                                             "type": "string",
-                                            "description": "value of sha1 checksum of file"
+                                            "description": "Value of sha1 checksum of file"
                                         },
                                         "filename": {
                                             "type": "string"
@@ -687,7 +687,7 @@ export default {
                                         "sha1_checksum": {
                                             "pattern": "[A-Za-z0-9]+",
                                             "type": "string",
-                                            "description": "value of sha1 checksum of file"
+                                            "description": "Value of sha1 checksum of file"
                                         },
                                         "filename": {
                                             "type": "string"
@@ -732,7 +732,7 @@ export default {
                                                 "sha1_checksum": {
                                                     "pattern": "[A-Za-z0-9]+",
                                                     "type": "string",
-                                                    "description": "value of sha1 checksum of file"
+                                                    "description": "Value of sha1 checksum of file"
                                                 },
                                                 "filename": {
                                                     "type": "string"
@@ -784,13 +784,6 @@ export default {
                         "type": "object",
                         "description": "Requirement for network protocol endpoints used by a pipeline\u2019s scripts, or other software.",
                         "properties": {
-                            "url": {
-                                "type": "string",
-                                "description": "The endpoint to be accessed.",
-                                "examples": [
-                                    "https://hive.biochemistry.gwu.edu/dna.cgi?cmd=login"
-                                ]
-                            },
                             "name": {
                                 "type": "string",
                                 "description": "Description of the service that is accessed",
@@ -798,7 +791,14 @@ export default {
                                     "HIVE",
                                     "access to e-utils"
                                 ]
-                            }
+                            },
+                            "url": {
+                                "type": "string",
+                                "description": "The endpoint to be accessed.",
+                                "examples": [
+                                    "https://hive.biochemistry.gwu.edu/dna.cgi?cmd=login"
+                                ]
+                            }                            
                         }
                     },
                     "type": "array",
@@ -867,7 +867,7 @@ export default {
                                     "sha1_checksum": {
                                         "pattern": "[A-Za-z0-9]+",
                                         "type": "string",
-                                        "description": "value of sha1 checksum of file"
+                                        "description": "Value of sha1 checksum of file"
                                     },
                                     "filename": {
                                         "type": "string"
@@ -902,7 +902,7 @@ export default {
                                     "sha1_checksum": {
                                         "pattern": "[A-Za-z0-9]+",
                                         "type": "string",
-                                        "description": "value of sha1 checksum of file"
+                                        "description": "Value of sha1 checksum of file"
                                     },
                                     "filename": {
                                         "type": "string"
@@ -912,7 +912,7 @@ export default {
                         }
                     },
                     "type": "array",
-                    "description": "points to internal or external references to a script object that was used to perform computations for this BCO instance."
+                    "description": "Points to internal or external references to a script object that was used to perform computations for this BCO instance."
                 }
             }
         },
@@ -1001,7 +1001,7 @@ export default {
                                     "sha1_checksum": {
                                         "pattern": "[A-Za-z0-9]+",
                                         "type": "string",
-                                        "description": "value of sha1 checksum of file"
+                                        "description": "Value of sha1 checksum of file"
                                     },
                                     "filename": {
                                         "type": "string"
@@ -1050,7 +1050,7 @@ export default {
                                     "sha1_checksum": {
                                         "pattern": "[A-Za-z0-9]+",
                                         "type": "string",
-                                        "description": "value of sha1 checksum of file"
+                                        "description": "Value of sha1 checksum of file"
                                     },
                                     "filename": {
                                         "type": "string"
@@ -1077,12 +1077,12 @@ export default {
             "properties": {
                 "empirical_error": {
                     "type": "object",
-                    "description": "empirically determined values such as limits of detectability, false positives, false negatives, statistical confidence of outcomes, etc. This can be measured by running the algorithm on multiple data samples of the usability domain or through the use of carefully designed in-silico data.",
+                    "description": "Empirically determined values such as limits of detectability, false positives, false negatives, statistical confidence of outcomes, etc. This can be measured by running the algorithm on multiple data samples of the usability domain or through the use of carefully designed in-silico data.",
                     "title": "Empirical Error"
                 },
                 "algorithmic_error": {
                     "type": "object",
-                    "description": "descriptive of errors that originate by fuzziness of the algorithms, driven by stochastic processes, in dynamically parallelized multi-threaded executions, or in machine learning methodologies where the state of the machine can affect the outcome.",
+                    "description": "Descriptive of errors that originate by fuzziness of the algorithms, driven by stochastic processes, in dynamically parallelized multi-threaded executions, or in machine learning methodologies where the state of the machine can affect the outcome.",
                     "title": "Algorithmic Error"
                 }
             }
