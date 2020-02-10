@@ -28,5 +28,13 @@ export default {
 				}
 			}
 		]		
+	},
+	"error_domain": {
+		"empirical_error": {
+			"ui:widget": "textarea"
+		},
+		"algorithmic_error": {
+			"ui:widget": "textarea"
+		}
 	}
 }

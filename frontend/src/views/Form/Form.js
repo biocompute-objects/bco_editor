@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Button, colors, Modal, Collapse, 
-  ListItem, ListItemText, Tooltip } from '@material-ui/core';
+import {
+  Button, colors, Modal, Collapse,
+  ListItem, ListItemText, Tooltip
+} from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import { useParams} from "react-router";
+import { useParams } from "react-router";
 import MuiForm, { FieldTemplate } from 'rjsf-material-ui';
 import schema from './schema';
 import uiSchema from './uiSchema';
@@ -151,9 +153,9 @@ function ObjectFieldTemplate(props) {
         <ListItemText className={classes.itemTitle}>
           {props.title && props.title.includes('BioCompute') ? <h1>{props.title}</h1> :
             props.title && props.title.includes('Domain') ? <h2>{props.title}</h2> : <h4>{props.title}</h4>}
-          { props.title && <Tooltip title={props.description || ''} placement="right-start">
+          {props.title && <Tooltip title={props.description || ''} placement="right-start">
             <InfoIcon />
-          </Tooltip> }
+          </Tooltip>}
         </ListItemText>
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
@@ -166,12 +168,12 @@ function ObjectFieldTemplate(props) {
 }
 /**/
 const FormView = (props) => {
-  const [ data, setData ] = useState({});
-  const [ text, setText ] = useState('');
-  const [ bcoId, setBcoId ] = useState('');
-  const [ modalStyle ] = useState(getModalStyle);
-  const [ open, setOpen ] = useState(false);
-  const [ loaded, setLoaded ] = useState(false);
+  const [data, setData] = useState({});
+  const [text, setText] = useState('');
+  const [bcoId, setBcoId] = useState('');
+  const [modalStyle] = useState(getModalStyle);
+  const [open, setOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const router = useHistory();
   let { id } = useParams();
 
@@ -180,7 +182,7 @@ const FormView = (props) => {
   const onGotoBackUrl = () => {
     setFormChanged(1)
     if (id && id !== 'new') {
-      router.push('/detail/'+id)
+      router.push('/detail/' + id)
     } else {
       router.push('/dashboard');
     }
@@ -196,8 +198,8 @@ const FormView = (props) => {
           let _data = result.result;
           delete _data.id;
           setBcoId(_data.bco_id);
-          setData(_data);
-          setText(JSON.stringify(_data,null, 4));
+          setData(validInputJson(_data));
+          setText(JSON.stringify(_data, null, 4));
         }
         props.updateLoading(false);
       } else {
@@ -220,24 +222,24 @@ const FormView = (props) => {
           },
           io_domain: {},
           error_domain: {
-            empirical_error: '',
-            algorithmic_error: ''
+            empirical_error: {},
+            algorithmic_error: {}
           },
         };
 
         setBcoId(_data.bco_id);
-        setData(_data);
-        setText(JSON.stringify(_data,null, 4));
+        setData(validInputJson(_data));
+        setText(JSON.stringify(_data, null, 4));
       }
 
       setTimeout(() => setLoaded(true), 2000);
     }
-    fetchData();    
+    fetchData();
   }, []);
 
   useEffect(() => {
     (function(global) {
-      var _hash = "!", loaded=false;
+      var _hash = "!", loaded = false;
 
       if (typeof (global) === "undefined") {
         throw new Error("window is undefined");
@@ -249,12 +251,12 @@ const FormView = (props) => {
           // making sure we have the fruit available for juice....
           // 50 milliseconds for just once do not cost much (^__^)          
         } else {
-          global.location.href = global.location.href.split('#')[0] + '#';          
+          global.location.href = global.location.href.split('#')[0] + '#';
         }
         global.setTimeout(function() {
           if (!global.location.href.includes('!')) {
             global.location.href += "!";
-            loaded=true
+            loaded = true
           }
         }, 50);
       };
@@ -269,16 +271,16 @@ const FormView = (props) => {
             // console.log(global.location.hash)
             if (global.location.hash !== _hash) {
               let result = window.confirm("You will be lost data. Please confirm.");
-              if (result) {                
+              if (result) {
                 return onGotoBackUrl();
-              } 
+              }
               global.location.hash = _hash;
-            } 
+            }
           }
-        };        
+        };
       }, 2000)
 
-      noBackPlease();      
+      noBackPlease();
     })(window);
   }, [])
 
@@ -288,7 +290,8 @@ const FormView = (props) => {
     props.updateLoading(true);
 
     formData.bco_id = bcoId;
-    if(id !== 'new') {
+    formData = validOutputJson(formData);
+    if (id !== 'new') {
       formData.provenance_domain.modified = new Date().toISOString();
       await updateBcoById(formData, id);
     } else {
@@ -297,19 +300,19 @@ const FormView = (props) => {
       let contributors = formData.provenance_domain.contributors.filter(item => item.email === user.email)
 
       if (!contributors.length) {
-         formData.provenance_domain.contributors.push({
-            affiliation: "Creator",
-            contribution: [
-                "createdBy"
-            ],
-            email: user.email,
-            name: `${user.first_name} ${user.last_name}`,
-            orcid: ""
+        formData.provenance_domain.contributors.push({
+          affiliation: "Creator",
+          contribution: [
+            "createdBy"
+          ],
+          email: user.email,
+          name: `${user.first_name} ${user.last_name}`,
+          orcid: ""
         })
       } else {
         formData.provenance_domain.contributors.map(item => {
           if (item.email === user.email) {
-            return {...item, "contribution": ["createdBy"]}
+            return { ...item, "contribution": ["createdBy"] }
           }
           return item
         })
@@ -324,7 +327,7 @@ const FormView = (props) => {
     console.log(error);
   }
 
-  const onDataChange = (event) => {    
+  const onDataChange = (event) => {
     setText(event.target.value);
   }
 
@@ -333,12 +336,32 @@ const FormView = (props) => {
       JSON.parse(text)
       handleClose();
       let data = JSON.parse(text);
-      delete data['id'];
-      setData(data);
+      setData(validInputJson(data));
     } catch (err) {
-      props.setAlertData({ type: 'error', message: 'Error in parsing JSON.'});
+      props.setAlertData({ type: 'error', message: 'Error in parsing JSON.' });
       props.setOpenAlert(true);
     }
+  }
+
+  const validInputJson = (data) => {
+    delete data['id'];
+
+    if (typeof data.error_domain.empirical_error === 'object') {
+      data.error_domain.empirical_error = JSON.stringify(data.error_domain.empirical_error, null, 4);
+    }
+
+    if (typeof data.error_domain.algorithmic_error === 'object') {
+      data.error_domain.algorithmic_error = JSON.stringify(data.error_domain.algorithmic_error, null, 4);
+    }
+
+    return data;
+  }
+
+  const validOutputJson = (data) => {
+    delete data['id'];
+    data.error_domain.empirical_error = JSON.parse(data.error_domain.empirical_error || '{}');
+    data.error_domain.algorithmic_error = JSON.parse(data.error_domain.algorithmic_error || '{}');
+    return data;
   }
 
   const onFormChange = (event) => {
@@ -354,15 +377,38 @@ const FormView = (props) => {
     setData(event.formData);
     setFormChanged(1);
     if (getFormChanged() === '1')
-        window.onbeforeunload = function() { return "Your work will be lost."; };
+      window.onbeforeunload = function() { return "Your work will be lost."; };
   }
 
-  const openModal = () => {setOpen(true); setText(JSON.stringify(data, null, 4))}
+  const openModal = () => { setOpen(true); setText(JSON.stringify(data, null, 4)) }
   const handleClose = () => setOpen(false)
 
+  const validateForm = (formData, errors) => {
+    if (formData.error_domain.empirical_error 
+      && !IsJsonString(formData.error_domain.empirical_error)) {
+      errors.error_domain.empirical_error.addError('Empirical Error should be valid JSON string.')
+    }
+
+    if (formData.error_domain.algorithmic_error 
+      && !IsJsonString(formData.error_domain.empirical_error)) {
+      errors.error_domain.algorithmic_error.addError('Algorithmic Error should be valid JSON string.')
+    }
+
+    return errors;
+  }
+
+  const IsJsonString = (str) => {
+      try {
+          JSON.parse(str);
+      } catch (e) {
+          return false;
+      }
+      return true;
+  }
+
 	return (
-	<div className={'form-schema'}>
-    <Modal
+    <div className={'form-schema'}>
+      <Modal
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
         open={open}
@@ -387,7 +433,8 @@ const FormView = (props) => {
 				onError={onError}
         FieldTemplate={CustomFieldTemplate}
         ObjectFieldTemplate={ObjectFieldTemplate}
-        ArrayFieldTemplate={ArrayFieldTemplate}>
+        ArrayFieldTemplate={ArrayFieldTemplate}
+        validate={validateForm}>
         <Button
           className={classes.applyButton}
           variant="contained"

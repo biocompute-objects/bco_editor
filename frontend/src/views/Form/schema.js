@@ -1076,12 +1076,12 @@ export default {
             "type": "object",
             "properties": {
                 "empirical_error": {
-                    "type": "object",
+                    "type": "string",
                     "description": "Empirically determined values such as limits of detectability, false positives, false negatives, statistical confidence of outcomes, etc. This can be measured by running the algorithm on multiple data samples of the usability domain or through the use of carefully designed in-silico data.",
                     "title": "Empirical Error"
                 },
                 "algorithmic_error": {
-                    "type": "object",
+                    "type": "string",
                     "description": "Descriptive of errors that originate by fuzziness of the algorithms, driven by stochastic processes, in dynamically parallelized multi-threaded executions, or in machine learning methodologies where the state of the machine can affect the outcome.",
                     "title": "Algorithmic Error"
                 }
