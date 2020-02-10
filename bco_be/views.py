@@ -34,7 +34,7 @@ class BcoObjectViewSet(meviewsets.ModelViewSet):
 			if "start_time" in provenance_domain["embargo"] and "end_time" in provenance_domain["embargo"]:
 
 				for o in provenance_domain["contributors"]:
-					if 'createdBy' in o['contribution'] and user.email == o['email']:
+					if 'createdBy' in o['contribution'] and email == o['email']:
 						return True
 
 				start_time = provenance_domain["embargo"]["start_time"]
