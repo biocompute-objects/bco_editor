@@ -4,7 +4,7 @@ import { Grid } from '@material-ui/core';
 
 import { AccountProfile, AccountDetails, Password } from './components';
 import {
-  getUserDetail, updateAccount, updatePassword
+  getUserDetail, updateAccount, updatePassword, uploadImage, setUserInfo
 } from 'service/user';
 import { setInitial } from 'service/utils';
 
@@ -39,8 +39,9 @@ const Account = (props) => {
 
   const updateData = async _data => {
     props.updateLoading(true);
-    await updateAccount(_data, dataId);
+    let user = await updateAccount(_data, dataId);
     setData(_data);
+    setUserInfo(user.result);
     props.updateLoading(false);
     props.setAlertData({ message: 'Successfully updated!', type: 'success'});
     props.setOpenAlert(true);
@@ -59,6 +60,14 @@ const Account = (props) => {
     props.setOpenAlert(true);
   }
 
+  const onUploadAvatar = async file => {
+    console.log('uploading.......')
+    props.updateLoading(true);
+    let path = await uploadImage(file);
+    console.log(path);
+    await updateData({ ...data, profile: {...data.profile, picture: eval(path)} });    
+  }
+
   return (
     <div className={classes.root}>
       <Grid
@@ -72,7 +81,7 @@ const Account = (props) => {
           xl={4}
           xs={12}
         >
-          <AccountProfile data={data} update={updateData} />
+          <AccountProfile data={data} update={updateData} uploadAvatar={onUploadAvatar} />
         </Grid>
         <Grid
           item

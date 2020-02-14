@@ -58,7 +58,7 @@ class BcoObjectSerializer(DynamicDocumentSerializer):
 class UserProfileSerializer(origin_serializers.ModelSerializer):
 	class Meta:
 		model = UserProfile
-		fields = ('phone_number', 'address', 'city', 'state')
+		fields = ('phone_number', 'address', 'city', 'state', 'picture')
 
 class UserSerializer(origin_serializers.HyperlinkedModelSerializer):
 	profile = UserProfileSerializer(required=True)
@@ -85,12 +85,17 @@ class UserSerializer(origin_serializers.HyperlinkedModelSerializer):
 		except:
 			profile = UserProfile.objects.create(user=instance, **profile_data)
 		instance.email = validated_data.get('email', instance.email)
+		instance.first_name = validated_data.get('first_name', instance.first_name)
+		instance.last_name = validated_data.get('last_name', instance.last_name)
 		instance.save()
 
+		profile.first_name = validated_data.get('first_name', profile.first_name)
+		profile.last_name = validated_data.get('last_name', profile.last_name)
 		profile.phone_number = profile_data.get('phone_number', profile.phone_number)
 		profile.address = profile_data.get('address', profile.address)
 		profile.city = profile_data.get('city', profile.city)
 		profile.state = profile_data.get('state', profile.state)
+		profile.picture = profile_data.get('picture', profile.picture)
 		profile.save()
 
 		return instance

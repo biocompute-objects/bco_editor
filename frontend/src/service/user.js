@@ -81,7 +81,15 @@ export const getUserDetail = async () => {
 }
 
 export const getUserList = async () => {
-	let url = '/api/user';
+	let url = '/api/user/';
 	let result = await apiCall({ url });
 	return result;
+}
+
+export const uploadImage = async (file) => {
+    let url = '/api/upload/';
+    let formData = new FormData();
+    formData.append("file", file);
+    let result = await fetch(url, {method: "POST", body: formData});
+    return result.text();
 }

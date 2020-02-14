@@ -17,7 +17,10 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf.urls import url
 from rest_framework_swagger.views import get_swagger_view
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
+
 
 schema_view = get_swagger_view(title='API')
 
@@ -28,3 +31,6 @@ urlpatterns = [
     path(r'auth/', include('django.contrib.auth.urls')),
     # url(r'^', views.FrontendAppView.as_view())
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

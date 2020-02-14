@@ -11,11 +11,34 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework_mongoengine import viewsets as meviewsets
-import pdb
-import datetime
+from rest_framework.views import APIView
 from dateutil.parser import parse
 from rest_auth.registration.views import RegisterView
+from rest_framework.parsers import FileUploadParser
+from django.contrib.sites.shortcuts import get_current_site
+import pdb
+import datetime
+import string
+import random
 
+def random_generator(size=20, chars=string.ascii_uppercase + string.digits):
+	return ''.join(random.choice(chars) for x in range(size))
+
+class FileUploadView(APIView):
+	parser_class = (FileUploadParser,)
+
+	def post(self, request, format=None):
+		if 'file' not in request.data:
+			raise ParseError("Empty content")
+
+		up_file = request.data['file']
+		path = 'media/' + random_generator() + up_file.name
+		destination = open(path, 'wb+')
+		for chunk in up_file.chunks():
+			destination.write(chunk)
+		destination.close()
+		print(request.get_host())
+		return Response("{0}://{1}{2}".format(request.scheme, request.get_host(), '/' + path), status.HTTP_201_CREATED)
 
 class ToolViewSet(meviewsets.ModelViewSet):
 	lookup_field = 'id'
