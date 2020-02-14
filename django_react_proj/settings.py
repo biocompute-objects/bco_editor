@@ -24,7 +24,7 @@ SECRET_KEY = 'jg^$(lbjb*3-+cv(88ngpb4xb=6vbvxj*1i)%m!*c2(e_i6%b8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['52.55.35.202', 'localhost', 'ec2-52-55-35-202.compute-1.amazonaws.com']
 
 DEBUG = True
 
