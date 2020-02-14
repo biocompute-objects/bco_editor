@@ -162,14 +162,14 @@ AUTH_USER_MODEL = 'bco_be.User'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
     
-REACT_APP_DIR = os.path.join(BASE_DIR, 'frontend')
+# REACT_APP_DIR = os.path.join(BASE_DIR, 'frontend')
 
-STATICFILES_DIRS = [
-    os.path.join(REACT_APP_DIR, 'build', 'static'),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(REACT_APP_DIR, 'build', 'static'),
+# ]
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'frontend/build')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # print(STATIC_ROOT)
 
 MEDIA_URL = '/media/'
