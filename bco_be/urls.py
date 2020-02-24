@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.urls import path,include
 from rest_framework_mongoengine import routers as merouters
 from rest_framework import routers
-from .views import UserViewSet, BcoObjectViewSet, CustomRegisterView, FileUploadView
+from bco_be.views import UserViewSet, BcoObjectViewSet, CustomRegisterView, FileUploadView
  
 router = routers.DefaultRouter()
 router.register(r'user', UserViewSet)

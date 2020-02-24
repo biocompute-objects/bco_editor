@@ -43,4 +43,16 @@ class Tool(Document):
     inputs = fields.ListField(fields.EmbeddedDocumentField(ToolInput))
 
 class BcoObject(DynamicDocument):
-	bco_object = GenericField(required=True)
+    bco_object = GenericField(required=True)
+
+    def toJSON(self):
+        fields = []
+        for field in self._meta.fields:
+            fields.append(field.name)
+
+        d = {}
+        for attr in fields:
+            d[attr] = getattr(self, attr)
+
+        import simplejson
+        return simplejson.dumps(d)
