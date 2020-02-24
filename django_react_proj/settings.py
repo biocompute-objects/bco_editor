@@ -24,7 +24,7 @@ SECRET_KEY = 'jg^$(lbjb*3-+cv(88ngpb4xb=6vbvxj*1i)%m!*c2(e_i6%b8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['52.55.35.202', 'localhost', 'ec2-52-55-35-202.compute-1.amazonaws.com']
+ALLOWED_HOSTS = []
 
 DEBUG = True
 
@@ -136,6 +136,7 @@ USE_L10N = True
 USE_TZ = True
 
 REST_FRAMEWORK = { 
+    'UNAUTHENTICATED_USER': None,
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -168,7 +169,7 @@ AUTH_USER_MODEL = 'bco_be.User'
 #     os.path.join(REACT_APP_DIR, 'build', 'static'),
 # ]
 
-STATIC_URL = '/static/'
+STATIC_URL = '/assets/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # print(STATIC_ROOT)
 

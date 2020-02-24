@@ -50,11 +50,20 @@ const Routes = () => {
         spinner
         text=''
         >
-        <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={isAlert} autoHideDuration={5000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity={alert.type}>
-            {alert.message}
-          </Alert>
-        </Snackbar>
+        {Array.isArray(alert.message) && alert.message.map(m => (
+          <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={isAlert} autoHideDuration={5000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity={alert.type}>
+              {m}
+            </Alert>
+          </Snackbar>
+        ))}
+        {typeof alert.message === 'string' && (
+          <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={isAlert} autoHideDuration={5000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity={alert.type}>
+              {alert.message}
+            </Alert>
+          </Snackbar>
+        )}
 
       <Switch>
         <Redirect

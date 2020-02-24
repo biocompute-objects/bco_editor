@@ -44,15 +44,25 @@ def hashed_object(data):
     data = yaml.load(json.dumps(data, ensure_ascii=False))
 
     bco_id, bco_spec = data['bco_id'], data['bco_spec_version']
+    created = data['provenance_domain']['created']
+    modified = data['provenance_domain']['modified']
     try:
         del data['bco_id'], data['bco_spec_version']
     except:
         pass
     try:
-        data['checksum']
+        del data['checksum']
     except:
         pass
+
+    try:
+        del data['provenance_domain']['created'], data['provenance_domain']['modified']
+    except:
+        pass
+
     data['checksum'] = sha256_checksum(data)
     data['bco_id'] = bco_id
     data['bco_spec_version'] = bco_spec
+    data['provenance_domain']['created'] = created
+    data['provenance_domain']['modified'] = modified
     return data

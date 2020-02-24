@@ -46,7 +46,7 @@ function getSorting(order, orderBy) {
 }
 
 const headCells = [
-  { id: 'bco_id', numeric: false, disablePadding: true, label: 'Obect ID' },
+  { id: 'bco_id', numeric: false, disablePadding: true, label: 'Object ID' },
   { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
   { id: 'created', numeric: false, disablePadding: false, label: 'Created On' },
   { id: 'created_by', numeric: false, disablePadding: false, label: 'Created By' },

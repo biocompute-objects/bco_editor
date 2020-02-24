@@ -1,5 +1,9 @@
 from rest_framework_mongoengine.serializers import *
 from rest_framework import serializers as origin_serializers
+from rest_framework_mongoengine.validators import (
+    UniqueTogetherValidator, UniqueValidator
+)
+# from mongoengine.errors import ValidationError
 from .models import *
 from .utils import *
 
@@ -33,11 +37,9 @@ class BcoObjectSerializer(DynamicDocumentSerializer):
 		validated_data['bco_id'] = bco_id
 		data = hashed_object(validated_data)
 		if not checksum_valid(data['checksum']):
-			return origin_serializers.ValidationError(
-				('Object is already existed')
-				)
+			raise origin_serializers.ValidationError('Object is already existed')
 
-		bco = BcoObject(**validated_data)
+		bco = BcoObject(**data)
 		bco.save()
 		return bco
 
@@ -48,8 +50,6 @@ class BcoObjectSerializer(DynamicDocumentSerializer):
 
 		validated_data['bco_id'] = bco_id
 		data = hashed_object(validated_data)
-		if not checksum_valid(data['checksum']):
-			return instance
 
 		[setattr(instance, k, v) for k, v in data.items()]
 		instance.save()
