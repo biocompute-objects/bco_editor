@@ -291,9 +291,10 @@ const FormView = (props) => {
 
     formData.bco_id = bcoId;
     formData = validOutputJson(formData);
+    let result = {};
     if (id !== 'new') {
       formData.provenance_domain.modified = new Date().toISOString();
-      await updateBcoById(formData, id);
+      result = await updateBcoById(formData, id);
     } else {
       formData.provenance_domain.created = new Date().toISOString();
       formData.provenance_domain.modified = new Date().toISOString();
@@ -317,10 +318,15 @@ const FormView = (props) => {
           return item
         })
       }
-      await createBco(formData);
+      result = await createBco(formData);
     }
     props.updateLoading(false);
-    router.push('/dashboard');
+    if (result.status >= 400) {
+      props.setAlertData({ type: 'error', message: result.result });
+      props.setOpenAlert(true);
+    } else {
+      router.push('/dashboard');        
+    }
   }
 
   const onError = error => {
