@@ -34,7 +34,7 @@ const Icons = () => {
       
       <Typography variant='body2'>.</Typography>
       <Typography variant='h4'>Creating a new BCOs</Typography>
-      <Typography variant='body1'>To create a new BCO click on the link <b>“NEW BCOCOMPUTE OBJECT”</b>. By clicking the link, the page navigates to the BCO editor interface page where a new BCO can be created.</Typography>
+      <Typography variant='body1'>To create a new BCO click on the link <b>“New BioCompute Object”</b>. By clicking the link, the page navigates to the BCO editor interface page where a new BCO can be created.</Typography>
       <Typography variant='body1'>The BCO editor page displays the editable domains a BCO should have, based on the defined schema.</Typography>
       <Typography variant='body1'>Each field has its short description that helps the user to enter the correct value in the field. All the domains of the BCO can be collapsed and expanded as needed.</Typography>
       <Typography variant='body1'>The BCO can be also be created/edited by editing the JSON using the option “Edit JSON” in the BCO editor interface page.</Typography>
