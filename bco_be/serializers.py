@@ -27,7 +27,7 @@ class BcoObjectSerializer(DynamicDocumentSerializer):
 		model = BcoObject
 		fields = '__all__'
 		lookup_field = 'bco_id'
-		
+
 	def create(self, validated_data):
 		bco_id = validated_data.pop('bco_id')
 		# check if bco_id is valid
@@ -79,18 +79,6 @@ class UserSerializer(origin_serializers.HyperlinkedModelSerializer):
 		user.save()
 		UserProfile.objects.create(user=user, **profile_data)
 		
-		admins = User.objects.filter(is_super=True)
-		admin_emails = [x.email for x in admins]
-		now = datetime.now()
-		template = 'User with user name: {} and email address: {} applied for an account on {}.'.format(profile_data.get('first_name') + ' ' + profile_data.get('last_name'), user.email, now.strftime("%m/%d/%Y, %H:%M:%S"))
-		send_mail(
-		    'New User Registeration',
-		    template,
-		    'support@openbox.com',
-		    admin_emails,
-		    fail_silently=False,
-		)
-
 		return user
 
 	def update(self, instance, validated_data):
@@ -159,6 +147,19 @@ class RegisterSerializer(origin_serializers.Serializer):
 		self.cleaned_data.pop('email')
 
 		profile = UserProfile.objects.create(user=user, **self.cleaned_data)
+
+		admins = User.objects.filter(is_superuser=True)
+		admin_emails = [x.email for x in admins]
+		now = datetime.now()
+		template = 'User with user name: {} and email address: {} applied for an account on {}.'.format(profile.first_name + ' ' + profile.last_name, user.email, now.strftime("%m/%d/%Y, %H:%M:%S"))
+		send_mail(
+		    'New User Registeration',
+		    template,
+		    'support@openbox.com',
+		    admin_emails,
+		    fail_silently=False,
+		)
+
 		# user.profile.save()
 		return user
 

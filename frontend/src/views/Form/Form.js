@@ -152,7 +152,7 @@ function ObjectFieldTemplate(props) {
       <ListItem button onClick={handleClick} className={classes.titleBar}>
         <ListItemText className={classes.itemTitle}>
           {props.title && props.title.includes('BioCompute') ? <h1>{props.title}</h1> :
-            props.title && props.title.includes('Domain') ? <h2>{props.title}</h2> : <h4>{props.title}</h4>}
+            props.title && props.title.includes('Domain') ? <h2>{props.title.includes('Error') ? props.title : props.title + ' *'}</h2> : <h4>{props.title}</h4>}
           {props.title && <Tooltip title={props.description || ''} placement="right-start">
             <InfoIcon />
           </Tooltip>}
@@ -270,7 +270,7 @@ const FormView = (props) => {
           if (getFormChanged() === '1' && loaded && (!global.location.hash || (global.location.hash.split('!').length / 2) === 0)) {
             // console.log(global.location.hash)
             if (global.location.hash !== _hash) {
-              let result = window.confirm("You will be lost data. Please confirm.");
+              let result = window.confirm("The data might be lost. Please confirm.");
               if (result) {
                 return onGotoBackUrl();
               }
