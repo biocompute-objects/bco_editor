@@ -67,9 +67,13 @@ def hashed_object(data):
     data['bco_spec_version'] = bco_spec
     data['provenance_domain']['created'] = created
     data['provenance_domain']['modified'] = modified
+<<<<<<< HEAD
     return data
 
 def revise_bco_id(bco_id):
     host_url = settings.HOST_URL
     bco_id = settings.HOST_URL + 'bco/' + bco_id.split('/')[-1]
     return bco_id
+=======
+    return data
+>>>>>>> dashboard_spelling
