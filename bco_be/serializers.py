@@ -8,11 +8,13 @@ from .models import *
 from .utils import *
 
 from django.contrib.auth import get_user_model, authenticate
+from django.core.mail import send_mail
 
 from allauth.account import app_settings as allauth_settings
 from allauth.utils import email_address_exists
 from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
+from datetime import datetime
 import pdb
 
 class ToolSerializer(DocumentSerializer):
@@ -24,7 +26,8 @@ class BcoObjectSerializer(DynamicDocumentSerializer):
 	class Meta:
 		model = BcoObject
 		fields = '__all__'
-
+		lookup_field = 'bco_id'
+		
 	def create(self, validated_data):
 		bco_id = validated_data.pop('bco_id')
 		# check if bco_id is valid
@@ -75,6 +78,19 @@ class UserSerializer(origin_serializers.HyperlinkedModelSerializer):
 		user.set_password(password)
 		user.save()
 		UserProfile.objects.create(user=user, **profile_data)
+		
+		admins = User.objects.filter(is_super=True)
+		admin_emails = [x.email for x in admins]
+		now = datetime.now()
+		template = 'User with user name: {} and email address: {} applied for an account on {}.'.format(profile_data.get('first_name') + ' ' + profile_data.get('last_name'), user.email, now.strftime("%m/%d/%Y, %H:%M:%S"))
+		send_mail(
+		    'New User Registeration',
+		    template,
+		    'support@openbox.com',
+		    admin_emails,
+		    fail_silently=False,
+		)
+
 		return user
 
 	def update(self, instance, validated_data):

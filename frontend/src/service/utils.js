@@ -24,3 +24,7 @@ export const setInitial = () => {
 	window.onbeforeunload = null;
 	window.onhashchange = null;
 }
+
+export const getBcoNumber = (bcoId) => {
+  return bcoId.replace(window.location.origin + '/bco/', '')
+}

@@ -22,7 +22,7 @@ const Dashboard = (props) => {
   const [data, setData] = useState([]);
 
   const onGotoNewBco = () => {
-    router.push('/bco-form/new');
+    router.push('/bco/new/form');
   }
 
   useEffect(() => {

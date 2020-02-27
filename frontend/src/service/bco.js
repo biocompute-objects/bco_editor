@@ -10,6 +10,7 @@ export const getBcoList = async (option) => {
 
 // get bco by detail
 export const getBcoById = async (id) => {
+	let hostUrl = window.location.origin;
 	let url = `/api/bco/${id}/`;
 	let result = await apiCall({url});
 	return result;

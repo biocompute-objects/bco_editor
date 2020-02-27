@@ -1,3 +1,4 @@
+from django.conf import settings
 from .models import *
 import hashlib
 import sys, json, ast
@@ -18,6 +19,7 @@ def new_bco_id():
     bcos = BcoObject.objects.all()
     length = get_valid_number(len(bcos))
     bco_id = 'http://biocomputeobject.org/BCO_{}'.format(length)
+    bco_id = revise_bco_id(bco_id)
     return bco_id
 
 def get_valid_number(length):
@@ -66,3 +68,8 @@ def hashed_object(data):
     data['provenance_domain']['created'] = created
     data['provenance_domain']['modified'] = modified
     return data
+
+def revise_bco_id(bco_id):
+    host_url = settings.HOST_URL
+    bco_id = settings.HOST_URL + 'bco/' + bco_id.split('/')[-1]
+    return bco_id

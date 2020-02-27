@@ -84,7 +84,7 @@ const Routes = () => {
           component={DetailView}
           exact
           layout={MainLayout}
-          path="/detail/:id"
+          path="/bco/:id"
           updateLoading={(val)=>setImportLoading(val)}
           setAlertData={setAlertData}
           setOpenAlert={setOpenAlert}
@@ -138,7 +138,7 @@ const Routes = () => {
           component={FormView}
           exact
           layout={MainLayout}
-          path="/bco-form/:id"
+          path="/bco/:id/form"
           updateLoading={(val)=>setImportLoading(val)}
           setAlertData={setAlertData}
           setOpenAlert={setOpenAlert}
