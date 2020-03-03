@@ -115,8 +115,7 @@ class RegisterSerializer(origin_serializers.Serializer):
 		email = get_adapter().clean_email(email)
 		if allauth_settings.UNIQUE_EMAIL:
 			if email and email_address_exists(email):
-				raise origin_serializers.ValidationError(
-					_("A user is already registered with this e-mail address."))
+				raise origin_serializers.ValidationError("A user is already registered with this e-mail address.")
 		return email
 
 	def validate_password1(self, password):
@@ -124,8 +123,7 @@ class RegisterSerializer(origin_serializers.Serializer):
 
 	def validate(self, data):
 		if data['password1'] != data['password2']:
-			raise origin_serializers.ValidationError(
-				_("The two password fields didn't match."))
+			raise origin_serializers.ValidationError("The two password fields didn't match.")
 		return data
 
 	def get_cleaned_data(self):
@@ -178,7 +176,7 @@ class LoginSerializer(serializers.Serializer):
         if email and password:
             user = self.authenticate(email=email, password=password)
         else:
-            msg = _('Must include "email" and "password".')
+            msg = 'Must include "email" and "password".'
             raise exceptions.ValidationError(msg)
 
         return user
@@ -189,7 +187,7 @@ class LoginSerializer(serializers.Serializer):
         if username and password:
             user = self.authenticate(username=username, password=password)
         else:
-            msg = _('Must include "username" and "password".')
+            msg = 'Must include "username" and "password".'
             raise exceptions.ValidationError(msg)
 
         return user
@@ -202,7 +200,7 @@ class LoginSerializer(serializers.Serializer):
         elif username and password:
             user = self.authenticate(username=username, password=password)
         else:
-            msg = _('Must include either "username" or "email" and "password".')
+            msg = 'Must include either "username" or "email" and "password".'
             raise exceptions.ValidationError(msg)
 
         return user
@@ -243,10 +241,10 @@ class LoginSerializer(serializers.Serializer):
         # Did we get back an active user?
         if user:
             if not user.is_active:
-                msg = _('User account is disabled.')
+                msg = 'User account is disabled.'
                 raise exceptions.ValidationError(msg)
         else:
-            msg = _('Unable to log in with provided credentials.')
+            msg = 'Unable to log in with provided credentials.'
             raise exceptions.ValidationError(msg)
 
         # If required, is the email verified?
@@ -255,10 +253,10 @@ class LoginSerializer(serializers.Serializer):
             if app_settings.EMAIL_VERIFICATION == app_settings.EmailVerificationMethod.MANDATORY:
                 email_address = user.emailaddress_set.get(email=user.email)
                 if not email_address.verified:
-                    raise serializers.ValidationError(_('E-mail is not verified.'))
+                    raise serializers.ValidationError('E-mail is not verified.')
 
         if not user.is_active:
-        	raise serializers.ValidationError(_('User is not active. Please contact Admin.'))
+        	raise serializers.ValidationError('User is not active. Please contact Admin.')
 
         attrs['user'] = user
         return attrs
