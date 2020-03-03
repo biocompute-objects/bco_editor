@@ -26,18 +26,18 @@ class BcoObjectSerializer(DynamicDocumentSerializer):
 	class Meta:
 		model = BcoObject
 		fields = '__all__'
-		lookup_field = 'bco_id'
+		lookup_field = 'object_id'
 
 	def create(self, validated_data):
-		bco_id = validated_data.pop('bco_id')
-		# check if bco_id is valid
+		object_id = validated_data.pop('object_id')
+		# check if object_id is valid
 		# if not, create new one
 		#
-		if check_bco_id(bco_id):
-			bco_id = new_bco_id();
+		if check_object_id(object_id):
+			object_id = new_object_id();
 		# create checksum
 		#
-		validated_data['bco_id'] = bco_id
+		validated_data['object_id'] = object_id
 		data = hashed_object(validated_data)
 		if not checksum_valid(data['checksum']):
 			raise origin_serializers.ValidationError('Object is already existed')
@@ -47,11 +47,11 @@ class BcoObjectSerializer(DynamicDocumentSerializer):
 		return bco
 
 	def update(self, instance, validated_data):
-		bco_id = validated_data.pop('bco_id')
-		if not check_bco_id(bco_id):
-			bco_id = new_bco_id();
+		object_id = validated_data.pop('object_id')
+		if not check_object_id(object_id):
+			object_id = new_object_id();
 
-		validated_data['bco_id'] = bco_id
+		validated_data['object_id'] = object_id
 		data = hashed_object(validated_data)
 
 		[setattr(instance, k, v) for k, v in data.items()]

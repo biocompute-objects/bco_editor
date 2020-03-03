@@ -7,9 +7,9 @@ import {
 import { useHistory } from 'react-router-dom';
 import { useParams } from "react-router";
 import MuiForm, { FieldTemplate } from 'rjsf-material-ui';
-import schema from './schema';
+import schema from './NewSchema';
 import uiSchema from './uiSchema';
-import { getBcoById, updateBcoById, createBco, getNewBcoId } from 'service/bco';
+import { getBcoById, updateBcoById, createBco, getNewObjectId } from 'service/bco';
 import { getUserInfo } from 'service/user'
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -170,7 +170,7 @@ function ObjectFieldTemplate(props) {
 const FormView = (props) => {
   const [data, setData] = useState({});
   const [text, setText] = useState('');
-  const [bcoId, setBcoId] = useState('');
+  const [objectId, setObjectId] = useState('');
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -197,17 +197,17 @@ const FormView = (props) => {
         if (result.status === 200) {
           let _data = result.result;
           delete _data.id;
-          setBcoId(_data.bco_id);
+          setObjectId(_data.object_id);
           setData(validInputJson(_data));
           setText(JSON.stringify(_data, null, 4));
         }
         props.updateLoading(false);
       } else {
         // window.open('/sample/bco', "_blank", 'location=yes,height=768,width=1024,scrollbars=yes,status=yes');
-        let newId = await getNewBcoId();
+        let newId = await getNewObjectId();
         let _data = {
-          bco_id: newId.result.bco_id,
-          bco_spec_version: '1.3.0',
+          object_id: newId.result.object_id,
+          spec_version: '1.4.0',
           provenance_domain: {
             embargo: {},
             created: new Date().toISOString(),
@@ -227,7 +227,7 @@ const FormView = (props) => {
           },
         };
 
-        setBcoId(_data.bco_id);
+        setObjectId(_data.object_id);
         setData(validInputJson(_data));
         setText(JSON.stringify(_data, null, 4));
       }
@@ -289,7 +289,7 @@ const FormView = (props) => {
     let { formData } = event;
     props.updateLoading(true);
 
-    formData.bco_id = bcoId;
+    formData.object_id = objectId;
     formData = validOutputJson(formData);
     let result = {};
     if (id !== 'new') {
@@ -365,6 +365,7 @@ const FormView = (props) => {
 
   const validOutputJson = (data) => {
     delete data['id'];
+    delete data['checksum'];
     data.error_domain.empirical_error = JSON.parse(data.error_domain.empirical_error || '{}');
     data.error_domain.algorithmic_error = JSON.parse(data.error_domain.algorithmic_error || '{}');
     return data;
@@ -375,8 +376,8 @@ const FormView = (props) => {
 
     let newFormData = JSON.parse(JSON.stringify(event.formData));
     let newData = JSON.parse(JSON.stringify(data));
-    delete newFormData['bco_id'];
-    delete newData['bco_id'];
+    delete newFormData['object_id'];
+    delete newData['object_id'];
     if (newFormData === newData)
       return
 

@@ -72,6 +72,17 @@ export const updatePassword = async(password) => {
     return result;
 }
 
+export const forgotPassword = async(email) => {
+    let url = `/api/auth/password/reset/`;
+    let result = await apiCall({
+        url,
+        method: 'POST',
+        body: { email },
+        isAuth: false
+    });
+    return result;
+}
+
 export const getUserDetail = async () => {
 	let url = `/api/user/detail_info/`;
 	let result = await apiCall({

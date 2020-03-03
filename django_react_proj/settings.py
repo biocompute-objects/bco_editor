@@ -192,13 +192,25 @@ mongoengine.connect(
     host="localhost"
 )
 
-EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+# EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+# SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+# SENDGRID_SANDBOX_MODE_IN_DEBUG=False
+# SENDGRID_ECHO_TO_STDOUT=True
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
-SENDGRID_SANDBOX_MODE_IN_DEBUG=False
-SENDGRID_ECHO_TO_STDOUT=True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS")
+print(EMAIL_HOST_PASSWORD)
+
 DJANGO_ENVIRONMENT = os.environ.get("DJANGO_ENVIRONMENT") or "development"
 HOST_URL = ''
 if DJANGO_ENVIRONMENT == 'development':
     HOST_URL = 'http://localhost:3000/'
 else:
     HOST_URL = os.environ.get("HOST_URL") or "http://localhost:3000/"
+
+

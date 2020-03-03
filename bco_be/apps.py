@@ -10,7 +10,7 @@ class BcoBeConfig(AppConfig):
 		if 'runserver' not in sys.argv:
 			return True
 		from bco_be.models import BcoObject
-		from bco_be.utils import hashed_object, revise_bco_id
+		from bco_be.utils import hashed_object, revise_object_id
 		from django.forms.models import model_to_dict
 		import json
 
@@ -22,7 +22,7 @@ class BcoBeConfig(AppConfig):
 					del _bco['_id']
 					new_bco = hashed_object(_bco)
 					bco.checksum = new_bco['checksum']
-					bco.bco_id = revise_bco_id(bco.bco_id)
+					bco.object_id = revise_object_id(bco.object_id)
 					bco.save()
 				except Exception as e:
 					print(e)

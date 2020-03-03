@@ -363,6 +363,19 @@ const SignIn = props => {
                     Sign up
                   </Link>
                 </Typography>
+
+                <Typography
+                  color="textSecondary"
+                  variant="body1"
+                >
+                  <Link
+                    component={RouterLink}
+                    to="/forgot-password"
+                    variant="h6"
+                  >
+                    Forgot Password?
+                  </Link>
+                </Typography>
               </form>
             </div>
           </div>

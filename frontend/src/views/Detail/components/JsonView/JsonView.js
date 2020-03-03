@@ -46,7 +46,7 @@ function Header({ project, className, ...rest }) {
   const user = getUserInfo();
 
   const onEdit = () => {
-    router.push(`/bco/${getBcoNumber(rest.data.bco_id)}/form`);
+    router.push(`/bco/${getBcoNumber(rest.data.object_id)}/form`);
   }
 
   useEffect(() => {

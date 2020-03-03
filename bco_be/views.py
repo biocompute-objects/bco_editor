@@ -48,14 +48,14 @@ class ToolViewSet(meviewsets.ModelViewSet):
 class BcoObjectViewSet(meviewsets.ModelViewSet):
 	authentication_classes = (TokenAuthentication, )
 	permission_classes = [IsAuthenticated]
-	lookup_field = 'bco_id'
+	lookup_field = 'object_id'
 	queryset = BcoObject.objects.all()
 	serializer_class = BcoObjectSerializer
 
 	def get_object(self):
-		bco_id = self.kwargs.get('bco_id')
-		bco_id = revise_bco_id('/' + bco_id)
-		return self.queryset.get(bco_id=bco_id)
+		object_id = self.kwargs.get('object_id')
+		object_id = revise_object_id('/' + object_id)
+		return self.queryset.get(object_id=object_id)
 
 	def check_bco_embrago(self, provenance_domain, email):
 		if "embargo" in provenance_domain:
@@ -91,7 +91,7 @@ class BcoObjectViewSet(meviewsets.ModelViewSet):
 
 		return Response(result)
 
-	def retrieve(self, request, bco_id, format=None):
+	def retrieve(self, request, object_id, format=None):
 		bco = self.get_object()
 		provenance_domain = bco['provenance_domain']
 		if self.check_bco_embrago(provenance_domain, request.user.email):
@@ -102,8 +102,8 @@ class BcoObjectViewSet(meviewsets.ModelViewSet):
 
 	@action(detail=False)
 	def new_id(self, request):
-		bco_id = new_bco_id();
-		return Response({ 'bco_id': bco_id })
+		object_id = new_object_id();
+		return Response({ 'object_id': object_id })
 
 
 class UserViewSet(viewsets.ModelViewSet):

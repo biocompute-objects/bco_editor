@@ -39,7 +39,7 @@ export default {
                 },
                 "access_time": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "datetime"
                 },
                 "sha1_checksum": {
                     "type": "string",
@@ -120,7 +120,7 @@ export default {
             "description": "A unique identifier that should be applied to each BCO instance. IDs should never be reused",
             "examples": [
                 "https://w3id.org/biocompute/1.4.0/HCV1a.json"
-            ]
+            ],
             "readOnly": true
         },
         "spec_version": {
@@ -130,7 +130,7 @@ export default {
                 "https://w3id.org/biocompute/spec/v1.2"
             ],
             "readOnly": true,
-            "format": "uri"
+            "format": "string"
         },
         "etag": {
             "type": "string",
@@ -138,7 +138,6 @@ export default {
             "examples": [
                 "5986B05969341343E77A95B4023600FC8FEF48B7E79F355E58B0B404A4F50995"
             ],
-            "readOnly": true,
             "pattern": "^([A-Za-z0-9]+)$"
         },
         "provenance_domain": {
@@ -185,7 +184,7 @@ export default {
                         "properties": {
                             "date": {
                                 "type": "string",
-                                "format": "date-time"
+                                "format": "datetime"
                             },
                             "reviewer": {
                                 "type": "object",
@@ -249,7 +248,7 @@ export default {
                                         ],
                                         "format": "uri"
                                     }
-                                }
+                                },
                                 "description": "Contributer that assigns BCO review status."
                             },
                             "reviewer_comment": {
@@ -285,7 +284,7 @@ export default {
                 "obsolete_after": {
                     "type": "string",
                     "description": "If the object has an expiration date, this optional field will specify that using the ‘datetime’ type described in ISO-8601 format, as clarified by W3C https://www.w3.org/TR/NOTE-datetime.",
-                    "format": "date-time"
+                    "format": "datetime"
                 },
                 "embargo": {
                     "type": "object",
@@ -295,12 +294,12 @@ export default {
                         "start_time": {
                             "type": "string",
                             "description": "Beginning date of embargo period.",
-                            "format": "date-time"
+                            "format": "datetime"
                         },
                         "end_time": {
                             "type": "string",
                             "description": "End date of embargo period.",
-                            "format": "date-time"
+                            "format": "datetime"
                         }
                     }
                 },
@@ -308,13 +307,13 @@ export default {
                     "type": "string",
                     "description": "Date and time of the BioCompute Object creation",
                     "readOnly": true,
-                    "format": "date-time"
+                    "format": "datetime"
                 },
                 "modified": {
                     "type": "string",
                     "description": "Date and time the BioCompute Object was last modified",
                     "readOnly": true,
-                    "format": "date-time"
+                    "format": "datetime"
                 },
                 "contributors": {
                     "type": "array",
@@ -496,7 +495,7 @@ export default {
                             "access_time": {
                                 "type": "string",
                                 "description": "Date and time the external reference was accessed",
-                                "format": "date-time"
+                                "format": "datetime"
                             }
                         }
                     }
@@ -585,7 +584,7 @@ export default {
                                                 },
                                                 "access_time": {
                                                     "type": "string",
-                                                    "format": "date-time"
+                                                    "format": "datetime"
                                                 },
                                                 "sha1_checksum": {
                                                     "type": "string",
@@ -617,7 +616,7 @@ export default {
                                         },
                                         "access_time": {
                                             "type": "string",
-                                            "format": "date-time"
+                                            "format": "datetime"
                                         },
                                         "sha1_checksum": {
                                             "type": "string",
@@ -647,7 +646,7 @@ export default {
                                         },
                                         "access_time": {
                                             "type": "string",
-                                            "format": "date-time"
+                                            "format": "datetime"
                                         },
                                         "sha1_checksum": {
                                             "type": "string",
@@ -700,7 +699,7 @@ export default {
                                     },
                                     "access_time": {
                                         "type": "string",
-                                        "format": "date-time"
+                                        "format": "datetime"
                                     },
                                     "sha1_checksum": {
                                         "type": "string",
@@ -765,7 +764,7 @@ export default {
                                     },
                                     "access_time": {
                                         "type": "string",
-                                        "format": "date-time"
+                                        "format": "datetime"
                                     },
                                     "sha1_checksum": {
                                         "type": "string",
@@ -902,7 +901,7 @@ export default {
                                     },
                                     "access_time": {
                                         "type": "string",
-                                        "format": "date-time"
+                                        "format": "datetime"
                                     },
                                     "sha1_checksum": {
                                         "type": "string",
@@ -952,7 +951,7 @@ export default {
                                     },
                                     "access_time": {
                                         "type": "string",
-                                        "format": "date-time"
+                                        "format": "datetime"
                                     },
                                     "sha1_checksum": {
                                         "type": "string",
@@ -978,12 +977,12 @@ export default {
             ],
             "properties": {
                 "empirical_error": {
-                    "type": "object",
+                    "type": "string",
                     "title": "Empirical Error",
                     "description": "empirically determined values such as limits of detectability, false positives, false negatives, statistical confidence of outcomes, etc. This can be measured by running the algorithm on multiple data samples of the usability domain or through the use of carefully designed in-silico data."
                 },
                 "algorithmic_error": {
-                    "type": "object",
+                    "type": "string",
                     "title": "Algorithmic Error",
                     "description": "descriptive of errors that originate by fuzziness of the algorithms, driven by stochastic processes, in dynamically parallelized multi-threaded executions, or in machine learning methodologies where the state of the machine can affect the outcome."
                 }

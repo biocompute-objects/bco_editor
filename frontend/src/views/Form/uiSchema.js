@@ -1,8 +1,8 @@
 export default {
-	"bco_id": {
+	"object_id": {
 		"ui:title": "BCO ID",
 		"type": "Control",
-		"scope": "#/properties/bco_id"
+		"scope": "#/properties/object_id"
 	},
 	"provenance_domain": {
 		"type": "VerticalLayout",

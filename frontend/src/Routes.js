@@ -17,7 +17,8 @@ import {
   NotFound as NotFoundView,
   Detail as DetailView,
   Form as FormView,
-  SampleBCO as SampleBCOView
+  SampleBCO as SampleBCOView,
+  ForgotPassword as ForgotPasswordView
 } from './views';
 import LoadingOverlay from 'react-loading-overlay';
 
@@ -130,6 +131,15 @@ const Routes = () => {
           exact
           layout={MinimalLayout}
           path="/sign-in"
+          updateLoading={(val)=>setImportLoading(val)}
+          setAlertData={setAlertData}
+          setOpenAlert={setOpenAlert}
+        />
+        <RouteWithLayout
+          component={ForgotPasswordView}
+          exact
+          layout={MinimalLayout}
+          path="/forgot-password"
           updateLoading={(val)=>setImportLoading(val)}
           setAlertData={setAlertData}
           setOpenAlert={setOpenAlert}
