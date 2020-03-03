@@ -150,13 +150,17 @@ class RegisterSerializer(origin_serializers.Serializer):
 		admin_emails = [x.email for x in admins]
 		now = datetime.now()
 		template = 'User with user name: {} and email address: {} applied for an account on {}.'.format(profile.first_name + ' ' + profile.last_name, user.email, now.strftime("%m/%d/%Y, %H:%M:%S"))
-		send_mail(
-		    'New User Registeration',
-		    template,
-		    'support@openbox.com',
-		    admin_emails,
-		    fail_silently=False,
-		)
+		try:
+			send_mail(
+			    'New User Registeration',
+			    template,
+			    'support@openbox.com',
+			    admin_emails,
+			    fail_silently=False,
+			)
+		except Exception as e:
+			print(e)
+			pass
 
 		# user.profile.save()
 		return user
