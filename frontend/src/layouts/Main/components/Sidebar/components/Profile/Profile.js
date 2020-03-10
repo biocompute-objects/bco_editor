@@ -32,7 +32,7 @@ const Profile = props => {
 
   const [user, setUser] = useState({
     name: `${userInfo.first_name} ${userInfo.last_name}`,
-    avatar: 'https://i.ibb.co/R6W0jJp/avatar-7.png',
+    avatar: 'https://i.imgur.com/08YLHX5.png',
     bio: ''
   });
 
@@ -41,7 +41,7 @@ const Profile = props => {
       let userInfo = getUserInfo();
       setUser({ 
         name: `${userInfo.first_name} ${userInfo.last_name}`,
-        avatar: userInfo.profile ? userInfo.profile.picture : 'https://i.ibb.co/R6W0jJp/avatar-7.png',
+        avatar: userInfo.profile ? userInfo.profile.picture : 'https://i.imgur.com/08YLHX5.png',
         bio: ''
       })
     }

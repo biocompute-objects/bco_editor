@@ -54,7 +54,7 @@ const AccountProfile = props => {
     city: 'Los Angeles',
     country: 'USA',
     timezone: 'GTM-7',
-    avatar: 'https://i.ibb.co/R6W0jJp/avatar-7.png'
+    avatar: 'https://i.imgur.com/08YLHX5.png'
   });
 
   const onFileLoad = (e, file) => console.log(e.target.result, file.name); 
