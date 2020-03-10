@@ -13,6 +13,7 @@ merouter.register(r'bco', BcoObjectViewSet)
 urlpatterns = [
 	path(r'', include(router.urls)),
 	path(r'auth/', include('rest_auth.urls')),
+	url(r'auth/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
 	path(r'upload/', FileUploadView.as_view(), name='upload_file'),
 	url(r'auth/signup/$', CustomRegisterView.as_view(), name='register_view'),
 	url(r'auth/signup/', include('rest_auth.registration.urls'))

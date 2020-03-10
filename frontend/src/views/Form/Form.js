@@ -213,9 +213,7 @@ const FormView = (props) => {
             created: new Date().toISOString(),
             modified: new Date().toISOString(),
           },
-          extension_domain: {
-            scm_extension: {}
-          },
+          extension_domain: [],
           description_domain: {},
           execution_domain: {
             environment_variables: {}
@@ -270,7 +268,7 @@ const FormView = (props) => {
           if (getFormChanged() === '1' && loaded && (!global.location.hash || (global.location.hash.split('!').length / 2) === 0)) {
             // console.log(global.location.hash)
             if (global.location.hash !== _hash) {
-              let result = window.confirm("The data might be lost. Please confirm.");
+              let result = window.confirm("If you navigate away from this page you will lose your unsaved changes.");
               if (result) {
                 return onGotoBackUrl();
               }
@@ -351,6 +349,7 @@ const FormView = (props) => {
 
   const validInputJson = (data) => {
     delete data['id'];
+    delete data['checksum'];
 
     if (typeof data.error_domain.empirical_error === 'object') {
       data.error_domain.empirical_error = JSON.stringify(data.error_domain.empirical_error, null, 4);
@@ -378,13 +377,14 @@ const FormView = (props) => {
     let newData = JSON.parse(JSON.stringify(data));
     delete newFormData['object_id'];
     delete newData['object_id'];
+    delete newData['checksum'];
     if (newFormData === newData)
       return
 
     setData(event.formData);
     setFormChanged(1);
     if (getFormChanged() === '1')
-      window.onbeforeunload = function() { return "Your work will be lost."; };
+      window.onbeforeunload = function() { return "If you navigate away from this page you will lose your unsaved changes."; };
   }
 
   const openModal = () => { setOpen(true); setText(JSON.stringify(data, null, 4)) }

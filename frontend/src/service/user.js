@@ -73,7 +73,7 @@ export const updatePassword = async(password) => {
 }
 
 export const forgotPassword = async(email) => {
-    let url = `/api/auth/password/reset/`;
+    let url = `/api/user/forgot_password/`;
     let result = await apiCall({
         url,
         method: 'POST',

@@ -7,7 +7,7 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework_mongoengine import viewsets as meviewsets
@@ -108,9 +108,17 @@ class BcoObjectViewSet(meviewsets.ModelViewSet):
 
 class UserViewSet(viewsets.ModelViewSet):
 	authentication_classes = (TokenAuthentication, )
-	permission_classes = [IsAuthenticated]
+	
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
+
+	def get_permissions(self):
+		permission_classes = []
+		if self.action == 'forgot_password':
+			permission_classes = [AllowAny]
+		else:
+			permission_classes = [IsAuthenticated]		
+		return [permission() for permission in permission_classes]
 
 	@action(detail=False)
 	def detail_info(self, request, pk=None, **kwargs):
@@ -124,6 +132,35 @@ class UserViewSet(viewsets.ModelViewSet):
 		user.set_password(password)
 		user.save()
 		return Response(True)
+
+	@action(detail=False, methods=['post'])
+	def forgot_password(self, request, pk=None, **kwargs):
+		email = request.data.get('email', '')
+		user = User.objects.get(email=email)
+		if user is not None:
+			# send email to admin
+			try:
+				admins = User.objects.filter(is_superuser=True)
+				admin_emails = [x.email for x in admins]
+				now = datetime.datetime.now()
+				template = 'User with user name: {} and email address: {} would like to forgot password {}.'.format(user.first_name + ' ' + user.last_name, user.email, now.strftime("%m/%d/%Y, %H:%M:%S"))
+				try:
+					send_mail(
+					    'Forgot Password Request',
+					    template,
+					    'support@openbox.com',
+					    admin_emails,
+					    fail_silently=False,
+					)
+				except Exception as e:
+					print(e)
+					pass
+				return Response(status=status.HTTP_202_ACCEPTED)
+			except Exception as e:
+				print(e)
+				return Response(status=status.HTTP_400_BAD_REQUEST)
+		else:
+			return Response(status=status.HTTP_404_NOT_FOUND)
 
 class CustomRegisterView(RegisterView):
 	def create(self, request, *args, **kwargs):

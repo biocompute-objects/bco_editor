@@ -182,7 +182,7 @@ const ForgotPassword = props => {
     let { email } = formState.values;
     try {
       let result = await forgotPassword(email);
-      if (result.status !== 200) {
+      if (result.status >= 300) {
         setMessage('The email is incorrect.');
         setToastOpen(true);
       } else {
