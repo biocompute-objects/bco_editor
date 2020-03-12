@@ -1,6 +1,6 @@
 export default {
     "object_id": "https://w3id.org/biocompute/1.3.0/examples/HCV1a.json",
-    "checksum": "06DACE70679F35BA87A3DD6FFFED4ED24A4F5B8C2571264C37E5F1B3ADE04A31",
+    "etag": "06DACE70679F35BA87A3DD6FFFED4ED24A4F5B8C2571264C37E5F1B3ADE04A31",
     "spec_version" : "https://w3id.org/biocompute/1.4.0/",
     "provenance_domain": {
         "name": "HCV1a ledipasvir resistance SNP detection", 

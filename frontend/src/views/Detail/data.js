@@ -1,6 +1,6 @@
 export default {
     "object_id": "http://biocomputeobject.org/BCO_000010",
-    "checksum": "4021cff7b9be9719556ebbd62e99d4cd0a822e0645d255dd354f4a4d194177c5",
+    "etag": "4021cff7b9be9719556ebbd62e99d4cd0a822e0645d255dd354f4a4d194177c5",
     "spec_version": "1.4.0",
     "provenance_domain": {
         "name": "CGC Smart Variant Filtering- train, test, and run",

@@ -21,7 +21,7 @@ class BcoBeConfig(AppConfig):
 					_bco = json.loads(bco.to_json())
 					del _bco['_id']
 					new_bco = hashed_object(_bco)
-					bco.checksum = new_bco['checksum']
+					bco.etag = new_bco['etag']
 					bco.object_id = revise_object_id(bco.object_id)
 					bco.save()
 				except Exception as e:

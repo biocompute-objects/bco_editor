@@ -39,7 +39,7 @@ class BcoObjectSerializer(DynamicDocumentSerializer):
 		#
 		validated_data['object_id'] = object_id
 		data = hashed_object(validated_data)
-		if not checksum_valid(data['checksum']):
+		if not checksum_valid(data['etag']):
 			raise origin_serializers.ValidationError('Object is already existed')
 
 		bco = BcoObject(**data)

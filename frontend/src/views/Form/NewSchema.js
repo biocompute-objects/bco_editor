@@ -138,7 +138,8 @@ export default {
             "examples": [
                 "5986B05969341343E77A95B4023600FC8FEF48B7E79F355E58B0B404A4F50995"
             ],
-            "pattern": "^([A-Za-z0-9]+)$"
+            "pattern": "^([A-Za-z0-9]+)$",
+            "readOnly": true
         },
         "provenance_domain": {
             "$schema": "http://json-schema.org/draft-07/schema#",

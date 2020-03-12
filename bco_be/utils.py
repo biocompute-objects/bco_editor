@@ -7,8 +7,8 @@ import pdb
 import yaml
 import uuid
 
-def checksum_valid(checksum):
-    bcos = BcoObject.objects.filter(checksum=checksum)
+def checksum_valid(etag):
+    bcos = BcoObject.objects.filter(etag=etag)
     return len(bcos) == 0
 
 def check_object_id(object_id):
@@ -32,7 +32,7 @@ def json_parse( filename ):
     with open(filename, 'rb') as f:
         data = json.load(f)
         object_id, bco_spec = data['object_id'], data['spec_version']
-        del data['object_id'], data['checksum'], data['spec_version']
+        del data['object_id'], data['etag'], data['checksum'], data['spec_version']
     return data, object_id, bco_spec
 
 def sha256_checksum( string ):
@@ -54,6 +54,7 @@ def hashed_object(data):
         pass
     try:
         del data['checksum']
+        del data['etag']
     except:
         pass
 
@@ -62,7 +63,7 @@ def hashed_object(data):
     except:
         pass
 
-    data['checksum'] = sha256_checksum(data)
+    data['etag'] = sha256_checksum(data)
     data['object_id'] = object_id
     data['spec_version'] = bco_spec
     data['provenance_domain']['created'] = created

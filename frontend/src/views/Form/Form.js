@@ -213,16 +213,13 @@ const FormView = (props) => {
             created: new Date().toISOString(),
             modified: new Date().toISOString(),
           },
+          etag: -1,
           extension_domain: [],
           description_domain: {},
           execution_domain: {
             environment_variables: {}
           },
-          io_domain: {},
-          error_domain: {
-            empirical_error: {},
-            algorithmic_error: {}
-          },
+          io_domain: {}
         };
 
         setObjectId(_data.object_id);
@@ -350,7 +347,7 @@ const FormView = (props) => {
   const validInputJson = (data) => {
     delete data['id'];
     delete data['checksum'];
-
+    
     if (typeof data.error_domain.empirical_error === 'object') {
       data.error_domain.empirical_error = JSON.stringify(data.error_domain.empirical_error, null, 4);
     }
@@ -378,6 +375,7 @@ const FormView = (props) => {
     delete newFormData['object_id'];
     delete newData['object_id'];
     delete newData['checksum'];
+    delete newData['etag'];
     if (newFormData === newData)
       return
 
