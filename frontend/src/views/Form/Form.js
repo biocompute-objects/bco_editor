@@ -348,11 +348,11 @@ const FormView = (props) => {
     delete data['id'];
     delete data['checksum'];
     
-    if (typeof data.error_domain.empirical_error === 'object') {
+    if (data.error_domain && typeof data.error_domain.empirical_error === 'object') {
       data.error_domain.empirical_error = JSON.stringify(data.error_domain.empirical_error, null, 4);
     }
 
-    if (typeof data.error_domain.algorithmic_error === 'object') {
+    if (data.error_domain && typeof data.error_domain.algorithmic_error === 'object') {
       data.error_domain.algorithmic_error = JSON.stringify(data.error_domain.algorithmic_error, null, 4);
     }
 
