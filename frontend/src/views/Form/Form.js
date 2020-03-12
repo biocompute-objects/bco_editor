@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import {
-  Button, colors, Modal, Collapse,
-  ListItem, ListItemText, Tooltip
+  Button, colors, Modal, Collapse, List, FormControl, FormHelperText,
+  ListItem, ListItemText, Tooltip, Typography
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { useParams } from "react-router";
@@ -162,6 +162,9 @@ function ObjectFieldTemplate(props) {
 
       <Collapse in={open} timeout="auto" unmountOnExit>
         {props.properties.map(element => <div className="property-wrapper">{element.content}</div>)}
+        {props.patternProperties && props.additionalProperties ?
+           <div className="property-wrapper">{props.content}</div>
+          : ''}
       </Collapse>
     </div>
   );

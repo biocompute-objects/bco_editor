@@ -808,12 +808,26 @@ export default {
                     }
                 },
                 "environment_variables": {
-                    "type": "object",
+                    "type": "array",
                     "description": "Environmental parameters that are useful to configure the execution environment on the target platform.",
-                    "additionalProperties": false,
-                    "patternProperties": {
-                        "^[a-zA-Z_]+[a-zA-Z0-9_]*$": {
-                            "type": "string"
+                    "items": {
+                        "type": "object",
+                        "description": "Environmental object",
+                        "required": [
+                            "key",
+                            "value"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                            "key": {
+                                "type": "string",
+                                "description": "Environmental Key",
+                                "pattern": "^[a-zA-Z_]+[a-zA-Z0-9_]*$"
+                            },
+                            "value": {
+                                "type": "string",
+                                "description": "Environmental Value",
+                            }
                         }
                     }
                 }
