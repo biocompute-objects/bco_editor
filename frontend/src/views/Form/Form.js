@@ -350,7 +350,11 @@ const FormView = (props) => {
   const validInputJson = (data) => {
     delete data['id'];
     delete data['checksum'];
-    
+
+    if (id === 'new') {
+      data['etag'] = 'new';
+    }
+
     if (data.error_domain && typeof data.error_domain.empirical_error === 'object') {
       data.error_domain.empirical_error = JSON.stringify(data.error_domain.empirical_error, null, 4);
     }
