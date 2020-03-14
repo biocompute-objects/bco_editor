@@ -46,8 +46,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'rest_auth.registration',
-    'rest_framework_swagger',
-    'django_rest_passwordreset'
+    'rest_framework_swagger'
 ]
 SITE_ID = 1
 
