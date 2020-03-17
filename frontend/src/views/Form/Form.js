@@ -355,6 +355,15 @@ const FormView = (props) => {
       data['etag'] = 'new';
     }
 
+    if (data.execution_domain.environment_variables) {
+      if (JSON.stringify(data.execution_domain.environment_variables) === '{}') {
+        data.execution_domain.environment_variables = [];
+      } else if (!Array.isArray(data.execution_domain.environment_variables)) {
+        let new_env = Object.keys(data.execution_domain.environment_variables).map(key => ({key: key, value: data.execution_domain.environment_variables[key]}))
+        data.execution_domain.environment_variables = new_env;
+      }
+    }
+
     if (data.error_domain && typeof data.error_domain.empirical_error === 'object') {
       data.error_domain.empirical_error = JSON.stringify(data.error_domain.empirical_error, null, 4);
     }

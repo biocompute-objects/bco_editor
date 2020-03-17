@@ -986,10 +986,7 @@ export default {
             "type": "object",
             "title": "Error Domain",
             "description": "",
-            "required": [
-                "empirical_error",
-                "algorithmic_error"
-            ],
+            "required": [],
             "properties": {
                 "empirical_error": {
                     "type": "string",
