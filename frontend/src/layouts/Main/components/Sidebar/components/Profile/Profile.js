@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -30,11 +30,22 @@ const Profile = props => {
   const userInfo = getUserInfo();
   const router = useHistory();
 
-  const user = {
+  const [user, setUser] = useState({
     name: `${userInfo.first_name} ${userInfo.last_name}`,
-    avatar: 'https://i.ibb.co/R6W0jJp/avatar-7.png',
+    avatar: 'https://i.imgur.com/08YLHX5.png',
     bio: ''
-  };
+  });
+
+  useEffect(() => {
+    if (getUserInfo().email) {
+      let userInfo = getUserInfo();
+      setUser({ 
+        name: `${userInfo.first_name} ${userInfo.last_name}`,
+        avatar: userInfo.profile ? userInfo.profile.picture : 'https://i.imgur.com/08YLHX5.png',
+        bio: ''
+      })
+    }
+  }, [localStorage.user])
 
   return (
     <div

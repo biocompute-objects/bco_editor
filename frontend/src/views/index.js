@@ -4,6 +4,7 @@ export { default as Icons } from './Icons';
 export { default as NotFound } from './NotFound';
 export { default as SignIn } from './SignIn';
 export { default as SignUp } from './SignUp';
+export { default as ForgotPassword } from './ForgotPassword';
 export { default as Detail } from './Detail';
 export { default as Form } from './Form';
 export { SampleBCO } from './Form';

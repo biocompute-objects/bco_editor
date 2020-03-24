@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import moment from 'moment';
@@ -12,6 +12,8 @@ import {
   Divider,
   Button,
 } from '@material-ui/core';
+import Upload from 'material-ui-upload/Upload';
+
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -29,7 +31,16 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2)
   },
   uploadButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
+    position: 'relative'
+  },
+  fileInput: {
+    opacity: 0,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   }
 }));
 
@@ -38,13 +49,39 @@ const AccountProfile = props => {
 
   const classes = useStyles();
 
-  const user = {
+  const [user, setUser] = useState({
     name: 'Shen Zhi',
     city: 'Los Angeles',
     country: 'USA',
     timezone: 'GTM-7',
-    avatar: 'https://i.ibb.co/R6W0jJp/avatar-7.png'
+    avatar: 'https://i.imgur.com/08YLHX5.png'
+  });
+
+  const onFileLoad = (e, file) => console.log(e.target.result, file.name); 
+
+  const onInputChange = async (e) => {
+    console.log(e.target.files[0]);
+    let avatar = e.target.files[0]
+
+    if (avatar) {
+        var reader = new FileReader();
+        await props.uploadAvatar(avatar);
+        reader.onload = function(e) {
+          // $('#blah').attr('src', e.target.result);
+          user.avatar = e.target.result;
+          setUser({ ...user, avatar: e.target.result })          
+        }
+        
+        reader.readAsDataURL(avatar);
+      }
   };
+
+  useEffect(() => {
+    if (props.data.profile) {
+      console.log(props.data.profile);
+      setUser({...props.data, avatar: props.data.profile.picture ? props.data.profile.picture : 'https://i.ibb.co/R6W0jJp/avatar-7.png'});
+    }
+  }, [props.data]);
 
   return (
     <Card
@@ -65,14 +102,13 @@ const AccountProfile = props => {
               color="textSecondary"
               variant="body1"
             >
-              {user.city}, {user.country}
+              {user.city || ''}, {user.country || ''}
             </Typography>
             <Typography
               className={classes.dateText}
               color="textSecondary"
               variant="body1"
-            >
-              {moment().format('hh:mm A')} ({user.timezone})
+            >              
             </Typography>
           </div>
           <Avatar
@@ -96,7 +132,13 @@ const AccountProfile = props => {
           variant="text"
         >
           Upload picture
-        </Button>
+          <input
+            className={classes.fileInput}
+            type="file"
+            multiple
+            onChange={onInputChange}
+          />
+        </Button>          
         <Button variant="text">Remove picture</Button>
       </CardActions>
     </Card>

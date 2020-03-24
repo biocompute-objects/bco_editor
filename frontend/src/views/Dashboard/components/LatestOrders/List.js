@@ -20,6 +20,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import Link from '@material-ui/core/Link';
+import { getBcoNumber } from 'service/utils';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -46,7 +47,7 @@ function getSorting(order, orderBy) {
 }
 
 const headCells = [
-  { id: 'bco_id', numeric: false, disablePadding: true, label: 'Obect ID' },
+  { id: 'object_id', numeric: false, disablePadding: true, label: 'Object ID' },
   { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
   { id: 'created', numeric: false, disablePadding: false, label: 'Created On' },
   { id: 'created_by', numeric: false, disablePadding: false, label: 'Created By' },
@@ -343,8 +344,8 @@ export default function EnhancedTable(props) {
                       <TableCell>
                         <Link
                           component={RouterLink}
-                          to={`/detail/${row.id}`}
-                        >{row.bco_id}</Link>
+                          to={`/bco/${getBcoNumber(row.object_id)}`}
+                        >{row.object_id}</Link>
                       </TableCell>
                       <TableCell>{row.provenance_domain.name}</TableCell>
                       <TableCell>{moment(row.provenance_domain.created).format('MM/DD/YYYY')}</TableCell>

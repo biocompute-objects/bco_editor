@@ -78,7 +78,7 @@ const ArrayFieldTitle = ({
   return ( <div id={id} className={classes.titleBar} onClick={onClick}>
     <div className={classes.itemTitle}>
       <Typography variant={'body1'} variantMapping={{body1: 'span'}}>
-        {title.includes('Domain') ? <h2>{title}</h2> : <h4>{title}</h4>}
+        {title.includes('Domain') ? <h2>{title} *</h2> : <h4>{title}</h4>}
         <Tooltip title={description} placement="right-start">
           <InfoIcon />
         </Tooltip>

@@ -17,7 +17,8 @@ import {
   NotFound as NotFoundView,
   Detail as DetailView,
   Form as FormView,
-  SampleBCO as SampleBCOView
+  SampleBCO as SampleBCOView,
+  ForgotPassword as ForgotPasswordView
 } from './views';
 import LoadingOverlay from 'react-loading-overlay';
 
@@ -50,11 +51,20 @@ const Routes = () => {
         spinner
         text=''
         >
-        <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={isAlert} autoHideDuration={5000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity={alert.type}>
-            {alert.message}
-          </Alert>
-        </Snackbar>
+        {Array.isArray(alert.message) && alert.message.map(m => (
+          <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={isAlert} autoHideDuration={5000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity={alert.type}>
+              {m}
+            </Alert>
+          </Snackbar>
+        ))}
+        {typeof alert.message === 'string' && (
+          <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={isAlert} autoHideDuration={5000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity={alert.type}>
+              {alert.message}
+            </Alert>
+          </Snackbar>
+        )}
 
       <Switch>
         <Redirect
@@ -75,7 +85,7 @@ const Routes = () => {
           component={DetailView}
           exact
           layout={MainLayout}
-          path="/detail/:id"
+          path="/bco/:id"
           updateLoading={(val)=>setImportLoading(val)}
           setAlertData={setAlertData}
           setOpenAlert={setOpenAlert}
@@ -125,11 +135,20 @@ const Routes = () => {
           setAlertData={setAlertData}
           setOpenAlert={setOpenAlert}
         />
+        <RouteWithLayout
+          component={ForgotPasswordView}
+          exact
+          layout={MinimalLayout}
+          path="/forgot-password"
+          updateLoading={(val)=>setImportLoading(val)}
+          setAlertData={setAlertData}
+          setOpenAlert={setOpenAlert}
+        />
         <RouteAuthorized
           component={FormView}
           exact
           layout={MainLayout}
-          path="/bco-form/:id"
+          path="/bco/:id/form"
           updateLoading={(val)=>setImportLoading(val)}
           setAlertData={setAlertData}
           setOpenAlert={setOpenAlert}

@@ -17,12 +17,16 @@ def custom_exception_handler(exc, context):
         data = response.data
         response.data = {}
         errors = []
-        for field, value in data.items():
-            errors.append("{} : {}".format(field, " ".join(value)))
+        try:
+            for field, value in data.items():
+                errors.append("{} : {}".format(field, " ".join(value)))
 
-        response.data['errors'] = errors
-        response.data['status'] = False
+            response.data['errors'] = errors
+            response.data['status'] = False
 
-        response.data['exception'] = str(exc)
+            response.data['exception'] = str(exc)
+        except:
+            response = exception_handler(exc, context)
+            return response
 
     return response

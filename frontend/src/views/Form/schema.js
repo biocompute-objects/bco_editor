@@ -1067,7 +1067,7 @@ export default {
             }
         },
         "error_domain": {
-            "description": "",
+            "description": "Input should be object",
             "title": "Error Domain",
             "$id": "http://www.w3id.org/biocompute/1.3.0/schemas/error_domain.json",
             "required": [],

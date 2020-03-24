@@ -1,3 +1,4 @@
+from django.conf import settings
 from .models import *
 import hashlib
 import sys, json, ast
@@ -6,19 +7,20 @@ import pdb
 import yaml
 import uuid
 
-def checksum_valid(checksum):
-    bcos = BcoObject.objects.filter(checksum=checksum)
+def checksum_valid(etag):
+    bcos = BcoObject.objects.filter(etag=etag)
     return len(bcos) == 0
 
-def check_bco_id(bco_id):
-    bcos = BcoObject.objects.filter(bco_id=bco_id)
+def check_object_id(object_id):
+    bcos = BcoObject.objects.filter(object_id=object_id)
     return len(bcos) > 0
 
-def new_bco_id():
+def new_object_id():
     bcos = BcoObject.objects.all()
     length = get_valid_number(len(bcos))
-    bco_id = 'http://biocomputeobject.org/BCO_{}'.format(length)
-    return bco_id
+    object_id = 'http://biocomputeobject.org/BCO_{}'.format(length)
+    object_id = revise_object_id(object_id)
+    return object_id
 
 def get_valid_number(length):
     num_str = '00000{}'.format(str(uuid.uuid4().fields[-1])[:5])
@@ -29,9 +31,9 @@ def json_parse( filename ):
     
     with open(filename, 'rb') as f:
         data = json.load(f)
-        bco_id, bco_spec = data['bco_id'], data['bco_spec_version']
-        del data['bco_id'], data['checksum'], data['bco_spec_version']
-    return data, bco_id, bco_spec
+        object_id, bco_spec = data['object_id'], data['spec_version']
+        del data['object_id'], data['etag'], data['checksum'], data['spec_version']
+    return data, object_id, bco_spec
 
 def sha256_checksum( string ):
     """input to hash"""    
@@ -43,16 +45,32 @@ def hashed_object(data):
 #    pdb.set_trace()
     data = yaml.load(json.dumps(data, ensure_ascii=False))
 
-    bco_id, bco_spec = data['bco_id'], data['bco_spec_version']
+    object_id, bco_spec = data['object_id'], data['spec_version']
+    created = data['provenance_domain']['created']
+    modified = data['provenance_domain']['modified']
     try:
-        del data['bco_id'], data['bco_spec_version']
+        del data['object_id'], data['spec_version']
     except:
         pass
     try:
-        data['checksum']
+        del data['checksum']
+        del data['etag']
     except:
         pass
-    data['checksum'] = sha256_checksum(data)
-    data['bco_id'] = bco_id
-    data['bco_spec_version'] = bco_spec
+
+    try:
+        del data['provenance_domain']['created'], data['provenance_domain']['modified']
+    except:
+        pass
+
+    data['etag'] = sha256_checksum(data)
+    data['object_id'] = object_id
+    data['spec_version'] = bco_spec
+    data['provenance_domain']['created'] = created
+    data['provenance_domain']['modified'] = modified
     return data
+
+def revise_object_id(object_id):
+    host_url = settings.HOST_URL
+    object_id = settings.HOST_URL + 'bco/' + object_id.split('/')[-1]
+    return object_id

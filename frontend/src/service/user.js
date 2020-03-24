@@ -72,6 +72,17 @@ export const updatePassword = async(password) => {
     return result;
 }
 
+export const forgotPassword = async(email) => {
+    let url = `/api/user/forgot_password/`;
+    let result = await apiCall({
+        url,
+        method: 'POST',
+        body: { email },
+        isAuth: false
+    });
+    return result;
+}
+
 export const getUserDetail = async () => {
 	let url = `/api/user/detail_info/`;
 	let result = await apiCall({
@@ -81,7 +92,15 @@ export const getUserDetail = async () => {
 }
 
 export const getUserList = async () => {
-	let url = '/api/user';
+	let url = '/api/user/';
 	let result = await apiCall({ url });
 	return result;
+}
+
+export const uploadImage = async (file) => {
+    let url = '/api/upload/';
+    let formData = new FormData();
+    formData.append("file", file);
+    let result = await fetch(url, {method: "POST", body: formData});
+    return result.text();
 }

@@ -12,6 +12,7 @@ import {
 import ShareIcon from '@material-ui/icons/Share';
 import EditIcon from '@material-ui/icons/Edit';
 import { getUserInfo } from 'service/user';
+import { getBcoNumber } from 'service/utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -45,7 +46,7 @@ function Header({ project, className, ...rest }) {
   const user = getUserInfo();
 
   const onEdit = () => {
-    router.push(`/bco-form/${rest.data.id}`);
+    router.push(`/bco/${getBcoNumber(rest.data.object_id)}/form`);
   }
 
   useEffect(() => {
