@@ -16,7 +16,7 @@ import { Profile, SidebarNav } from './components';
 
 const useStyles = makeStyles(theme => ({
   drawer: {
-    width: 240,
+    width: 241,
     [theme.breakpoints.up('lg')]: {
       marginTop: 64,
       height: 'calc(100% - 64px)'
@@ -77,7 +77,12 @@ const Sidebar = props => {
       title: 'Profile',
       href: '/account',
       icon: <AccountBoxIcon />
-    },
+    }, 
+	{
+      title: 'Report problem on github',
+      href: 'http://www.github.com/',
+      icon: <AccountBoxIcon />
+    }
     // {
     //   title: 'Settings',
     //   href: '/settings',
