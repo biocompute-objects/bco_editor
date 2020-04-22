@@ -1,12 +1,24 @@
 
 export const onLink = (router, toLink='/') => () => {
+  console.log(router)
   if (localStorage.formChanged === '1') {
     let result = window.confirm("You will be lost data. Please confirm.");
     if (result) {
       router.push(toLink)  
     }
   } else {
-    router.push(toLink)
+    
+	if(toLink.indexOf('http') != -1) {
+		
+		var win = window.open(toLink, '_blank');
+		win.focus();
+		
+	} else {
+		
+		router.push(toLink)
+		
+	}
+	
   }
 }
 

@@ -6,7 +6,7 @@ The BioCompute Editor is a web application that can be used to create and edit B
 
 Software requirement
 ====================
-* Any linux operating system
+* Any linux operating system 
 * MongoDB Community or Enterprise version
 
 Choose your instalation

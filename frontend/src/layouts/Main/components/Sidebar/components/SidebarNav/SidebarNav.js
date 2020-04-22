@@ -22,7 +22,8 @@ const useStyles = makeStyles(theme => ({
     textTransform: 'none',
     letterSpacing: 0,
     width: '100%',
-    fontWeight: theme.typography.fontWeightMedium
+    fontWeight: theme.typography.fontWeightMedium, 
+	text-align: left
   },
   icon: {
     color: theme.palette.icon,
