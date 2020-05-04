@@ -3,3 +3,5 @@ env/
 **/node_modules/
 **/__pycache__/
 .env
+frontend/build/
+django_react_proj/settings.py

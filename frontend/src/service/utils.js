@@ -1,6 +1,6 @@
 
 export const onLink = (router, toLink='/') => () => {
-  console.log(router)
+  alert(router);
   if (localStorage.formChanged === '1') {
     let result = window.confirm("You will be lost data. Please confirm.");
     if (result) {
@@ -8,6 +8,7 @@ export const onLink = (router, toLink='/') => () => {
     }
   } else {
     
+	// Re-direct for external GitHub link.
 	if(toLink.indexOf('http') != -1) {
 		
 		var win = window.open(toLink, '_blank');
@@ -38,5 +39,5 @@ export const setInitial = () => {
 }
 
 export const getBcoNumber = (objectId) => {
-  return objectId.replace(window.location.origin + '/bco/', '')
+    return objectId.replace('http://portal.aws.biochemistry.gwu.edu/bco/', '')
 }
