@@ -1,0 +1,13 @@
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=portal_user
+Group=nginx
+WorkingDirectory=/home/portal_user/bco_editor
+ExecStart=/home/portal_user/env/bin/gunicorn --access-logfile - --workers 3 --bind unix:/var/run/gunicorn.sock django_react_proj.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
