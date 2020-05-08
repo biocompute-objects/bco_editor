@@ -2,7 +2,7 @@
 export const onLink = (router, toLink='/') => () => {
   alert(router);
   if (localStorage.formChanged === '1') {
-    let result = window.confirm("You will be lost data. Please confirm.");
+    let result = window.confirm("If you navigate away from this page you will lose your unsaved changes.");
     if (result) {
       router.push(toLink)  
     }
