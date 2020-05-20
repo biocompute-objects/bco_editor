@@ -50,7 +50,7 @@ const Topbar = props => {
           variant="h4"
           onClick={onLink(router)}
         >
-          BioCompute Editor 3.0
+          BioCompute Editor 3.0.2
         </Typography>
         <div className={classes.flexGrow} />
         <Hidden mdDown>

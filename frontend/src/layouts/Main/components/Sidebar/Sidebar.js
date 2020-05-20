@@ -80,7 +80,7 @@ const Sidebar = props => {
     }, 
 	{
       title: 'Report problem on github',
-      href: 'http://www.github.com/',
+      href: 'https://github.com/biocompute-objects/bco_editor/issues/new/',
       icon: <AccountBoxIcon />
     }
     // {

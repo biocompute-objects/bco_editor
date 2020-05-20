@@ -54,7 +54,8 @@ class BcoObjectViewSet(meviewsets.ModelViewSet):
 
 	def get_object(self):
 		object_id = self.kwargs.get('object_id')
-		object_id = revise_object_id('/' + object_id)
+		# object_id = revise_object_id('/' + object_id)
+		object_id = 'http://portal.aws.biochemistry.gwu.edu/bco/' + object_id
 		return self.queryset.get(object_id=object_id)
 
 	def check_bco_embrago(self, provenance_domain, email):

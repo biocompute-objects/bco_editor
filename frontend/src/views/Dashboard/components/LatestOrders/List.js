@@ -143,7 +143,7 @@ const EnhancedTableToolbar = props => {
         </Typography>
       ) : (
         <Typography className={classes.title} variant="h6" id="tableTitle">
-          Bco Object List
+          BioCompute Object List
         </Typography>
       )}
 
@@ -166,7 +166,7 @@ const EnhancedTableToolbar = props => {
             variant="outlined"
             onClick={props.onGotoNewBco}
           >
-            New BioCompute Object
+            Create New BCO
           </Button>   
         </Tooltip>
       )}
