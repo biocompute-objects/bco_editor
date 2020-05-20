@@ -152,9 +152,9 @@ class RegisterSerializer(origin_serializers.Serializer):
 		template = 'User with user name: {} and email address: {} applied for an account on {}.'.format(profile.first_name + ' ' + profile.last_name, user.email, now.strftime("%m/%d/%Y, %H:%M:%S"))
 		try:
 			send_mail(
-				'New User Registeration',
+				'New User Registration',
 				template,
-				'support@openbox.com',
+				'mail_sender@portal.aws.biochemistry.gwu.edu',
 				admin_emails,
 				fail_silently=False,
 			)

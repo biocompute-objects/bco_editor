@@ -1,6 +1,6 @@
 
 export const onLink = (router, toLink='/') => () => {
-  alert(router);
+  
   if (localStorage.formChanged === '1') {
     let result = window.confirm("If you navigate away from this page you will lose your unsaved changes.");
     if (result) {
@@ -39,5 +39,5 @@ export const setInitial = () => {
 }
 
 export const getBcoNumber = (objectId) => {
-    return objectId.replace('http://portal.aws.biochemistry.gwu.edu/bco/', '')
+        return objectId.replace('http://portal.aws.biochemistry.gwu.edu/bco/', '')
 }
