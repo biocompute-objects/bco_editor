@@ -79,7 +79,7 @@ const AccountProfile = props => {
   useEffect(() => {
     if (props.data.profile) {
       console.log(props.data.profile);
-      setUser({...props.data, avatar: props.data.profile.picture ? props.data.profile.picture : 'https://i.ibb.co/R6W0jJp/avatar-7.png'});
+      setUser({...props.data, avatar: props.data.profile.picture ? props.data.profile.picture : 'https://i.imgur.com/08YLHX5.png'});
     }
   }, [props.data]);
 
