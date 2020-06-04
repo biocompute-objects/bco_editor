@@ -2,8 +2,9 @@
     <br> User name: admin@openboxbio.com
     <br>Password: biocompute
     
-    Admin dashboard: 
-    <br>[PIC]
+    Admin dashboard:
+    
+    ![https://gwu.box.com/s/8u8ybrtyf2zhu4l0n6gxlbxsycktelpf](image)
     
 3. Click on the “Users” link to view a list of all users.  Each user's email is hyperlinked to a page with detailed information on user.
     <br>List of Users Page: 
