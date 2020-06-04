@@ -38,6 +38,7 @@ export const setInitial = () => {
 	window.onhashchange = null;
 }
 
-export const getBcoNumber = (objectId) => {
-        return objectId.replace('http://portal.aws.biochemistry.gwu.edu/bco/', '')
+export const getBcoIdEncoding = (objectId) => {
+        //return encodeURIComponent(objectId)        
+        return objectId.replace('https://beta.portal.aws.biochemistry.gwu.edu/bco/', '')
 }

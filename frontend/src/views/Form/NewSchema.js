@@ -7,8 +7,8 @@ export default {
     "required": [
         "object_id",
         "spec_version",
-        "etag",
-        "provenance_domain",
+        "etag", 
+        "provenance_domain", 
         "usability_domain",
         "description_domain",
         "execution_domain",

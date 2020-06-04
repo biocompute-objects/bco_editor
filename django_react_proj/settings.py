@@ -24,9 +24,9 @@ SECRET_KEY = 'jg^$(lbjb*3-+cv(88ngpb4xb=6vbvxj*1i)%m!*c2(e_i6%b8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['biocomputeobject.org', '100.25.1.222']
+ALLOWED_HOSTS = ['beta.portal.aws.biochemistry.gwu.edu', '100.25.1.222']
 
-DEBUG = True
+DEBUG = False
 
 # Application definition
 
@@ -95,7 +95,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         # 'NAME': 'test',
-        'NAME': 'bcodb',
+        'NAME': 'beta_bcodb',
         'USER': '',
         'PASSWORD': '',
         # 'HOST': 'mongodb+srv://dbadmin:dbpassword@cluster0-rdqzb.mongodb.net/test?retryWrites=true&w=majority'
@@ -188,7 +188,7 @@ import mongoengine
 # mongodb+srv://dbadmin:dbpassword@cluster0-rdqzb.mongodb.net/test?retryWrites=true&w=majority
 
 mongoengine.connect(
-    db="bcodb",
+    db="beta_bcodb",
     host="localhost"
 )
 
@@ -198,19 +198,35 @@ mongoengine.connect(
 # SENDGRID_ECHO_TO_STDOUT=True
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 
+# e-Mail settings are explained at https://stackoverflow.com/questions/46053085/django-gmail-smtp-error-please-run-connect-first
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get("EMAIL_HOST")
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = os.environ.get("EMAIL_PORT")
-EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS")
-print(EMAIL_HOST_PASSWORD)
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'object.biocompute'
+EMAIL_HOST_PASSWORD = 'p0w3rCHOK!'
+#EMAIL_PORT = os.environ.get("EMAIL_PORT")
+EMAIL_USE_TLS = True
 
 DJANGO_ENVIRONMENT = os.environ.get("DJANGO_ENVIRONMENT") or "development"
-HOST_URL = ''
-if DJANGO_ENVIRONMENT == 'development':
-    HOST_URL = 'http://localhost:3000/'
-else:
-    HOST_URL = os.environ.get("HOST_URL") or "http://localhost:3000/"
+#HOST_URL = os.environ.get("HOST_URL")
+HOST_URL = 'https://' + ALLOWED_HOSTS[0] + '/'
+#if DJANGO_ENVIRONMENT == 'development':
+#    HOST_URL = 'http://localhost:3001/'
+#else:
+#    HOST_URL = os.environ.get("HOST_URL") or "http://localhost:3001/"
 
+# Logging
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}

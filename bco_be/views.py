@@ -21,6 +21,9 @@ import datetime
 import string
 import random
 
+# For parsing encoded URLs (BCO IDs).
+import urllib
+
 def random_generator(size=20, chars=string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for x in range(size))
 
@@ -53,10 +56,26 @@ class BcoObjectViewSet(meviewsets.ModelViewSet):
 	serializer_class = BcoObjectSerializer
 
 	def get_object(self):
-		object_id = self.kwargs.get('object_id')
+		print('anything')
+		incoming_object_id = self.kwargs.get('object_id')
+		print(incoming_object_id)
+		print('test')
 		# object_id = revise_object_id('/' + object_id)
-		object_id = 'http://portal.aws.biochemistry.gwu.edu/bco/' + object_id
-		return self.queryset.get(object_id=object_id)
+		incoming_object_id = 'https://beta.portal.aws.biochemistry.gwu.edu/bco/' + incoming_object_id
+		#incoming_object_id = 'https://beta.portal.aws.biochemistry.gwu.edu/bco/BCO_00098241'
+		# Parse the encoded URL (see https://stackoverflow.com/questions/52188784/pass-a-url-as-parameter-in-django-urls).
+		#incoming_object_id = urllib.parse.unquote(incoming_object_id)
+		print('where')
+		print(incoming_object_id)
+		print('here')
+		# For debugging only.
+		#file = open("ERROR.OUT","w") 
+ 
+		#file.write(object_id)
+		
+		#file.close()		
+		
+		return self.queryset.get(object_id=incoming_object_id)
 
 	def check_bco_embrago(self, provenance_domain, email):
 		if "embargo" in provenance_domain:

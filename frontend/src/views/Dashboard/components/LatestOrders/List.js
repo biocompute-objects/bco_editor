@@ -20,7 +20,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import Link from '@material-ui/core/Link';
-import { getBcoNumber } from 'service/utils';
+import { getBcoIdEncoding } from 'service/utils';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -344,7 +344,7 @@ export default function EnhancedTable(props) {
                       <TableCell>
                         <Link
                           component={RouterLink}
-                          to={`/bco/${getBcoNumber(row.object_id)}`}
+                          to={`/bco/${getBcoIdEncoding(row.object_id)}`}
                         >{row.object_id}</Link>
                       </TableCell>
                       <TableCell>{row.provenance_domain.name}</TableCell>

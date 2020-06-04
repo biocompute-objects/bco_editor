@@ -24,6 +24,8 @@ from django.conf.urls.static import static
 
 schema_view = get_swagger_view(title='API')
 
+# Necessary?  path('api/bco/<str:encoded_url>/', include('bco_be.urls')),
+
 urlpatterns = [
     path('api/', include('bco_be.urls')),
     url(r'^explorer/$', schema_view),
