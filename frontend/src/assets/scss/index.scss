@@ -19,6 +19,14 @@ a {
   text-decoration: none;
 }
 
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color:  #3f51b5
+}
+
 #root {
   height: 100%;
 }

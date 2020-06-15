@@ -59,10 +59,10 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundImage: 'url(https://i.ibb.co/cLmxB64/auth.jpg)',
+    backgroundImage: 'url(https://biocomputeobject.org/images/landing.5.png)',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'right'
+    backgroundPosition: 'center'
   },
   quoteInner: {
     textAlign: 'center',
@@ -257,14 +257,19 @@ const SignIn = props => {
           xs={12}
         >
           <div className={classes.content}>
-            <div className={classes.contentHeader}>
-            </div>
+            <div className={classes.contentHeader}> 
+           </div>
             <div className={classes.contentBody}>
               <form
                 className={classes.form}
                 onSubmit={handleSignIn}
               >
-                <Typography
+ 		<Typography
+             		variant='h3'
+           	>
+           		Welcome to the BCO Editor, a platform-free, web-based form for creating BioCompute Objects (BCOs). For more information, see the <a href='https://biocomputeobject.org/' target='_blank'>BioCompute Website</a>, the <a href='https://standards.ieee.org/standard/2791-2020.html' target='_blank'>official IEEE standard</a>, and the <a href='https://opensource.ieee.org/2791-object/ieee-2791-schema/' target='_blank'>open source repository</a> for all schema files.
+           	</Typography>
+		<Typography
                   className={classes.title}
                   variant="h2"
                 >
