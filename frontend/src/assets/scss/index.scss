@@ -27,6 +27,31 @@ a:visited {
   color:  #3f51b5
 }
 
+.topbar_link_div h6 {
+  float:  left;
+}
+
+a.topbar_link {
+  color:  #ffffff;
+  text-decoration:  underline;
+}
+
+a.topbar_link:visited {
+  color: #ffffff;
+}
+
+.svg_icons {
+  height: 19px !important;
+}
+
+.tutorial_image {
+  text-align:  center;
+}
+
+.tutorial_image img {
+  max-width:  1000px;
+}
+
 #root {
   height: 100%;
 }

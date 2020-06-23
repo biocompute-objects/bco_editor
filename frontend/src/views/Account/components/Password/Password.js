@@ -13,7 +13,9 @@ import {
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
-  root: {}
+  root: {
+    marginTop: '25px'
+  }
 }));
 
 const Password = props => {

@@ -210,7 +210,7 @@ const FormView = (props) => {
         let newId = await getNewObjectId();
         let _data = {
           object_id: newId.result.object_id,
-          spec_version: '1.4.0',
+          spec_version: 'https://w3id.org/ieee/ieee-2791-schema/',
           provenance_domain: {
             embargo: {},
             created: new Date().toISOString(),

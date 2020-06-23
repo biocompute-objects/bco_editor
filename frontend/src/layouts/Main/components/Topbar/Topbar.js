@@ -8,6 +8,7 @@ import { AppBar, Toolbar, Badge, Hidden, IconButton, Typography } from '@materia
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
+import LaunchIcon from '@material-ui/icons/Launch';
 import { logout } from 'service/user';
 import { onLink } from 'service/utils';
 
@@ -45,14 +46,27 @@ const Topbar = props => {
       className={clsx(classes.root, className)}
     >
       <Toolbar>
-        <Typography
-          className={classes.quoteText}
-          variant="h4"
-          onClick={onLink(router)}
-        >
-          BioCompute Editor 3.0.2
-        </Typography>
-        <div className={classes.flexGrow} />
+        <div>
+		<div>
+			<Typography
+          		className={classes.quoteText}
+          		variant="h4"
+          		onClick={onLink(router)}
+        		>
+          		BioCompute Portal 3.0.2
+        		</Typography>
+		</div>
+		<div class = 'topbar_link_div'>
+			<Typography
+			className={classes.quoteText}
+			variant="h6"
+			>
+			Conformant with <a class = 'topbar_link' href = 'https://opensource.ieee.org/2791-object/ieee-2791-schema/' target = '_blank'>IEEE 2791-2020</a>
+			</Typography>
+			<LaunchIcon className = 'svg_icons' />
+		</div>
+	</div>        
+	<div className={classes.flexGrow} />
         <Hidden mdDown>
           <IconButton color="inherit">
             <Badge
@@ -79,7 +93,7 @@ const Topbar = props => {
             <MenuIcon />
           </IconButton>
         </Hidden>
-      </Toolbar>
+	      </Toolbar>
     </AppBar>
   );
 };

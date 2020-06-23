@@ -73,8 +73,8 @@ class BcoObjectViewSet(meviewsets.ModelViewSet):
  
 		#file.write(object_id)
 		
-		#file.close()		
-		
+		#file.close()
+			
 		return self.queryset.get(object_id=incoming_object_id)
 
 	def check_bco_embrago(self, provenance_domain, email):
