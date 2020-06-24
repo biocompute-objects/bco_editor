@@ -209,6 +209,17 @@ const SignIn = props => {
     formState.touched[field] && formState.errors[field] ? true : false;
 
   const handleClose = () => setToastOpen(false);
+  
+  // Guest login.
+  const demoUserLogin = async event => {
+  
+  	// Log in with the guaranteed dummy credentials.
+  	let result = await login('demouser@demouser.com', 'demouser');
+  	setAuthToken(result.result.key);
+        let user = await getUserDetail();
+        setUserInfo(user.result);
+        history.push('/dashboard');
+  }
 
   return (
     <div className={classes.root}>
@@ -354,6 +365,17 @@ const SignIn = props => {
                   variant="contained"
                 >
                   Sign in now
+                </Button>
+                <Button
+                  className={classes.signInButton}
+                  color="primary"
+                  fullWidth
+                  onClick = {demoUserLogin}
+                  size="large"
+                  type="button"
+                  variant="contained"
+                >
+                  Sign in as Guest
                 </Button>
                 <Typography
                   color="textSecondary"

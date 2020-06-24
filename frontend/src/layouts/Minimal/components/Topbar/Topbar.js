@@ -33,7 +33,7 @@ const Topbar = props => {
             className={classes.quoteText}
             variant="h4"
           >
-            BioCompute Editor 3.0
+            BioCompute Editor 3.0.2
           </Typography>
         </RouterLink>
       </Toolbar>
