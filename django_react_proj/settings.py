@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'rest_framework_swagger'
 ]
-SITE_ID = 1
+SITE_ID = 2
 
 MIDDLEWARE = [
     # 'whitenoise.middleware.WhiteNoiseMiddleware',

@@ -424,6 +424,10 @@ export default {
                         "description": "resolving this URI should provide this extension's JSON Schema",
                         "type": "string",
                         "format": "uri"
+                    },
+                    "extension_example":{
+                        "description": "Paste the data for this extension.",
+                        "type": "string"
                     }
                 }
             }
