@@ -3,6 +3,8 @@ import { useParams } from "react-router";
 
 import { makeStyles } from '@material-ui/styles';
 import {
+    Card,
+    CardContent,
     Grid
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
@@ -13,16 +15,13 @@ import _data from './data';
 import { getBcoById } from 'service/bco';
 import { setInitial } from 'service/utils';
 
-// For creating the JSON table.
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+// For JSON trees.
+// Source:  https://dev.to/baso53/recursive-rendering-in-react-building-a-universal-json-renderer-f59
+import RecursiveComponent from 'react-json-component';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(1)
+    padding: theme.spacing(4)
   },
   preWrap: {
     whiteSpace: 'pre-wrap'
@@ -30,10 +29,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Detail = (props) => {
+
   const [ data, setData ] = useState(_data);
   let { id } = useParams();
   const history = useHistory();
   const classes = useStyles();
+
+  console.log('this.props')
+  console.log(props)
 
   useEffect(() => {
     setInitial();
@@ -42,7 +45,61 @@ const Detail = (props) => {
       props.updateLoading(true);
       let result = await getBcoById(id);
       if (result.status === 200) {
-        setData(result.result);
+        
+        // Re-arrange the object to ensure the proper field order.
+        var rearranged = {};
+
+        // Set the header keys.
+        rearranged['Object ID'] = result.result.object_id;
+        rearranged['Spec Version'] = result.result.spec_version;
+        rearranged['eTag'] = result.result.etag;
+
+        // Set the main keys.
+        rearranged['Description Domain'] = result.result.description_domain;
+        rearranged['Error Domain'] = result.result.error_domain;
+        rearranged['Execution Domain'] = result.result.execution_domain;
+        rearranged['Extension Domain'] = result.result.extension_domain;
+        rearranged['IO Domain'] = result.result.io_domain;
+        rearranged['Parametric Domain'] = result.result.parametric_domain;
+        rearranged['Provenance Domain'] = result.result.provenance_domain;
+        rearranged['Usability Domain'] = result.result.usability_domain;
+
+        // Go through all keys and replace any key with dashes with 
+        // a properly capitalized key.
+
+        // First, find which keys have this property of having dashes.
+        
+        // Define an array to hold the absolute paths.
+        var dashed_paths = [];
+        console.log(rearranged);
+
+        // Go over each path.
+        // Source: https://qvault.io/2019/09/22/thinking-about-recursion-how-to-recursively-traverse-json-objects-and-the-filesystem/
+        function capture_paths(obj) {
+          for (let k in obj) {
+
+            if (typeof obj[k] === "object") {
+              console.log('object here')
+
+              // If the object has a dash in its name,
+              // then append to dashed_paths.
+              //if(indexOf())
+
+              capture_paths(obj[k])
+            } else {
+              // base case, stop recurring
+              dashed_paths.push(obj[k]);
+            }
+          }
+        }
+
+        // Call the function.
+        capture_paths(rearranged)
+
+        // What did we get?
+        console.log(dashed_paths);
+
+        setData(rearranged);
       } else {
         // history.goBack();
         history.push('/dashboard');
@@ -51,6 +108,9 @@ const Detail = (props) => {
     }
     fetchData();
   }, []);
+
+  // For toggling object views.
+  // Source: https://material-ui.com/components/toggle-button/
 
   const onDownload = () => {
     const element = document.createElement("a");
@@ -61,126 +121,50 @@ const Detail = (props) => {
     element.click();
   }
 
-  // Define the meta information.
-  const object_id = data.object_id;
-  const etag = data.etag;
-  const spec_version = data.spec_version;
-
-  // Define each of the domains.
-  const provenance_domain = data.provenance_domain;
-
   return (
-    <div className={classes.root}>
-      <Grid
-        container
-        spacing={4}
-      >
-        <Grid
-          item
-          lg={12}
-          md={12}
-          xl={12}
-          xs={12}
-        >
-          <JsonView data={data} onDownload={onDownload} />
-        </Grid>
-        <Grid
-          item
-          lg={12}
-          md={12}
-          xl={12}
-          xs={12}
-        >
-          <PerfectScrollbar>
-          <Table
-            className={classes.table}
-          >
-            <TableBody>
-                <TableRow>
-                  <TableCell>Object ID</TableCell>
-                  <TableCell>eTag</TableCell>
-                  <TableCell>Spec Version</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>{object_id}</TableCell>
-                  <TableCell>{etag}</TableCell>
-                  <TableCell>{spec_version}</TableCell>
-                </TableRow>
-            </TableBody>
-          </Table>
-          <Table
-            className={classes.table}
-          >
-            <TableBody>
-                <TableRow>
-                  <TableCell className = 'domain-header'>Provenance Domain</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className = 'field'>Name</TableCell>
-                  <TableCell>{provenance_domain.name}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell class = 'field'>Version</TableCell>
-                  <TableCell>{provenance_domain.version}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell class = 'field'>Obsolete After</TableCell>
-                  <TableCell>DATE</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell class = 'field'>Embargo</TableCell>
-                  <TableCell colspan = '2'></TableCell>
-                  <TableCell>Created</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>Modified</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>DATE</TableCell>
-                  <TableCell>DATE</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>DATE</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>DATE</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Contributors</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Affiliation</TableCell>
-                  <TableCell>e-Mail</TableCell>
-                  <TableCell>ORCID</TableCell>
-                  <TableCell>Contribution</TableCell>
-                </TableRow>
-                {
-                  provenance_domain.contributors.map((contributor, i) => {
-
-                    // Return the information for each contributor.
-                    return(
-                      <TableRow key={i}>
-                        <TableCell></TableCell>
-                        <TableCell>{contributor.name}</TableCell>
-                        <TableCell>{contributor.affiliation}</TableCell>
-                        <TableCell>{contributor.email}</TableCell>
-                        <TableCell>{contributor.orcid}</TableCell>
-                        <TableCell>{contributor.orcid}</TableCell>
-                      </TableRow>
-
-                      )
-
-                  })
-                }
-                <TableRow>
-                  <TableCell>License</TableCell>
-                  <TableCell>{provenance_domain.license}</TableCell>
-                </TableRow>
-        </TableBody>
-          </Table>
-        </PerfectScrollbar>
-        </Grid>        
-      </Grid>
-    </div>
+        <div className={classes.root}>
+          <Grid
+                        container
+                        spacing={4}
+                        >
+            <Grid
+                            item
+                            lg={12}
+                            md={12}
+                            xl={12}
+                            xs={12}
+                            >
+              <JsonView data={data} onDownload={onDownload} />
+            </Grid>
+            <Grid
+                            item
+                            lg={12}
+                            md={12}
+                            xl={12}
+                            xs={12}
+                            >
+              <Card>
+                <CardContent>
+                <pre className={classes.preWrap}>
+                <RecursiveComponent
+                          property={data}
+                          propertyName="BCO Information"
+                          excludeBottomBorder={false}
+                          rootProperty={true} />
+                </pre>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent>
+                <pre className={classes.preWrap}>
+                    Raw BCO (JSON) <br />
+                    {JSON.stringify(data, null, 4)}
+                  </pre>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </div>
   );
 };
 

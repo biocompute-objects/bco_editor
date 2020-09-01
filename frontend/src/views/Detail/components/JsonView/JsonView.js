@@ -14,6 +14,10 @@ import EditIcon from '@material-ui/icons/Edit';
 import { getUserInfo } from 'service/user';
 import { getBcoIdEncoding } from 'service/utils';
 
+// For viewing options.
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+
 const useStyles = makeStyles((theme) => ({
   root: {},
   label: {
@@ -35,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
   },
   readOnly: {
     marginRight: theme.spacing(2)
+  },
+  isNotVisible: {    
+    display: 'none'
   }
 }));
 
@@ -48,6 +55,21 @@ function Header({ project, className, ...rest }) {
   const onEdit = () => {
     router.push(`/bco/${getBcoIdEncoding(rest.data.object_id)}/form`);
   }
+
+  // For viewing options.
+  const [view_type, setViewType] = React.useState('raw');
+
+  const changeView = (event, viewType) => {
+    
+    // Make sure at least one button is active.
+    if (viewType !== null) {
+
+      // Update the state.
+      setViewType(viewType);
+
+    }
+
+  };
 
   useEffect(() => {
     if (rest.data.id && user) {
@@ -109,7 +131,20 @@ function Header({ project, className, ...rest }) {
           : <Typography variant="body1" component="body1" className={classes.readOnly}>
               Read Only
             </Typography>
-          }          
+          }
+          {/*<ToggleButtonGroup
+            value={view_type}
+            exclusive
+            onChange={changeView}
+            aria-label="View Type"
+          >
+            <ToggleButton value="raw" aria-label="raw">
+              Raw
+            </ToggleButton>
+            <ToggleButton value="tree" aria-label="tree">
+              Tree
+            </ToggleButton>
+          </ToggleButtonGroup>*/}
           <Button
             className={classes.applyButton}
             variant="contained"
