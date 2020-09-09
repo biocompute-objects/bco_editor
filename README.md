@@ -9,10 +9,10 @@ Software requirement
 * Any linux operating system 
 * MongoDB Community or Enterprise version
 
-Choose your instalation
+Choose your installation
 ====================
-### [BioCompute Editor Setup: CentOS instalation](./docs/centos.md)
-### [BioCompute Editor Setup: Ubuntu instalation](./docs/ubuntu.md)
+### [BioCompute Editor Setup: CentOS installation](./docs/centos.md)
+### [BioCompute Editor Setup: Ubuntu installation](./docs/ubuntu.md)
 
 ### Other Links
 BioCompute Partnership: http://biocomputeobject.org
