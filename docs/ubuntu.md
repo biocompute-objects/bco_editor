@@ -1,5 +1,5 @@
-# BioCompute Editor Setup: Ubuntu instalation
-For CentOS instalation [click here](./centos.md)
+# BioCompute Editor Setup: Ubuntu installation
+For CentOS installation [click here](./centos.md)
 
 ### 1. install http server
 `sudo apt update`
