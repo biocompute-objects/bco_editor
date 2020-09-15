@@ -60,9 +60,9 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundImage: 'url(https://biocomputeobject.org/images/landing.5.png)',
-    backgroundSize: 'cover',
+    backgroundSize: '700px',
     backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center'
+    backgroundPosition: 'right center'
   },
   quoteInner: {
     textAlign: 'center',

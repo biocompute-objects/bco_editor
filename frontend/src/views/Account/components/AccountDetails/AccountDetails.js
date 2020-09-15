@@ -30,7 +30,8 @@ const AccountDetails = props => {
     city: '',
     phone_number: '',
     state: '',
-    country: 'USA'
+    country: 'USA',
+    orcid: ''
   });
 
   useEffect(() => {
@@ -45,7 +46,8 @@ const AccountDetails = props => {
         city: data.profile.city,
         phone_number: data.profile.phone_number,
         state: data.profile.state,
-        country: 'USA'
+        country: 'USA',
+        orcid: data.profile.orcid
       });
     }
   }, [props.data])
@@ -58,7 +60,7 @@ const AccountDetails = props => {
   };
 
   const onSave = () => {
-    let data = {...values, profile: { address: values.address, city: values.city, phone_number: values.phone_number, state: values.state }};
+    let data = {...values, profile: { address: values.address, city: values.city, phone_number: values.phone_number, state: values.state, orcid: values.orcid }};
     props.update(data);
   }
 
@@ -205,6 +207,21 @@ const AccountDetails = props => {
                 onChange={handleChange}
                 required
                 value={values.country}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                fullWidth
+                label="ORCID"
+                margin="dense"
+                name="orcid"
+                onChange={handleChange}
+                value={values.orcid}
                 variant="outlined"
               />
             </Grid>

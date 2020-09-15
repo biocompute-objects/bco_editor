@@ -61,7 +61,7 @@ class BcoObjectSerializer(DynamicDocumentSerializer):
 class UserProfileSerializer(origin_serializers.ModelSerializer):
 	class Meta:
 		model = UserProfile
-		fields = ('phone_number', 'address', 'city', 'state', 'picture')
+		fields = ('phone_number', 'address', 'city', 'state', 'picture', 'orcid')
 
 class UserSerializer(origin_serializers.HyperlinkedModelSerializer):
 	profile = UserProfileSerializer(required=True)
@@ -100,6 +100,7 @@ class UserSerializer(origin_serializers.HyperlinkedModelSerializer):
 		profile.city = profile_data.get('city', profile.city)
 		profile.state = profile_data.get('state', profile.state)
 		profile.picture = profile_data.get('picture', profile.picture)
+		profile.orcid = profile_data.get('orcid', profile.orcid)
 		profile.save()
 
 		return instance
