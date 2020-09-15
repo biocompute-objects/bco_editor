@@ -5,3 +5,4 @@ env/
 .env
 frontend/build/
 django_react_proj/settings.py
+frontend/src/service/utils.js

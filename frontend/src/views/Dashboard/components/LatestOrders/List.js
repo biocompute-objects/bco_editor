@@ -273,7 +273,7 @@ export default function EnhancedTable(props) {
     let users = [];
     province.contributors.forEach(item => {
       if (item.contribution.includes('createdBy')) {
-        users.push(item.email);
+        users.push(item.name);
       }
     });
     return users.join(', ');
@@ -283,7 +283,7 @@ export default function EnhancedTable(props) {
     let users = [];
     province.contributors.forEach(item => {
       if (!item.contribution.includes('createdBy')) {
-        users.push(item.email);
+        users.push(item.name);
       }
     });
     return users.join(', ');
