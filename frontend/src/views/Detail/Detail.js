@@ -114,7 +114,27 @@ const Detail = (props) => {
 
   const onDownload = () => {
     const element = document.createElement("a");
-    const file = new Blob([JSON.stringify(data, null, 4)], {type: 'text/plain'});
+
+    // Alter the data so that the download is correct.
+    // Re-arrange the object to ensure the proper field order.
+    var downloadable = {};
+
+    // Set the header keys.
+    downloadable['object_id'] = data['Object ID'];
+    downloadable['spec_version'] = data['Spec Version'];
+    downloadable['etag'] = data['eTag'];
+
+    // Set the main keys.
+    downloadable['description_domain'] = data['Description Domain'];
+    downloadable['error_domain'] = data['Error Domain'];
+    downloadable['execution_domain'] = data['Execution Domain'];
+    downloadable['extension_domain'] = data['Extension Domain'];
+    downloadable['io_domain'] = data['IO Domain'];
+    downloadable['parametric_domain'] = data['Parametric Domain'];
+    downloadable['provenance_domain'] = data['Provenance Domain'];
+    downloadable['usability_domin'] = data['Usability Domain'];
+
+    const file = new Blob([JSON.stringify(downloadable, null, 4)], {type: 'text/plain'});
     element.href = URL.createObjectURL(file);
     element.download = `bco_${id}.txt`;
     document.body.appendChild(element); // Required for this to work in FireFox
