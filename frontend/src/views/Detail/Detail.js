@@ -177,7 +177,6 @@ const Detail = (props) => {
               <Card>
                 <CardContent>
                 <pre className={classes.preWrap}>
-                    Raw BCO (JSON) <br />
                     {JSON.stringify(data, null, 4)}
                   </pre>
                 </CardContent>
