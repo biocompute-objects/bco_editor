@@ -672,17 +672,16 @@ systemctl enable nginx
 systemctl restart nginx
 ```
 
+### Set up frontend:
+Copy the frontend project to `/var/www`
+
+`sudo cp -rf ~/bco_editor/frontend /var/www/frontend`
+
 ### Adjust Permissions
 
-### 9. Check website
-- frontend:
-	`http(s)://domain/`
-- admin:
-	`http(s)://domain/admin`
+### 9. Adjust permissions [MOVE TO DOWN BELOW]
 
 [REMOVE portal_user from WHEEL AFTER DONE INSTALLING EVERYTHING]
-
-### 2. Adjust permissions [MOVE TO DOWN BELOW]
 
 There are several permissions that need to be adjusted in order for the server to run.
 
@@ -730,11 +729,11 @@ For the following steps, `centos` should be replaced with what ever your user na
 
 # Building and deploying BCOS
 
-
-### 5. Set up frontend:
-Copy the frontend project to `/var/www`
-
-`sudo cp -rf ~/bco_editor/frontend /var/www/frontend` 
+### 10. Check website
+- frontend:
+	`http(s)://domain/`
+- admin:
+	`http(s)://domain/admin` 
 
 
 
