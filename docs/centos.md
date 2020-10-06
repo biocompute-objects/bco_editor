@@ -330,7 +330,7 @@ cd /home/portal_user/bco_editor/
 git clone https://github.com/biocompute-objects/bco_editor
 ```
 
-This step just clones the **source code** for the editor, but we will still need to **build** the code to use BCOS (Part II of this guide).
+This step just clones the **source code** for the editor, but we will still need to **build** the code to use BCOS (next step).
 
 
 ### 4. Create a virtual environment and install dependencies
