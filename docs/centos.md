@@ -35,13 +35,13 @@ These instructions are for the <a href="https://aws.amazon.com/marketplace/pp/Ce
 First we need to create a user, portal_user, specifically for running BCOS, 
 
 ```
-useradd portal_user
+sudo useradd portal_user
 ```
 
 then we need to set the password, 
 
 ```
-passwd portal_user
+sudo passwd portal_user
 ```
 
 Now that we have our portal user, we need to add them to the group that is allowed to operate with root permissions, 
@@ -55,7 +55,7 @@ Note the "-a" flag in the above command - we want to append this user to the whe
 Log out and back in of the terminal.  Once you've done this, you can switch to the portal user to perform all of our installation steps, 
 
 ```
-su -u portal_user
+su - portal_user
 ```
 
 #### Directories
@@ -74,10 +74,15 @@ mkdir /home/portal_user/bco_editor/
 **/var/www/html/portal/**
 **Purpose:**  The directory to house the **built** frontend for BCOS.
 
-Create the directory, 
+Create the directory (usually has to be done level-by-level), 
 
 ```
-mkdir /var/www/html/portal/
+sudo cd var
+sudo mkdir www
+sudo cd www
+sudo mkdir html
+sudo cd html
+sudo mkdir portal
 ```
 
 Now that we have the necessary directories, we can begin installing dependencies.
@@ -94,22 +99,26 @@ Vim is a text editor that uses keyboard shortcuts to edit text files.  You don't
 Install vim, 
 
 ```
-yum install vim
+sudo yum install vim
 ```
 
 #### Python 3
 
-Reference URL:
-https://codingpaths.com/deploy-django-application-with-uwsgi-and-nginx-on-centos/
+Reference URL: https://codingpaths.com/deploy-django-application-with-uwsgi-and-nginx-on-centos/
+Reference URL: https://ius.io/setup
 
-The Python installation requires several dependencies for Python itself,
+The Python installation requires several dependencies for Python itself.  However, we need to make sure we are pointing to the right CentOS repository to get these dependencies,
 
 ```
-sudo yum install -y https://centos7.iuscommunity.org/ius-release.rpm
+sudo yum install https://repo.ius.io/ius-release-el7.rpm https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 sudo yum update
+```
+
+Finally, install the Python packages,
+
+```
 sudo yum install -y python36u python36u-libs python36u-devel python36u-pip python-devel
 ```
-
 
 #### nginx (HTTP Server)
 
@@ -225,40 +234,76 @@ This error is what we want to see because it shows us that virtualenv is being c
 
 MongoDB is the database used with Django to store the actual BioCompute objects.  Configuration of the database can be quite complex, but in the default installation, which we are performing here, anyone can read and write.
 
-Reference URL:
-https://www.attosol.com/how-to-install-mongodb-in-aws-linux-step-by-step/
+MongoDB sometimes has trouble keeping their repositories square with CentOS, so we will manually install MongoDB here.
 
-Any time you call vim with a file name for a file that doesn't exist, it automatically creates the file for you.  Thus, even though the command below to create MongoDB repository file refers to a file that doesn't exist, we can still edit the file as if it does and simply save our work to create it.
-
-A repository file is simply instructions to an installer telling it where to find the package we're looking for.  We will create the repository file then tell our installer to use it.
-
-Create the repository file, 
+First, make sure we have wget (a utility for downloading things via the command line),
 
 ```
-vim /etc/yum.repos.d/mongodb-org-4.2.rep
+sudo yum install wget
 ```
 
-Press the "I" key to enter insert mode, then type in the following, 
+Now make sure we are in our home directory,
 
 ```
-[mongodb-org-4.2]
-name=MongoDB Repository
-baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.2/x86_64/
-gpgcheck=1
-enabled=1
-gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc
+cd ~
 ```
 
-After you’ve done this, press the ESC key, type “:w” (for write file), then type “:q” (for quit); type each command without the quotation marks as shown here.
-
-Now we can install MongoDB by typing
+Download all of the components of the MongoDB install (current as of 10/6/20),
 
 ```
-yum install mongodb-org
+wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-cli-1.6.0.x86_64.rpm
+wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-4.2.9-1.el7.x86_64.rpm
+wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-mongos-4.2.9-1.el7.x86_64.rpm
+wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-server-4.2.9-1.el7.x86_64.rpm
+wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-shell-4.2.9-1.el7.x86_64.rpm
+wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-tools-4.2.9-1.el7.x86_64.rpm
 ```
 
+Install using RPM (the zipped package utility in CentOS),
 
+```
+rpm -Uvh mongodb-org-server-4.2.9-1.el7.x86_64.rpm
+rpm -Uvh mongodb-org-shell-4.2.9-1.el7.x86_64.rpm
+rpm -Uvh mongodb-org-mongos-4.2.9-1.el7.x86_64.rpm
+rpm -Uvh mongodb-org-tools-4.2.9-1.el7.x86_64.rpm
+rpm -Uvh mongodb-org-4.2.9-1.el7.x86_64.rpm
+```
 
+We can check for a successful install by typing "mongodb" in the terminal,
+
+```
+[user@hostname ~]$ mongo
+MongoDB shell version v4.2.6
+connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("52c6fd2d-9c3b-4deb-823a-578b49abe6c6") }
+MongoDB server version: 4.2.6
+Server has startup warnings: 
+2020-05-14T15:46:47.145+0000 I  CONTROL  [initandlisten] 
+2020-05-14T15:46:47.145+0000 I  CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2020-05-14T15:46:47.145+0000 I  CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2020-05-14T15:46:47.145+0000 I  CONTROL  [initandlisten] 
+2020-05-14T15:46:47.146+0000 I  CONTROL  [initandlisten] 
+2020-05-14T15:46:47.146+0000 I  CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/enabled is 'always'.
+2020-05-14T15:46:47.146+0000 I  CONTROL  [initandlisten] **        We suggest setting it to 'never'
+2020-05-14T15:46:47.146+0000 I  CONTROL  [initandlisten] 
+2020-05-14T15:46:47.146+0000 I  CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/defrag is 'always'.
+2020-05-14T15:46:47.146+0000 I  CONTROL  [initandlisten] **        We suggest setting it to 'never'
+2020-05-14T15:46:47.146+0000 I  CONTROL  [initandlisten] 
+---
+Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+and anyone you share the URL with. MongoDB may use this information to make product
+improvements and to suggest MongoDB products and deployment options to you.
+
+To enable free monitoring, run the following command: db.enableFreeMonitoring()
+To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+
+> 
+
+```
 
 #### gunicorn
 
@@ -273,7 +318,7 @@ sudo pip3 install gunicorn
 We need the git command line tools in order to clone the repository.  Simply run the yum installer, 
 
 ```
-yum install git
+sudo yum install git
 ```
 
 ### 3. Clone the BCOS repository
@@ -295,7 +340,7 @@ This step just clones the **source code** for the editor, but we will still need
 Make sure we're in the right directory, then create the virtual environment, 
 
 ```
-cd /home/portal_user/bco_editor/
+cd /home/portal_user/
 virtualenv env
 ```
 
@@ -310,13 +355,13 @@ source env/bin/activate
 You should now see the (env) prefix in bash, 
 
 ```
-$[user@12.34.56.78](env)
+(env)[user@hostname]$
 ```
 
 Next we want to install everything into our virtual environment that we'll need to run Django.  Start by installing the requirements, 
 
 ```
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 There should now be a folder named /home/portal_user/bco_editor/django_react_proj.  This is the folder that holds Django.
@@ -350,7 +395,7 @@ We want to increase the workload that MongoDB can take on at any one time.  We d
 Create the MongoDB configuration file, 
 
 ```
-vim /etc/security/limits.d/mongo_limits.conf
+sudo vim /etc/security/limits.d/mongo_limits.conf
 ```
 
 Press the “I” key to enter insert mode, then type in the following, 
@@ -420,7 +465,7 @@ gunicorn uses a [socket](https://en.wikipedia.org/wiki/Unix_domain_socket) to re
 Create the socket file, 
 
 ```
-vim /etc/systemd/system/gunicorn.socket
+sudo vim /etc/systemd/system/gunicorn.socket
 ```
 
 Press the "I" key to enter insert mode.  Now add the lines below tell the socket where to listen for instructions, 
@@ -443,7 +488,7 @@ Now that we have the socket defined, we can actually tell gunicorn what to do wh
 Create the service file, 
 
 ```
-vim /etc/systemd/system/gunicorn.service
+sudo vim /etc/systemd/system/gunicorn.service
 ```
 
 Press the “I” key to enter insert mode. Now add the lines below to define the service,
@@ -520,7 +565,7 @@ In general, it is best practice to create a custom configuration file for each w
 Open the default configuration file, 
 
 ```
-vim /etc/nginx/nginx.conf
+sudo vim /etc/nginx/nginx.conf
 ```
 
 Press the “I” key to enter insert mode.  Comment out the default server lines, ending up with something like this (only the server section is shown here):
@@ -554,7 +599,7 @@ After you’ve done this, press the ESC key, type “:w” (for write file), the
 Now that the default server is no longer configured, let's create our custom configuration file,
 
 ```
-vim /etc/nginx/conf.d/biocompute.conf
+sudo vim /etc/nginx/conf.d/biocompute.conf
 ```
 
 Press the “I” key to enter insert mode. Now add the lines below to define the service, noting that the "server_name" lines should have the same values as the "ALLOWED_HOSTS = ['portal.aws.biochemistry.gwu.edu', '10.201.0.255']" line in /home/portal_user/bco_editor/django_react_proj/settings.py, 
@@ -618,17 +663,21 @@ There are a few things to note about the above configuration file.  First, the c
 
 We'll briefly go through the steps here for an unsigned certificate, adopted from [Linux.com](https://www.linux.com/training-tutorials/creating-self-signed-ssl-certificates-apache-linux/).
 
-Navigate to the SSL directory, 
+Navigate to our home directory, 
 
 ```
-cd /etc/ssl/
+cd ~
 ```
 
 Generate a Certificate Signing Request (CSR) named after your domain and fill the fields out with the relevant information when prompted, 
 
 ```
-openssl req -new > portal.aws.biochemistry.gwu.edu.csr
+sudo openssl req -new > [IP that was used in /home/portal_user/bco_editor/django_react_proj/settings.py OR the domain name of the server]
+Ex: sudo openssl req -new > 12.34.56.78
+Ex: sudo openssel req -new > portal.aws.biochemistry.gwu.edu
 ```
+
+Fill out the prompts for the certificate information.
 
 Now we want to create our (unsigned) certificate with our domain, 
 
@@ -640,14 +689,14 @@ openssl x509 -in portal.aws.biochemistry.gwu.edu.csr -out portal.aws.biochemistr
 Lastly, move the certificate and the key to their respective locations, 
 
 ```
-mv portal.aws.biochemistry.gwu.edu.crt ./certs/
-mv portal.aws.biochemistry.gwu.edu.key ./private/
+sudo mv portal.aws.biochemistry.gwu.edu.crt /etc/pki/tls/certs/
+sudo mv portal.aws.biochemistry.gwu.edu.key /etc/pki/tls/private/
 ```
 
 Since we haven't built our source yet, there won't be anything in /var/www/html/portal/ - specifically, there will not be an index.html file to serve.  Let's create a dummy index page just to test the configuration, 
 
 ```
-vim /var/www/html/portal/index.html
+sudo vim /var/www/html/portal/index.html
 ```
 
 
@@ -671,6 +720,8 @@ If there are no errors, enable nginx, then restart the server,
 systemctl enable nginx
 systemctl restart nginx
 ```
+
+If you get errors about starting nginx and PID, see https://www.cloudinsidr.com/content/heres-fix-nginx-error-failed-read-pid-file-linux/
 
 ### Set up frontend:
 Copy the frontend project to `/var/www`
