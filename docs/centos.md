@@ -384,6 +384,20 @@ Create an administrative account for Django.  This step will ask you for several
 python3 manage.py createsuperuser
 ```
 
+### Run the build/deploy shell script
+
+The git repository comes with a shell script to build and deploy the server for you.  You'll probably need to add execute permissions to the script,
+
+```
+chmod +x ./build_deploy.sh
+```
+
+Now run the script,
+
+```
+sudo ./build_deploy.sh --prod
+```
+
 ### 4. Configurations and starting programs
 
 We need to configure all of the programs we've installed.  Once we have workable configuration files, we'll try to start each program.
@@ -455,8 +469,6 @@ ALLOWED_HOSTS = ['portal.aws.biochemistry.gwu.edu', '10.201.0.255']
 ```
 
 After you’ve done this, press the ESC key, type “:w” (for write file), then type “:q” (for quit); type each command without the quotation marks as shown here.
-
-
 
 #### gunicorn
 
@@ -741,11 +753,6 @@ systemctl restart nginx
 ```
 
 If you get errors about starting nginx and PID, see https://www.cloudinsidr.com/content/heres-fix-nginx-error-failed-read-pid-file-linux/
-
-### Set up frontend:
-Copy the frontend project to `/var/www`
-
-`sudo cp -rf ~/bco_editor/frontend /var/www/frontend`
 
 ### Adjust Permissions
 
