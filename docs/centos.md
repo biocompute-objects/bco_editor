@@ -754,47 +754,49 @@ systemctl restart nginx
 
 If you get errors about starting nginx and PID, see https://www.cloudinsidr.com/content/heres-fix-nginx-error-failed-read-pid-file-linux/
 
-### Adjust Permissions
-
 ### 9. Adjust permissions
 
-There are several permissions that need to be adjusted in order for the server to run.
+There are several permissions that need to be adjusted in order for the server to run.  For the following steps, `centos` should be replaced with what ever your user name is.
 
-### 8. Grant user permission to access assets and media files.
-For the following steps, `centos` should be replaced with what ever your user name is.
+The current user needs to be added to the nginx group.
 
-1. The current user needs to be added to nginx group.
+```
+sudo usermod -aG nginx centos
+```
 
-	- `sudo usermod -aG nginx centos`
+Now update the permissions in the project folder.  First, change directories to the project folder.
 
-2. Grant access to assets and media.
+```
+cd ~/bco_editor
+```
+
+Make sure the ownership for all files is correct,
 	
-	- go to project folder:
+```
+sudo chown centos:nginx * -R
+```
 
-	`cd ~/bco_editor`
-	
-	- Give nginx ownership of all the files, recursively. 
+Change permissions to allow the right access to the media and static folders,
 
-	`sudo chown centos:nginx * -R`
-	
-	- Modify access levels for all `media` files
-	
-	`sudo chmod 775 media -R`
+```
+sudo chmod 775 media -R
+sudo chmod 775 static -R
+```
 
-	- Modify access levels for all `static` files
-	
-	`sudo chmod 775 static -R`
+Finally, remove portal_user from the "wheel" group,
 
-3.  Remove portal_user from wheel.
-
-
-# Building and deploying BCOS
+```
+sudo gpasswd -d portal_user wheel
+```
 
 ### 10. Check website
-- frontend:
-	`http(s)://domain/`
-- admin:
-	`http(s)://domain/admin` 
+
+Open a browser and navigate to the IP or domain set for your website in ~/bco_editor/django_react_proj/settings.py,
+
+```
+http(s)://domain/
+http(s)://domain/admin
+```
 
 
 
