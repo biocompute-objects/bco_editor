@@ -714,27 +714,7 @@ Now we have a file to test.  Check nginx for configuration errors,
 nginx -t
 ```
 
-If there are no errors, enable nginx, then restart the server, 
-
-```
-systemctl enable nginx
-systemctl restart nginx
-```
-
-If you get errors about starting nginx and PID, see https://www.cloudinsidr.com/content/heres-fix-nginx-error-failed-read-pid-file-linux/
-
-### Set up frontend:
-Copy the frontend project to `/var/www`
-
-`sudo cp -rf ~/bco_editor/frontend /var/www/frontend`
-
-### Adjust Permissions
-
-### 9. Adjust permissions [MOVE TO DOWN BELOW]
-
-[REMOVE portal_user from WHEEL AFTER DONE INSTALLING EVERYTHING]
-
-There are several permissions that need to be adjusted in order for the server to run.
+If there are no errors, proceed to adjust the server access policy.
 
 #### Adjust the SELinux security policy
 
@@ -753,6 +733,26 @@ If for some reason you are still getting permission errors, you can, **as a last
 sudo setenforce 0
 ```
 
+Enable nginx and restart the server.
+
+```
+systemctl enable nginx
+systemctl restart nginx
+```
+
+If you get errors about starting nginx and PID, see https://www.cloudinsidr.com/content/heres-fix-nginx-error-failed-read-pid-file-linux/
+
+### Set up frontend:
+Copy the frontend project to `/var/www`
+
+`sudo cp -rf ~/bco_editor/frontend /var/www/frontend`
+
+### Adjust Permissions
+
+### 9. Adjust permissions
+
+There are several permissions that need to be adjusted in order for the server to run.
+
 ### 8. Grant user permission to access assets and media files.
 For the following steps, `centos` should be replaced with what ever your user name is.
 
@@ -760,7 +760,7 @@ For the following steps, `centos` should be replaced with what ever your user na
 
 	- `sudo usermod -aG nginx centos`
 
-2. grant access to assets and media.
+2. Grant access to assets and media.
 	
 	- go to project folder:
 
@@ -777,6 +777,9 @@ For the following steps, `centos` should be replaced with what ever your user na
 	- Modify access levels for all `static` files
 	
 	`sudo chmod 775 static -R`
+
+3.  Remove portal_user from wheel.
+
 
 # Building and deploying BCOS
 
