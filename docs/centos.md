@@ -349,7 +349,7 @@ This step just clones the **source code** for the editor, but we will still need
 Make sure we're in the right directory, then create the virtual environment, 
 
 ```
-cd /home/portal_user/
+cd ~
 virtualenv env
 ```
 
