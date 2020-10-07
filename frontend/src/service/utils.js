@@ -7,7 +7,7 @@ export const onLink = (router, toLink='/') => () => {
       router.push(toLink)  
     }
   } else {
-    
+//console.log(toLink);    
 	// Re-direct for external GitHub link.
 	if(toLink.indexOf('http') != -1) {
 		
@@ -39,6 +39,7 @@ export const setInitial = () => {
 }
 
 export const getBcoIdEncoding = (objectId) => {
-        //return encodeURIComponent(objectId)        
+        //return encodeURIComponent(objectId)
+        //console.log(objectId);        
         return objectId.replace('https://beta.portal.aws.biochemistry.gwu.edu/bco/', '')
 }

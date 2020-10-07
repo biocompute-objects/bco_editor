@@ -105,8 +105,15 @@ class BcoObjectViewSet(meviewsets.ModelViewSet):
 		result = []
 
 		for bco in all_bcos:
-			provenance_domain = bco['provenance_domain']
-			if self.check_bco_embrago(provenance_domain, user.email):
+			if 'provenance_domain' in bco:
+
+				# IEEE-compliant objects.
+				provenance_domain = bco['provenance_domain']
+				if self.check_bco_embrago(provenance_domain, user.email):
+					result.append(self.get_serializer(bco).data)
+			else:
+
+				# Legacy objects
 				result.append(self.get_serializer(bco).data)
 
 		return Response(result)

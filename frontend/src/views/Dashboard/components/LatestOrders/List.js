@@ -289,6 +289,16 @@ export default function EnhancedTable(props) {
     return users.join(', ');
   }
 
+  const processLegacy = (incoming_object_id) => {
+
+    // Does the object contain the legacy URL?
+    if (incoming_object_id.substring(0, 11) == 'https://www') {
+      return ['true', incoming_object_id];
+    } else {
+      return ['false', '/bco/' + getBcoIdEncoding(incoming_object_id)];
+    }
+  }
+
   const isSelected = id => selected.indexOf(id) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -336,16 +346,16 @@ export default function EnhancedTable(props) {
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
-                        <Checkbox
+                      {processLegacy(`${row.object_id}`)[0] == 'false' && <Checkbox
                           checked={isItemSelected}
                           inputProps={{ 'aria-labelledby': labelId }}
-                        />
+                        />}
                       </TableCell>
                       <TableCell>
-                        <Link
+                      {processLegacy(`${row.object_id}`)[0] == 'true' ? <Link href={`${row.object_id}`} target="_blank">{row.object_id}</Link> : <Link
                           component={RouterLink}
-                          to={`/bco/${getBcoIdEncoding(row.object_id)}`}
-                        >{row.object_id}</Link>
+                          to={processLegacy(`${row.object_id}`)[1]}
+                        >{row.object_id}</Link>}
                       </TableCell>
                       <TableCell>{row.provenance_domain.name}</TableCell>
                       <TableCell>{moment(row.provenance_domain.created).format('MM/DD/YYYY')}</TableCell>

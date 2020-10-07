@@ -18,6 +18,9 @@ import ArrayFieldTemplate from './ArrayFieldTemplate';
 import { setFormChanged, getFormChanged, setInitial } from 'service/utils';
 // import { KeyboardDateTimePicker } from '@material-ui/pickers'
 
+// For external links.
+import Link from '@material-ui/core/Link';
+
 function getModalStyle() {
   const top = 50;
   const left = 50;
@@ -156,6 +159,7 @@ function ObjectFieldTemplate(props) {
           {props.title && <Tooltip title={props.description || ''} placement="right-start">
             <InfoIcon />
           </Tooltip>}
+         <Link href="https://biocomputeobject.org/BCO_referenceguide.pdf" target="_blank">BCO Field Reference</Link>
         </ListItemText>
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItem>

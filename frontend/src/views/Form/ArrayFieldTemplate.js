@@ -20,6 +20,9 @@ import InfoIcon from '@material-ui/icons/Info';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
+// For external links.
+import Link from '@material-ui/core/Link';
+
 const useStyles = makeStyles(theme => ({
   itemTitle: {
     display: 'flex',
@@ -82,6 +85,7 @@ const ArrayFieldTitle = ({
         <Tooltip title={description} placement="right-start">
           <InfoIcon />
         </Tooltip>
+       <Link href="https://biocomputeobject.org/BCO_referenceguide.pdf" target="_blank">BCO Field Reference</Link>
       </Typography>
       {open ? <ExpandLess /> : <ExpandMore />}
     </div>
