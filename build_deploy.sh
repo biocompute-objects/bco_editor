@@ -25,8 +25,10 @@ exit 1
 
 fi
 
-# Get rid of the build folder.
-rm -rf build
+# Get rid of the build folder if it exists.
+if [ -d "build"  ]; then
+    rm -rf build
+fi
 
 # Install node packages, then build.
 # The install command has to be run with sudo?, see https://github.com/sass/node-sass/issues/2264
