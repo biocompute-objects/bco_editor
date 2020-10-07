@@ -330,6 +330,15 @@ We need the git command line tools in order to clone the repository.  Simply run
 sudo yum install git
 ```
 
+#### npm
+
+NPM is a package manger for node.js, which is the primary language used to make the portal.
+
+```
+curl -sL https://rpm.nodesource.com/setup_lts.x | sudo bash -
+sudo yum install -y nodejs
+```
+
 ### 3. Clone the BCOS repository
 
 The project directory for BCOS is /home/portal_user/bco_editor/.  We need to clone the github repository so that we can test our configurations in the next several steps.  Navigate to /home/portal_user/bco_editor/, then clone the git repository, 
