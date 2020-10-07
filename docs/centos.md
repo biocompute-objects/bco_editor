@@ -699,7 +699,7 @@ cd ~
 Generate a Certificate Signing Request (CSR) named after your domain and fill the fields out with the relevant information when prompted, 
 
 ```
-sudo openssl req -new > [IP that was used in /home/portal_user/bco_editor/django_react_proj/settings.py OR the domain name of the server]
+sudo openssl req -new > [IP that was used in /home/portal_user/bco_editor/django_react_proj/settings.py OR the domain name of the server].csr
 Ex: sudo openssl req -new > 12.34.56.78
 Ex: sudo openssl req -new > portal.aws.biochemistry.gwu.edu
 ```
