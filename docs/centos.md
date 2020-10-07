@@ -541,14 +541,14 @@ After you’ve done this, press the ESC key, type “:w” (for write file), the
 Now that we have a configuration file, let's try to start the service.  Enable the socket and the service, 
 
 ```
-systemctl enable gunicorn.socket
-systemctl enable gunicorn.service
+sudo systemctl enable gunicorn.socket
+sudo systemctl enable gunicorn.service
 ```
 
 Try to start gunicorn, 
 
 ```
-systemctl start gunicorn.service
+sudo systemctl start gunicorn.service
 ```
 
 Check the status of gunicorn to make sure it's running without errors, 
