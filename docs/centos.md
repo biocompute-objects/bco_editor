@@ -268,7 +268,7 @@ wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-c
 Install using RPM (the zipped package utility in CentOS),
 
 ```
-rpm -Uvh mongodb-org-server-4.2.9-1.el7.x86_64.rpm mongodb-org-shell-4.2.9-1.el7.x86_64.rpm mongodb-org-mongos-4.2.9-1.el7.x86_64.rpm mongodb-org-tools-4.2.9-1.el7.x86_64.rpm mongodb-org-4.2.9-1.el7.x86_64.rpm
+sudo rpm -Uvh mongodb-org-server-4.2.9-1.el7.x86_64.rpm mongodb-org-shell-4.2.9-1.el7.x86_64.rpm mongodb-org-mongos-4.2.9-1.el7.x86_64.rpm mongodb-org-tools-4.2.9-1.el7.x86_64.rpm mongodb-org-4.2.9-1.el7.x86_64.rpm
 ```
 
 We can check for a successful install by typing "mongodb" in the terminal,
