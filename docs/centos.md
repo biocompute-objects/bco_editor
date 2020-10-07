@@ -28,6 +28,18 @@ Example:  which python
 
 These instructions are for the <a href="https://aws.amazon.com/marketplace/pp/Centosorg-CentOS-7-x8664-with-Updates-HVM/B00O7WM7QW" target="_blank">CentOS Linux 7 x86_64 HVM EBS ENA</a> image hosted on AWS EC2.
 
+### Preliminary step (may not be necessary)
+
+Reference URL:  https://tecadmin.net/add-swap-partition-on-ec2-linux-instance/
+
+If the computer you are installing on does not have a lot of memory, then you should make a swap file.  A swap file is just using the hard drive of the computer for additional storage on top of the computer's RAM.  These instructions create an additional 4 GB of memory on the hard drive.
+
+```
+sudo dd if=/dev/zero of=/var/myswap bs=1M count=4096
+sudo mkswap /var/myswap
+sudo swapon /var/myswap
+```
+
 ### 1. Create users and directories
 
 #### Users
