@@ -395,7 +395,7 @@ python3 manage.py createsuperuser
 The git repository comes with a shell script to build and deploy the server for you.  You'll probably need to add execute permissions to the script,
 
 ```
-chmod +x ./build_deploy.sh
+sudo chmod +x ./build_deploy.sh
 ```
 
 Now run the script,
