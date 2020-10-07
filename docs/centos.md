@@ -363,9 +363,10 @@ source env/bin/activate
 
 You should now see the (env) prefix in bash, "(env)[user@hostname]$"
 
-Next we want to install everything into our virtual environment that we'll need to run Django.  Start by installing the requirements, 
+Next we want to install everything into our virtual environment that we'll need to run Django.  Start by changing to the project folder, then installing the requirements, 
 
 ```
+cd ~/bco_editor/
 pip install -r requirements.txt
 ```
 
