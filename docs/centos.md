@@ -91,9 +91,9 @@ Create the directory (usually has to be done level-by-level),
 ```
 cd /var
 sudo mkdir www
-sudo cd www
+cd www
 sudo mkdir html
-sudo cd html
+cd html
 sudo mkdir portal
 ```
 
