@@ -262,22 +262,13 @@ cd ~
 Download all of the components of the MongoDB install (current as of 10/6/20),
 
 ```
-wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-cli-1.6.0.x86_64.rpm
-wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-4.2.9-1.el7.x86_64.rpm
-wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-mongos-4.2.9-1.el7.x86_64.rpm
-wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-server-4.2.9-1.el7.x86_64.rpm
-wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-shell-4.2.9-1.el7.x86_64.rpm
-wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-tools-4.2.9-1.el7.x86_64.rpm
+wget https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-cli-1.6.0.x86_64.rpm https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-4.2.9-1.el7.x86_64.rpm https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-mongos-4.2.9-1.el7.x86_64.rpm https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-server-4.2.9-1.el7.x86_64.rpm https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-shell-4.2.9-1.el7.x86_64.rpm https://repo.mongodb.org/yum/redhat/7/mongodb-org/4.2/x86_64/RPMS/mongodb-org-tools-4.2.9-1.el7.x86_64.rpm
 ```
 
 Install using RPM (the zipped package utility in CentOS),
 
 ```
-rpm -Uvh mongodb-org-server-4.2.9-1.el7.x86_64.rpm
-rpm -Uvh mongodb-org-shell-4.2.9-1.el7.x86_64.rpm
-rpm -Uvh mongodb-org-mongos-4.2.9-1.el7.x86_64.rpm
-rpm -Uvh mongodb-org-tools-4.2.9-1.el7.x86_64.rpm
-rpm -Uvh mongodb-org-4.2.9-1.el7.x86_64.rpm
+rpm -Uvh mongodb-org-server-4.2.9-1.el7.x86_64.rpm mongodb-org-shell-4.2.9-1.el7.x86_64.rpm mongodb-org-mongos-4.2.9-1.el7.x86_64.rpm mongodb-org-tools-4.2.9-1.el7.x86_64.rpm mongodb-org-4.2.9-1.el7.x86_64.rpm
 ```
 
 We can check for a successful install by typing "mongodb" in the terminal,
