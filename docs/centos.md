@@ -89,7 +89,7 @@ mkdir /home/portal_user/bco_editor/
 Create the directory (usually has to be done level-by-level), 
 
 ```
-sudo cd var
+sudo cd /var
 sudo mkdir www
 sudo cd www
 sudo mkdir html
