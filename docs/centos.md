@@ -335,7 +335,7 @@ sudo yum install git
 The project directory for BCOS is /home/portal_user/bco_editor/.  We need to clone the github repository so that we can test our configurations in the next several steps.  Navigate to /home/portal_user/bco_editor/, then clone the git repository, 
 
 ```
-cd /home/portal_user/bco_editor/
+cd ~
 git clone https://github.com/biocompute-objects/bco_editor
 ```
 
