@@ -11,7 +11,8 @@ merouter = merouters.DefaultRouter()
 merouter.register(r'bco', BcoObjectViewSet)
 
 # For the registry.
-merouter.register(r'registry', RegistryViewSet)
+reg_router = routers.DefaultRouter()
+reg_router.register(r'registry', RegistryViewSet)
 
 urlpatterns = [
 	path(r'', include(router.urls)),
@@ -22,3 +23,4 @@ urlpatterns = [
 ]
  
 urlpatterns += merouter.urls
+urlpatterns += reg_router.urls
