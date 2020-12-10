@@ -207,4 +207,5 @@ class RegistryViewSet(meviewsets.ModelViewSet):
 	# For token-based access.
 	authentication_classes = (TokenAuthentication, )
 
-	print('Here is the registry!')
+	# Everything went fine.
+	return Response('Here is the registry!', status.HTTP_201_CREATED)
