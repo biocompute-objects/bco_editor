@@ -19,6 +19,7 @@ import {
   Form as FormView,
   SampleBCO as SampleBCOView,
   ForgotPassword as ForgotPasswordView
+  Registry as RegistryView
 } from './views';
 import LoadingOverlay from 'react-loading-overlay';
 
@@ -149,6 +150,15 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/bco/:id/form"
+          updateLoading={(val)=>setImportLoading(val)}
+          setAlertData={setAlertData}
+          setOpenAlert={setOpenAlert}
+        />
+        <RouteAuthorized
+          component={RegistryView}
+          exact
+          layout={MainLayout}
+          path="/registry"
           updateLoading={(val)=>setImportLoading(val)}
           setAlertData={setAlertData}
           setOpenAlert={setOpenAlert}
