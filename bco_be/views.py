@@ -201,3 +201,10 @@ class CustomRegisterView(RegisterView):
 		return Response(self.get_response_data(user),
 						status=status.HTTP_201_CREATED,
 						headers=headers)
+
+class RegistryViewSet(meviewsets.ModelViewSet):
+
+	# For token-based access.
+	authentication_classes = (TokenAuthentication, )
+
+	print('Here is the registry!')

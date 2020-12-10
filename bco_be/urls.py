@@ -2,13 +2,16 @@ from django.conf.urls import url
 from django.urls import path,include
 from rest_framework_mongoengine import routers as merouters
 from rest_framework import routers
-from bco_be.views import UserViewSet, BcoObjectViewSet, CustomRegisterView, FileUploadView
+from bco_be.views import UserViewSet, BcoObjectViewSet, CustomRegisterView, FileUploadView, RegistryView
  
 router = routers.DefaultRouter()
 router.register(r'user', UserViewSet)
 
 merouter = merouters.DefaultRouter()
 merouter.register(r'bco', BcoObjectViewSet)
+
+# For the registry.
+merouter.register(r'registry', RegistryViewSet)
 
 urlpatterns = [
 	path(r'', include(router.urls)),
