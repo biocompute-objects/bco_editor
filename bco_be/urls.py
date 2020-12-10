@@ -24,3 +24,7 @@ urlpatterns = [
  
 urlpatterns += merouter.urls
 urlpatterns += reg_router.urls
+
+print('++++++++')
+print(urlpatterns)
+print('-----------')
