@@ -8,7 +8,7 @@ Enter the login credentials into the designated login email and password fields.
 ## Creating a new BCOs
 To create a new BCO click on the link “Create Object”. By clicking the link, the page navigates to the BCO Portal interface page where a new BCO can be created. This page displays the editable domains a BCO should have, based on the defined schema. Each field has its short description that helps the user to enter the correct value in the field. All the domains of the BCO can be collapsed and expanded as needed. The BCO can be also be created/edited by editing the JSON using the option “Edit JSON” in the BCO Portal interface page.
 
-To view an example of the BCO click [here](https://github.com/biocompute-objects/examples/blob/master/HCV1a.json) and to know more about the BCO or BCO domains [click here](https://github.com/biocompute-objects/BCO_Specification/blob/main/docs/user_guide.md).
+To view an example of the BCO click [here](https://github.com/biocompute-objects/examples/blob/master/HCV1a.json) and to know more about the BCO or BCO domains [click here](https://docs.biocomputeobject.org/user_guide/).
 
 ## Viewing the BCO
 The BCO edited in the BCO Portal can be viewed in the JSON format by clicking “View Object”. To return to the edit mode click on “Edit Object”
