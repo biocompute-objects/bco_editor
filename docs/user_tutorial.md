@@ -1,6 +1,6 @@
 # Quick Tutorial
 ## User Registration and Activation
-To use the BCO Portal (formerly BCO Editor), a user must login to the portal using the login credentials. Login credentials can be created through the registration form present on the home page. A user must register himself to generate the credentials for logging in to the portal.  Once a user registers himself on the portal, the user account needs to be activated by the BCO-DB admin. For the downloaded instance of the BCO Portal the instructions, instructions can be found [here](https://github.com/biocompute-objects/bco_editor#admin-utility).
+To use the BCO Portal (<i>formerly BCO Editor</i>), a user must login to the portal using the login credentials. Login credentials can be created through the registration form present on the home page. A user must register himself to generate the credentials for logging in to the portal.  Once a user registers himself on the portal, the user account needs to be activated by the BCO-DB admin. For the downloaded instance of the BCO Portal the instructions, instructions can be found [here](https://github.com/biocompute-objects/bco_editor#admin-utility).
 
 ## User Login
 Enter the login credentials into the designated login email and password fields. After successful login, the page navigates to the BCO Portal search page where a new BCO can be created or existing BCO can be searched.
